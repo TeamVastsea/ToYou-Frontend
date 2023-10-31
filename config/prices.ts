@@ -21,5 +21,5 @@ export const priceUltimate: PriceInfo = {
     singleFile: "无限",
     allSpace: "200 GB",
     storageTime: "无限",
-    price: 7000000,
+    price: 9999,
 }

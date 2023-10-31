@@ -1,6 +1,6 @@
-export default function BlogLayout({
-                                       children,
-                                   }: {
+export default function PricingLayout({
+                                          children,
+                                      }: {
     children: React.ReactNode;
 }) {
     return (

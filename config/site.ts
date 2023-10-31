@@ -13,7 +13,8 @@ export const siteConfig = {
             href: "/docs",
         },
         {
-            label: "价格",
+            label: "定价" +
+                "",
             href: "/pricing",
         },
         {
@@ -60,10 +61,7 @@ export const siteConfig = {
         },
     ],
     links: {
-        github: "https://github.com/nextui-org/nextui",
-        twitter: "https://twitter.com/getnextui",
-        docs: "https://nextui.org",
-        discord: "https://discord.gg/9b6yyZKmH4",
-        sponsor: "https://patreon.com/jrgarciadev"
+        github: "https://github.com/orgs/TeamVastsea/teams/imagesnapshot/repositories",
+        docs: "https://nextui.org"
     },
 };
