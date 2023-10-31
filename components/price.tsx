@@ -1,5 +1,5 @@
 'use client'
-import {Card, CardHeader, CardBody, CardFooter, Divider, Link, Image} from "@nextui-org/react";
+import {Card, CardBody, CardFooter, CardHeader, Divider} from "@nextui-org/react";
 import {Button} from "@nextui-org/button";
 import {Spacer} from "@nextui-org/spacer";
 

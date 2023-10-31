@@ -1,4 +1,4 @@
-import { PriceInfo } from '../components/price';
+import {PriceInfo} from '@/components/price';
 
 export const priceFree: PriceInfo = {
     name: "免费",
