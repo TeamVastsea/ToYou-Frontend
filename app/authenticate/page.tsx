@@ -89,7 +89,7 @@ export default function Page() {
                     </div>
                 </CardBody>
                 <CardFooter>
-                    <Button style={{position: "relative", left: 7}} color={buttonColor} disabled={buttonDisable}
+                    <Button style={{position: "relative", left: 7}} disabled={buttonDisable}
                             onClick={
                                 () => {
                                     setState("register");
