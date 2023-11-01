@@ -1,18 +1,22 @@
 import {PriceInfo} from '@/components/price';
+import {PiFireDuotone} from "react-icons/pi";
 
 export const priceFree: PriceInfo = {
     name: "免费",
     singleFile: "5 MB",
     allSpace: "2 GB",
-    storageTime: "30天",
+    storageTime: "30 天",
     price: 0,
 }
 
 export const priceProfessional: PriceInfo = {
-    name: "专业",
+    name: <div className="flex space-x-2 items-center">
+        <span>专业</span>
+        <PiFireDuotone style={{color: "red"}}/>
+    </div>,
     singleFile: "200 MB",
     allSpace: "50 GB",
-    storageTime: "120天",
+    storageTime: "120 天",
     price: 3000,
 }
 

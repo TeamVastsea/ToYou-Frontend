@@ -6,6 +6,7 @@ import {Providers} from "./providers";
 import {Navbar} from "@/components/navbar";
 import {Link} from "@nextui-org/link";
 import clsx from "clsx";
+import React from "react";
 
 export const metadata: Metadata = {
     title: {
@@ -24,14 +25,14 @@ export const metadata: Metadata = {
     },
 };
 
-export default function RootLayout({
-                                       children,
-                                   }: {
+export default function RootLayout({ children, }: {
     children: React.ReactNode;
 }) {
     return (
-        <html lang="en" suppressHydrationWarning>
-        <head/>
+        <html lang="cn" suppressHydrationWarning>
+        <head>
+            <title>图邮 - ToYou</title>
+        </head>
         <body
             className={clsx(
                 "min-h-screen bg-background font-sans antialiased",
@@ -46,7 +47,7 @@ export default function RootLayout({
                 </main>
                 <footer className="w-full flex items-center justify-center py-3">
                     <Link
-                        isExternal
+                        href="about"
                         className="flex items-center gap-1 text-current"
                     >
                         <span className="text-default-600">Powered by</span>

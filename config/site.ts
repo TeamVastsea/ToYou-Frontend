@@ -1,5 +1,3 @@
-export type SiteConfig = typeof siteConfig;
-
 export const siteConfig = {
     name: "ImageSnapshot",
     description: "Make beautiful websites regardless of your design experience.",
@@ -7,10 +5,6 @@ export const siteConfig = {
         {
             label: "首页",
             href: "/",
-        },
-        {
-            label: "文档",
-            href: "/docs",
         },
         {
             label: "定价" +
@@ -61,7 +55,7 @@ export const siteConfig = {
         },
     ],
     links: {
-        github: "https://github.com/orgs/TeamVastsea/teams/imagesnapshot/repositories",
+        github: "https://github.com/TeamVastsea/ToYou-Frontend",
         docs: "https://nextui.org"
     },
 };

@@ -2,8 +2,9 @@
 import {Card, CardBody, CardFooter, CardHeader, Divider} from "@nextui-org/react";
 import {Button} from "@nextui-org/button";
 import {Spacer} from "@nextui-org/spacer";
+import {ReactNode} from "react";
 
-export const Price = (price: PricePrompt) => {
+export const Price = (price: PriceProps) => {
 
     return (
         <>
@@ -13,13 +14,13 @@ export const Price = (price: PricePrompt) => {
                 </CardHeader>
                 <Divider/>
                 <CardBody>
-                    <p>· 单图片最大 {price.price.singleFile}</p>
-                    <p>· {price.price.allSpace} 存储空间</p>
-                    <p>· {price.price.storageTime} 存储时间</p>
-                    <p>· 无限流量</p>
-                    <p>· 无限下载次数</p>
-                    <p>· 不限速下载</p>
-                    <p>· 手机app和网页端</p>
+                    <p><b>-</b> 单图片最大 {price.price.singleFile}</p>
+                    <p><b>-</b> {price.price.allSpace} 存储空间</p>
+                    <p><b>-</b> {price.price.storageTime} 存储时间</p>
+                    <p><b>-</b> 无限流量</p>
+                    <p><b>-</b> 无限下载次数</p>
+                    <p><b>-</b> 不限速下载</p>
+                    <p><b>-</b> 手机app和网页端</p>
                 </CardBody>
                 <Divider/>
                 <CardFooter>
@@ -33,13 +34,13 @@ export const Price = (price: PricePrompt) => {
 }
 
 export type PriceInfo = {
-    name: string,
+    name: ReactNode,
     singleFile: string,
     allSpace: string,
     storageTime: string,
     price: number
 }
 
-type PricePrompt = {
+type PriceProps = {
     price: PriceInfo
 }
