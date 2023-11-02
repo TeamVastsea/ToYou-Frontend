@@ -5,8 +5,10 @@ import {ReactNode, useState} from "react";
 import {Input} from "@nextui-org/input";
 import {Checkbox} from "@nextui-org/checkbox";
 
+type colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
+
 export default function Page() {
-    let [buttonColor, setButtonColor] = useState("default");
+    let [buttonColor, setButtonColor] = useState<colors>("default");
     let [buttonDisable, setButtonDisable] = useState(true);
     let [state, setState] = useState("email");
 
@@ -56,7 +58,7 @@ export default function Page() {
 
     // @ts-ignore
     return (
-        <>
+        <div>
             <Card>
                 <CardBody>
                     <div className="space-y-5">
@@ -99,6 +101,6 @@ export default function Page() {
                     </Button>
                 </CardFooter>
             </Card>
-        </>
+        </div>
     )
 }
