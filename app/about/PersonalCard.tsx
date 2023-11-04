@@ -28,11 +28,11 @@ export const PersonalCard = () => (
                                             key={jobIndex}
                                             style={{ margin: 10 }}
                                             classNames={{
-                                                base: `bg-gradient-to-br from-${job.color}-500 to-${job.color}-500 border-small border-white/50 shadow-${job.color}-500/30`,
+                                                base: `bg-gradient-to-br from-blue-500 to-blue-500 border-small border-white/50 shadow-blue-500/30`,
                                                 content: "drop-shadow shadow-black text-white",
                                             }}
                                         >
-                                            {job.name}
+                                            {job}
                                         </Chip>
                                     ))}
                                 </a>
