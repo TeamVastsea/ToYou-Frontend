@@ -1,10 +1,11 @@
 'use client'
 
-import {Card, CardBody, CardFooter} from "@nextui-org/react";
+import {Card, CardBody, CardFooter, Spinner} from "@nextui-org/react";
 import {Button} from "@nextui-org/button";
-import {ReactNode, useState} from "react";
+import React, {ReactNode, useState} from "react";
 import {Input} from "@nextui-org/input";
 import {Checkbox} from "@nextui-org/checkbox";
+import {checkEmail, creatUser} from "@/interface/api";
 
 type colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
 
@@ -20,6 +21,7 @@ export default function Page() {
     let [code, setCode] = useState("");
     let [password, setPassword] = useState("");
     let [confirmPassword, setConfirmPassword] = useState("");
+    let [username, setUsername] = useState("");
 
     function getAdditionalInput(state: string): ReactNode {
         if (state == "login") {
@@ -37,11 +39,14 @@ export default function Page() {
                             setCode(e.target.value)
                         }} type="text" label="验证码" placeholder="验证码" style={{height: "auto", flex: 3}}
                                endContent={
-                                   <Button size={"sm"} style={{position: "relative", top: -7.5}}>发送验证码</Button>
+                            <></>
+                                   // <Button size={"sm"} style={{position: "relative", top: -7.5}}>发送验证码</Button>
                                }/>
                     </div>
 
-                    <Input key="username" placeholder="用户名" label="用户名"/>
+                    <Input key="username" placeholder="用户名" label="用户名" onChange={(e) => {
+                        setUsername(e.target.value);
+                    }}/>
 
                     <div className="flex space-x-3">
                         <Input key="password-reg" type="password" placeholder="密码" label="密码" onChange={(e) => {
@@ -100,10 +105,29 @@ export default function Page() {
                     <Button style={{position: "relative", left: 7}} color={buttonColor} disabled={buttonDisable}
                             onClick={
                                 () => {
-                                    setState("register");
+                                    if (state == "email") {
+                                        setState("loading");
+                                        setButtonDisable(true);
+                                        checkEmail(email).then(r => {
+                                            setState(r ? "login" : "register")
+                                            setButtonDisable(false);
+                                        });
+                                    }
+                                    else if (state == "register") {
+                                        setState("loading");
+                                        setButtonDisable(true);
+                                        if (password != confirmPassword) {
+                                            alert("Password not match")
+                                        }
+                                        creatUser(email, password, username, code).then(r => {
+                                            setState("login");
+                                            setButtonDisable(false);
+                                        })
+                                    }
                                 }
                             }>
-                        {state == "email" ? "下一步" : state == "login" ? "登录" : "注册"}
+                        {state == "loading" ?
+                            <div className="justify-center flex space-x-3"><Spinner color="default" size="sm"/><p>加载中...</p></div> : state == "email" ? "下一步" : state == "login" ? "登录" : "注册"}
                     </Button>
                 </CardFooter>
             </Card>
