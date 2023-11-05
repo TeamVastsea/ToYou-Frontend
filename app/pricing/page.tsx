@@ -2,7 +2,7 @@
 
 import {title} from "@/components/primitives";
 import {Price} from "@/components/price";
-import {priceFree, priceProfessional, priceUltimate} from "@/config/prices";
+import {priceFree, priceStarted, priceAdvanced, priceProfessional} from "@/config/prices";
 import {Tab, Tabs} from "@nextui-org/react";
 
 export default function PricingPage() {
@@ -15,13 +15,14 @@ export default function PricingPage() {
                     <Tab key="free" title="免费">
                         <Price price={priceFree}/>
                     </Tab>
-                    <Tab key="professional" title="专业">
-                        <div className="flex items-center space-x-2">
-                            <Price price={priceProfessional}/>
-                        </div>
+                    <Tab key="started" title="入门">
+                        <Price price={priceStarted}/>
                     </Tab>
-                    <Tab key="ultimate" title="终极">
-                        <Price price={priceUltimate}/>
+                    <Tab key="advanced" title="进阶">
+                        <Price price={priceAdvanced}/>
+                    </Tab>
+                    <Tab key="professional" title="专业">
+                        <Price price={priceProfessional}/>
                     </Tab>
                 </Tabs>
             </div>
