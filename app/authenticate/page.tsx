@@ -39,6 +39,9 @@ export default function Page() {
                             <Button size={"sm"} style={{position: "relative", top: -7.5}}>发送验证码</Button>
                         }/>
                     </div>
+
+                    <Input key="username" placeholder="用户名" label="用户名" />
+
                     <div className="flex space-x-3">
                         <Input key="password-reg" type="password" placeholder="密码" label="密码" onChange={(e) => {
                             setPassword(e.target.value);

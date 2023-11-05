@@ -19,7 +19,7 @@ export const PersonalCard = () => (
                                 src={member.avatarSrc}
                             />
                             <div className="items-center">
-                                <p className="text-white/60 font-bold text-left" style={{ fontSize: 23 }}>
+                                <p className="font-bold text-left" style={{ fontSize: 23 }}>
                                     {member.name}
                                 </p>
                                 <a className="grid grid-cols-2 grid-flow-dense">

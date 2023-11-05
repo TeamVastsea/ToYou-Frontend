@@ -7,6 +7,7 @@ import {Button} from "@nextui-org/button";
 import {useRouter} from "next/navigation";
 import {Chip} from "@nextui-org/chip";
 import {FiChevronsUp, FiUploadCloud} from "react-icons/fi";
+import Picture from "@/components/picture";
 
 export default function Page() {
     let used = 1050;
@@ -72,6 +73,8 @@ export default function Page() {
                     </a>
                 </CardFooter>
             </Card>
+
+            <Picture url="https://api.cyrilstudio.top/bing/image.php"/>
         </div>
     )
 }
