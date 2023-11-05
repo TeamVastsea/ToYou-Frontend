@@ -1,4 +1,5 @@
 'use client'
+
 import NextLink from "next/link";
 import {Link} from "@nextui-org/link";
 import {button as buttonStyles} from "@nextui-org/theme";
@@ -89,7 +90,8 @@ export default function Home() {
                         className="z-0 w-full h-full scale-125 -translate-y-6 object-cover"
                         src="https://nextui.org/images/card-example-6.jpeg"
                     />
-                    <CardFooter className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
+                    <CardFooter
+                        className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
                         <div>
                             <p className="text-black text-tiny">进日上线</p>
                             <p className="text-black text-tiny">获取实时通知。</p>
@@ -110,7 +112,8 @@ export default function Home() {
                         className="z-0 w-full h-full object-cover"
                         src="https://nextui.org/images/card-example-5.jpeg"
                     />
-                    <CardFooter className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
+                    <CardFooter
+                        className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
                         <div className="flex flex-grow gap-2 items-center">
                             <Image
                                 alt="Breathing app icon"

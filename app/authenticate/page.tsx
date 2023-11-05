@@ -35,20 +35,22 @@ export default function Page() {
                     <div className="flex space-x-3" style={{width: "auto", display: "flex"}}>
                         <Input key={"code"} onChange={(e) => {
                             setCode(e.target.value)
-                        }} type="text" label="验证码" placeholder="验证码" style={{height: "auto", flex: 3}} endContent={
-                            <Button size={"sm"} style={{position: "relative", top: -7.5}}>发送验证码</Button>
-                        }/>
+                        }} type="text" label="验证码" placeholder="验证码" style={{height: "auto", flex: 3}}
+                               endContent={
+                                   <Button size={"sm"} style={{position: "relative", top: -7.5}}>发送验证码</Button>
+                               }/>
                     </div>
 
-                    <Input key="username" placeholder="用户名" label="用户名" />
+                    <Input key="username" placeholder="用户名" label="用户名"/>
 
                     <div className="flex space-x-3">
                         <Input key="password-reg" type="password" placeholder="密码" label="密码" onChange={(e) => {
                             setPassword(e.target.value);
                         }}/>
-                        <Input key="password-reg2" type="password" placeholder="确认密码" label="确认密码" onChange={(e) => {
-                            setConfirmPassword(e.target.value);
-                        }}/>
+                        <Input key="password-reg2" type="password" placeholder="确认密码" label="确认密码"
+                               onChange={(e) => {
+                                   setConfirmPassword(e.target.value);
+                               }}/>
                     </div>
                 </div>
 

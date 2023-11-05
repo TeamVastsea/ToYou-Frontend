@@ -14,13 +14,13 @@ export const members = [
     {
         name: "zrll_",
         avatarSrc: "https://avatars.githubusercontent.com/u/46812903?v=4",
-        jobs: ["管理",  "前端", "后端"],
+        jobs: ["管理", "前端", "后端"],
         githubLink: "https://github.com/zrll12",
     },
     {
         name: "HuaHua",
         avatarSrc: "https://avatars.githubusercontent.com/u/73741466?v=4",
-        jobs: ["管理",  "前端", "后端"],
+        jobs: ["管理", "前端", "后端"],
         githubLink: "https://github.com/xLikeWATCHDOG",
     },
     {
