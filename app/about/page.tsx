@@ -2,7 +2,7 @@
 
 import {title} from "@/components/primitives";
 import {Spacer} from "@nextui-org/react";
-import {PersonalCard} from "../../components/personal-card";
+import {PersonalCard} from "@/components/personal-card";
 
 export default function AboutPage() {
     return (

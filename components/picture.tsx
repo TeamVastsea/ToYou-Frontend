@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Button, Card, CardFooter, Divider, Image, useDisclosure} from "@nextui-org/react";
+import {Button, Card, CardFooter, Image, useDisclosure} from "@nextui-org/react";
 import copy from "copy-to-clipboard";
 import {CheckLinearIcon, CopyLinearIcon} from "@nextui-org/shared-icons";
 import {Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@nextui-org/modal";
