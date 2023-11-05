@@ -1,4 +1,5 @@
 'use client'
+
 import {
     Navbar as NextUINavbar,
     NavbarBrand,
@@ -18,7 +19,7 @@ import NextLink from "next/link";
 import clsx from "clsx";
 
 import {ThemeSwitch} from "@/components/theme-switch";
-import {DiscordIcon, GithubIcon, Logo, TwitterIcon,} from "@/components/icons";
+import {GithubIcon, Logo,} from "@/components/icons";
 import {useRouter} from "next/navigation";
 
 export const Navbar = () => {

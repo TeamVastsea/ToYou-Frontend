@@ -1,17 +1,17 @@
 'use client'
+
 import {Button} from "@nextui-org/button";
 import {ChangeEvent, ReactNode, useRef} from "react";
-import {useRouter} from "next/navigation";
 
 export default function Uploader(prop: UploaderProps) {
     const inputRef = useRef<any>(null);
 
-    return(
+    return (
         <div>
             <input type={"file"} style={{display: "none"}} ref={inputRef} onChange={(e) => {
                 prop.onChange(e);
             }}/>
-            <Button onClick={(e) => {
+            <Button onClick={() => {
                 if (inputRef == null) return;
                 inputRef.current.click();
             }}>{prop.label}</Button>

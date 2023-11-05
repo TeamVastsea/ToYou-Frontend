@@ -9,7 +9,7 @@ export default function Picture(props: PictureProps) {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     let timeout: NodeJS.Timeout | null = null;
 
-    return(
+    return (
         <>
             <Card
                 isFooterBlurred
@@ -22,30 +22,36 @@ export default function Picture(props: PictureProps) {
                     height={200}
                     src={props.url}
                 />
-                <CardFooter className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-auto shadow-small ml-1 z-10">
+                <CardFooter
+                    className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-auto shadow-small ml-1 z-10">
                     <p className="text-tiny font-mono text-white/80">https://api.cyrilstudio.top/bing/image.php</p>&nbsp;
-                    <Button isIconOnly className="text-white bg-black/20 justify-center" variant="light" size="sm" onClick={() => {
-                        copy(props.url);
+                    <Button isIconOnly className="text-white bg-black/20 justify-center" variant="light" size="sm"
+                            onClick={() => {
+                                copy(props.url);
 
-                        if (props.isPubic == undefined || !props.isPubic) {
-                            onOpen();
-                        }
+                                if (props.isPubic == undefined || !props.isPubic) {
+                                    onOpen();
+                                }
 
-                        setIsChecked(true);
+                                setIsChecked(true);
 
-                        if (timeout != null) {
-                            clearTimeout(timeout);
-                            timeout = null;
-                        }
+                                if (timeout != null) {
+                                    clearTimeout(timeout);
+                                    timeout = null;
+                                }
 
-                        timeout = setTimeout(() => {setIsChecked(false); timeout = null;}, 1000);
-                        }}>
+                                timeout = setTimeout(() => {
+                                    setIsChecked(false);
+                                    timeout = null;
+                                }, 1000);
+                            }}>
                         {isChecked ? <CheckLinearIcon/> : <CopyLinearIcon/>}
                     </Button>
                 </CardFooter>
             </Card>
 
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} hideCloseButton={true} backdrop={"blur"}>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false} hideCloseButton={true}
+                   backdrop={"blur"}>
                 <ModalContent>
                     {(onClose) => (
                         <>

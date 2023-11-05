@@ -1,4 +1,5 @@
 'use client'
+
 import {Card, CardBody, CardFooter, CardHeader, Divider} from "@nextui-org/react";
 import {Button} from "@nextui-org/button";
 import {Spacer} from "@nextui-org/spacer";

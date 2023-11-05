@@ -1,4 +1,5 @@
 'use client'
+
 import {title} from "@/components/primitives";
 import {Price} from "@/components/price";
 import {priceFree, priceProfessional, priceUltimate} from "@/config/prices";
