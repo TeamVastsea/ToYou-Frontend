@@ -8,6 +8,8 @@ import {subtitle, title} from "@/components/primitives";
 import {Card, CardFooter, CardHeader, Image} from "@nextui-org/react";
 import {Button} from "@nextui-org/button";
 import {HiOutlineNewspaper} from "react-icons/hi";
+import {FaLocationArrow} from "react-icons/fa6";
+import {BsLightbulb} from "react-icons/bs";
 
 export default function Home() {
     return (
@@ -30,6 +32,7 @@ export default function Home() {
                     href={"/pricing"}
                     className={buttonStyles({color: "primary", variant: "shadow"})}
                 >
+                    <FaLocationArrow size={20}/>
                     开始使用
                 </Link>
                 <Link
@@ -45,7 +48,7 @@ export default function Home() {
             <div className="max-w-[900px] gap-2 grid grid-cols-12 grid-rows-2 px-8 md:py-10">
                 <Card className="col-span-12 sm:col-span-4 h-[300px]">
                     <CardHeader className="absolute z-10 top-1 flex-col !items-start">
-                        <p className="text-tiny text-white/60 uppercase font-bold">乙方</p>
+                        <p className="text-tiny text-white/60 uppercase font-bold">乙方 | Party B</p>
                         <h4 className="text-white font-medium text-large">轻松同甲方预览效果</h4>
                     </CardHeader>
                     <Image
@@ -57,7 +60,7 @@ export default function Home() {
                 </Card>
                 <Card className="col-span-12 sm:col-span-4 h-[300px]">
                     <CardHeader className="absolute z-10 top-1 flex-col !items-start">
-                        <p className="text-tiny text-white/60 uppercase font-bold">学生</p>
+                        <p className="text-tiny text-white/60 uppercase font-bold">学生 | Students</p>
                         <h4 className="text-white font-medium text-large">简单向同伴分享快乐时光</h4>
                     </CardHeader>
                     <Image
@@ -69,8 +72,8 @@ export default function Home() {
                 </Card>
                 <Card className="col-span-12 sm:col-span-4 h-[300px]">
                     <CardHeader className="absolute z-10 top-1 flex-col !items-start">
-                        <p className="text-tiny text-white/60 uppercase font-bold">旅行者</p>
-                        <h4 className="text-white font-medium text-large">一起来跟可莉炸鱼吧</h4>
+                        <p className="text-tiny text-white/60 uppercase font-bold">专业摄影师 | Photographer</p>
+                        <h4 className="text-white font-medium text-large">随时随地分享精美景色</h4>
                     </CardHeader>
                     <Image
                         removeWrapper
@@ -81,8 +84,8 @@ export default function Home() {
                 </Card>
                 <Card isFooterBlurred className="w-full h-[300px] col-span-12 sm:col-span-5">
                     <CardHeader className="absolute z-10 top-1 flex-col items-start">
-                        <p className="text-tiny text-white/60 uppercase font-bold">New</p>
-                        <h4 className="text-black font-medium text-2xl">图邮相机</h4>
+                        <p className="text-tiny text-white/60 uppercase font-bold">Clients Download</p>
+                        <h4 className="text-black font-medium text-2xl">客户端下载</h4>
                     </CardHeader>
                     <Image
                         removeWrapper
@@ -93,18 +96,18 @@ export default function Home() {
                     <CardFooter
                         className="absolute bg-white/30 bottom-0 border-t-1 border-zinc-100/50 z-10 justify-between">
                         <div>
-                            <p className="text-black text-tiny">进日上线</p>
-                            <p className="text-black text-tiny">获取实时通知。</p>
+                            <p className="text-black text-tiny">方便 快捷</p>
+                            <p className="text-black text-tiny">在任何地方使用</p>
                         </div>
                         <Button className="text-tiny" color="primary" radius="full" size="sm">
-                            订阅通知
+                            点击下载
                         </Button>
                     </CardFooter>
                 </Card>
                 <Card isFooterBlurred className="w-full h-[300px] col-span-12 sm:col-span-7">
                     <CardHeader className="absolute z-10 top-1 flex-col items-start">
-                        <p className="text-tiny text-white/60 uppercase font-bold">500 USD/月</p>
-                        <h4 className="text-white/90 font-medium text-xl">广告位招租</h4>
+                        <p className="text-tiny text-white/60 uppercase font-bold">Contact Us</p>
+                        <h4 className="text-white/90 font-medium text-xl">联系方式</h4>
                     </CardHeader>
                     <Image
                         removeWrapper
@@ -115,17 +118,13 @@ export default function Home() {
                     <CardFooter
                         className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
                         <div className="flex flex-grow gap-2 items-center">
-                            <Image
-                                alt="Breathing app icon"
-                                className="rounded-full w-10 h-11 bg-black"
-                                src="https://nextui.org/images/breathing-app-icon.jpeg"
-                            />
+                            <BsLightbulb />
                             <div className="flex flex-col">
-                                <p className="text-tiny text-white/60">睡教</p>
-                                <p className="text-tiny text-white/60">睡个好觉</p>
+                                <p className="text-tiny text-white/60">有疑问，还是好点子？</p>
+                                <p className="text-tiny text-white/60">快来和我们分享一下吧！</p>
                             </div>
                         </div>
-                        <Button radius="full" size="sm">获取</Button>
+                        <Button radius="full" size="sm">联系我们</Button>
                     </CardFooter>
                 </Card>
             </div>

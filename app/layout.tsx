@@ -51,7 +51,8 @@ export default function RootLayout({children,}: {
                         className="flex items-center gap-1 text-current"
                     >
                         <span className="text-default-600">Powered by</span>
-                        <p className="text-primary">IS Team</p>
+                        <p className="text-primary">Team Vastsea</p>
+                        <span className="text-default-600">With ❤</span>
                     </Link>
                 </footer>
             </div>
