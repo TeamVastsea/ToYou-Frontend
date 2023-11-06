@@ -7,6 +7,8 @@ import {Navbar} from "@/components/navbar";
 import {Link} from "@nextui-org/link";
 import clsx from "clsx";
 import React from "react";
+import {rgba} from "color2k";
+import {Toaster} from "react-hot-toast";
 
 export const metadata: Metadata = {
     title: {
@@ -43,6 +45,15 @@ export default function RootLayout({children,}: {
             <div className="relative flex flex-col h-screen">
                 <Navbar/>
                 <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+                    <Toaster toastOptions={{
+                        className: '',
+                        duration: 5000,
+                        style: {
+                            background: rgba(0, 0, 0, 0),
+                            color: rgba(0, 0, 0, 0),
+                            borderStyle: 'none',
+                            boxShadow: 'none'
+                        },}} gutter={-15}/>
                     {children}
                 </main>
                 <footer className="w-full flex items-center justify-center py-3">

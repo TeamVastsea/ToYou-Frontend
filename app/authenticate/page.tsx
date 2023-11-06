@@ -6,6 +6,7 @@ import React, {ReactNode, useState} from "react";
 import {Input} from "@nextui-org/input";
 import {Checkbox} from "@nextui-org/checkbox";
 import {checkEmail, creatUser} from "@/interface/api";
+import {Message} from "@/components/message";
 
 type colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
 
@@ -105,22 +106,43 @@ export default function Page() {
                     <Button style={{position: "relative", left: 7}} color={buttonColor} disabled={buttonDisable}
                             onClick={
                                 () => {
+                                    // Message.message("message");
+                                    // Message.success("success");
+                                    // Message.warning("warning");
+                                    // Message.error("error");
+                                    // return;
                                     if (state == "email") {
+                                        if (emailInvalid) {
+                                            Message.error(emailErrorMessage);
+                                            return;
+                                        }
                                         setState("loading");
                                         setButtonDisable(true);
                                         checkEmail(email).then(r => {
                                             setState(r ? "login" : "register")
                                             setButtonDisable(false);
+                                            if (!r) {
+                                                Message.message("验证码已发送")
+                                            }
                                         });
                                     }
                                     else if (state == "register") {
                                         setState("loading");
                                         setButtonDisable(true);
                                         if (password != confirmPassword) {
-                                            alert("Password not match")
+                                            Message.error("密码输入不一致")
                                         }
                                         creatUser(email, password, username, code).then(r => {
-                                            setState("login");
+                                            var [status, message] = r;
+                                            if (status) {
+                                                Message.success("注册成功，请登录");
+                                                setState("login");
+                                                setEmail("");
+                                                setUsername("");
+                                                setPassword("");
+                                            } else {
+                                                Message.error(message);
+                                            }
                                             setButtonDisable(false);
                                         })
                                     }

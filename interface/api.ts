@@ -12,7 +12,7 @@ export async function checkEmail(email: string): Promise<boolean> {
     return await response.text() == "exists";
 }
 
-export async function creatUser(email: string, password: string, username: string, code: string): Promise<boolean> {
+export async function creatUser(email: string, password: string, username: string, code: string): Promise<[boolean, string]> {
 
     var formdata = new FormData();
     formdata.append("email", email);
@@ -28,5 +28,5 @@ export async function creatUser(email: string, password: string, username: strin
 
     let response = await fetch(SERVER_URL + "/user", requestOptions);
 
-    return response.ok;
+    return [response.ok, await response.text()];
 }
