@@ -34,6 +34,7 @@ export default function RootLayout({children,}: {
         <html lang="cn" suppressHydrationWarning>
         <head>
             <title>图邮 - ToYou</title>
+            <link rel="icon" href="/favicon.ico" sizes="any" />
         </head>
         <body
             className={clsx(
@@ -54,7 +55,7 @@ export default function RootLayout({children,}: {
                             borderStyle: 'none',
                             boxShadow: 'none'
                         },}} gutter={-15}/>
-                    {children}
+                        {children}
                 </main>
                 <footer className="w-full flex items-center justify-center py-3">
                     <Link

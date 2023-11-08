@@ -5,8 +5,11 @@ import {Button} from "@nextui-org/button";
 import React, {ReactNode, useState} from "react";
 import {Input} from "@nextui-org/input";
 import {Checkbox} from "@nextui-org/checkbox";
-import {checkEmail, creatUser} from "@/interface/api";
+import {User} from "@/interface/api";
 import {Message} from "@/components/message";
+import {useRouter} from "next/navigation";
+import {UserModel} from "@/interface/model/user";
+import {SetLoggedInState} from "@/interface/hooks";
 
 type colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
 
@@ -23,6 +26,18 @@ export default function Page() {
     let [password, setPassword] = useState("");
     let [confirmPassword, setConfirmPassword] = useState("");
     let [username, setUsername] = useState("");
+    let [isLoading, setLoading] = useState(false);
+
+    let router = useRouter();
+
+    User.loginSession().then(([state, user]) => {
+        if (state) {
+            router.push("/dashboard");
+            let userModel: UserModel = JSON.parse(user);
+            Message.message("欢迎回来, " + userModel.username);
+        }
+    })
+
 
     function getAdditionalInput(state: string): ReactNode {
         if (state == "login") {
@@ -106,34 +121,30 @@ export default function Page() {
                     <Button style={{position: "relative", left: 7}} color={buttonColor} disabled={buttonDisable}
                             onClick={
                                 () => {
-                                    // Message.message("message");
-                                    // Message.success("success");
-                                    // Message.warning("warning");
-                                    // Message.error("error");
-                                    // return;
                                     if (state == "email") {
                                         if (emailInvalid) {
                                             Message.error(emailErrorMessage);
                                             return;
                                         }
-                                        setState("loading");
+                                        setLoading(true);
                                         setButtonDisable(true);
-                                        checkEmail(email).then(r => {
+                                        User.checkEmail(email).then(r => {
                                             setState(r ? "login" : "register")
                                             setButtonDisable(false);
+                                            setLoading(false);
                                             if (!r) {
                                                 Message.message("验证码已发送")
                                             }
                                         });
                                     }
                                     else if (state == "register") {
-                                        setState("loading");
+                                        setLoading(true);
                                         setButtonDisable(true);
                                         if (password != confirmPassword) {
                                             Message.error("密码输入不一致")
                                         }
-                                        creatUser(email, password, username, code).then(r => {
-                                            var [status, message] = r;
+                                        User.creatUser(email, password, username, code).then(r => {
+                                            let [status, message] = r;
                                             if (status) {
                                                 Message.success("注册成功，请登录");
                                                 setState("login");
@@ -143,12 +154,30 @@ export default function Page() {
                                             } else {
                                                 Message.error(message);
                                             }
+                                            setLoading(false);
                                             setButtonDisable(false);
                                         })
+                                    } else {//login
+                                        setLoading(true);
+                                        setButtonDisable(true);
+
+                                        User.login(email, password).then((r) => {
+                                            let [state, text] = r;
+
+                                            if (state) {
+                                                Message.success("登录成功");
+                                                SetLoggedInState(true);
+                                                router.push("/dashboard");
+                                            } else {
+                                                Message.error(text);
+                                            }
+
+                                            setLoading(false);
+                                        });
                                     }
                                 }
                             }>
-                        {state == "loading" ?
+                        {isLoading ?
                             <div className="justify-center flex space-x-3"><Spinner color="default" size="sm"/><p>加载中...</p></div> : state == "email" ? "下一步" : state == "login" ? "登录" : "注册"}
                     </Button>
                 </CardFooter>

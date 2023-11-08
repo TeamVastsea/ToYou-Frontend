@@ -21,14 +21,21 @@ import clsx from "clsx";
 import {ThemeSwitch} from "@/components/theme-switch";
 import {GithubIcon, Logo,} from "@/components/icons";
 import {useRouter} from "next/navigation";
+import {useState} from "react";
+import cookie from "react-cookies";
+import {UpdateSetLoggedInHook} from "@/interface/hooks";
+import {Message} from "@/components/message";
 
 export const Navbar = () => {
     let router = useRouter();
+    let [loggedIn, setLoggedIn] = useState(cookie.load("token") != undefined);
+
+    UpdateSetLoggedInHook(setLoggedIn);
     return (
         <NextUINavbar maxWidth="xl" position="sticky">
             <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
                 <NavbarBrand as="li" className="gap-3 max-w-fit">
-                    <NextLink className="flex justify-start items-center gap-1" href="/">
+                    <NextLink className="flex justify-start items-center gap-3" href="/">
                         <Logo/>
                         <p className="font-bold text-inherit">图邮 ToYou</p>
                     </NextLink>
@@ -62,11 +69,16 @@ export const Navbar = () => {
                     <ThemeSwitch/>
                 </NavbarItem>
                 <NavbarItem className="hidden md:flex">
-                    <Button color="primary" onClick={() => {
-                        router.push("/authenticate")
-                    }}>
-                        注册/登录
-                    </Button>
+                    {loggedIn ? <Button color="danger" onClick={() => {
+                            cookie.remove("token");
+                            Message.success("成功退出登录");
+                            setLoggedIn(false);
+                            router.push("/authenticate")
+                        }}>退出登录</Button>
+                        :
+                        <Button color="primary" onClick={() => {
+                            router.push("/authenticate")
+                        }}>注册/登录</Button>}
                 </NavbarItem>
             </NavbarContent>
 
