@@ -29,8 +29,8 @@ import {Message} from "@/components/message";
 export const Navbar = () => {
     let router = useRouter();
     let [loggedIn, setLoggedIn] = useState(cookie.load("token") != undefined);
-
     UpdateSetLoggedInHook(setLoggedIn);
+
     return (
         <NextUINavbar maxWidth="xl" position="sticky">
             <NavbarContent className="basis-1/5 sm:basis-full" justify="start">

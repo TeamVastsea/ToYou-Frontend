@@ -8,6 +8,7 @@ import {useRouter} from "next/navigation";
 import {Chip} from "@nextui-org/chip";
 import {FiChevronsUp, FiUploadCloud} from "react-icons/fi";
 import Picture from "@/components/picture";
+import {PictureAPI} from "@/interface/pictureAPI";
 
 export default function Page() {
     let used = 1050;
@@ -45,8 +46,10 @@ export default function Page() {
                                 <span>上传文件</span>
                             </a>
                         } onChange={(e) => {
-                            let file = e.target.files;
+                            let files = e.target.files!;
                             console.log(e.target.files);
+                            let file = files[0];
+                            PictureAPI.uploadFile(file).then(() => {});
                         }}></Uploader>
 
                         <Button className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white" onClick={() => {

@@ -5,11 +5,11 @@ import {Button} from "@nextui-org/button";
 import React, {ReactNode, useState} from "react";
 import {Input} from "@nextui-org/input";
 import {Checkbox} from "@nextui-org/checkbox";
-import {User} from "@/interface/api";
 import {Message} from "@/components/message";
 import {useRouter} from "next/navigation";
 import {UserModel} from "@/interface/model/user";
 import {SetLoggedInState} from "@/interface/hooks";
+import {UserAPI} from "@/interface/user";
 
 type colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
 
@@ -30,7 +30,7 @@ export default function Page() {
 
     let router = useRouter();
 
-    User.loginSession().then(([state, user]) => {
+    UserAPI.loginSession().then(([state, user]) => {
         if (state) {
             router.push("/dashboard");
             let userModel: UserModel = JSON.parse(user);
@@ -128,7 +128,7 @@ export default function Page() {
                                         }
                                         setLoading(true);
                                         setButtonDisable(true);
-                                        User.checkEmail(email).then(r => {
+                                        UserAPI.checkEmail(email).then(r => {
                                             setState(r ? "login" : "register")
                                             setButtonDisable(false);
                                             setLoading(false);
@@ -143,7 +143,7 @@ export default function Page() {
                                         if (password != confirmPassword) {
                                             Message.error("密码输入不一致")
                                         }
-                                        User.creatUser(email, password, username, code).then(r => {
+                                        UserAPI.creatUser(email, password, username, code).then(r => {
                                             let [status, message] = r;
                                             if (status) {
                                                 Message.success("注册成功，请登录");
@@ -161,7 +161,7 @@ export default function Page() {
                                         setLoading(true);
                                         setButtonDisable(true);
 
-                                        User.login(email, password).then((r) => {
+                                        UserAPI.login(email, password).then((r) => {
                                             let [state, text] = r;
 
                                             if (state) {

@@ -2,8 +2,9 @@
 
 import {title} from "@/components/primitives";
 import {Price} from "@/components/price";
-import {priceFree, priceStarted, priceAdvanced, priceProfessional} from "@/config/prices";
+import {priceAdvanced, priceFree, priceProfessional, priceStarted} from "@/config/prices";
 import {Tab, Tabs} from "@nextui-org/react";
+import {PiFireDuotone} from "react-icons/pi";
 
 export default function PricingPage() {
     return (
@@ -18,7 +19,10 @@ export default function PricingPage() {
                     <Tab key="started" title="入门">
                         <Price price={priceStarted}/>
                     </Tab>
-                    <Tab key="advanced" title="进阶">
+                    <Tab key="advanced" title={<div className="flex space-x-0.5 items-center">
+                        <span>进阶</span>
+                        <PiFireDuotone style={{color: "red"}} size={17}/>
+                    </div>}>
                         <Price price={priceAdvanced}/>
                     </Tab>
                     <Tab key="professional" title="专业">

@@ -10,6 +10,7 @@ import {Button} from "@nextui-org/button";
 import {HiOutlineNewspaper} from "react-icons/hi";
 import {FaLocationArrow} from "react-icons/fa6";
 import {BsLightbulb} from "react-icons/bs";
+import {IsLoggedIn} from "@/interface/hooks";
 
 export default function Home() {
     return (
@@ -29,7 +30,7 @@ export default function Home() {
             <div className="flex gap-3">
                 <Link
                     as={NextLink}
-                    href={"/pricing"}
+                    href={IsLoggedIn ? "/pricing" : "/dashboard"}
                     className={buttonStyles({color: "primary", variant: "shadow"})}
                 >
                     <FaLocationArrow size={20}/>
@@ -118,7 +119,7 @@ export default function Home() {
                     <CardFooter
                         className="absolute bg-black/40 bottom-0 z-10 border-t-1 border-default-600 dark:border-default-100">
                         <div className="flex flex-grow gap-2 items-center">
-                            <BsLightbulb />
+                            <BsLightbulb color="white"/>
                             <div className="flex flex-col">
                                 <p className="text-tiny text-white/60">有疑问，还是好点子？</p>
                                 <p className="text-tiny text-white/60">快来和我们分享一下吧！</p>

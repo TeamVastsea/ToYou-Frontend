@@ -15,6 +15,7 @@ export default function Picture(props: PictureProps) {
                 isFooterBlurred
                 radius="lg"
                 className="border-none items-center"
+                isPressable
             >
                 <Image
                     alt="Woman listing to music"
