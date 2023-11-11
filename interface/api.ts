@@ -17,15 +17,15 @@ export class User {
 
     static async creatUser(email: string, password: string, username: string, code: string): Promise<[boolean, string]> {
 
-        let formdata = new FormData();
-        formdata.append("email", email);
-        formdata.append("password", password);
-        formdata.append("username", username);
-        formdata.append("code", code);
+        let formData = new FormData();
+        formData.append("email", email);
+        formData.append("password", password);
+        formData.append("username", username);
+        formData.append("code", code);
 
         let requestOptions: RequestInit = {
             method: 'POST',
-            body: formdata,
+            body: formData,
             redirect: 'follow'
         };
 
