@@ -77,7 +77,7 @@ export default function Page() {
                 </CardFooter>
             </Card>
 
-            <Picture url="https://api.cyrilstudio.top/bing/image.php"/>
+            <Picture url="https://t7.baidu.com/it/u=2961459243,2146986594&fm=193&f=GIF" name="雪景.png"/>
         </div>
     )
 }
