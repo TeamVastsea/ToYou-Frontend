@@ -19,7 +19,7 @@ import NextLink from "next/link";
 import clsx from "clsx";
 
 import {ThemeSwitch} from "@/components/theme-switch";
-import {GithubIcon, Logo,} from "@/components/icons";
+import {GithubIcon, Logo, LogoText,} from "@/components/icons";
 import {useRouter} from "next/navigation";
 import {useState} from "react";
 import cookie from "react-cookies";
@@ -36,8 +36,7 @@ export const Navbar = () => {
             <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
                 <NavbarBrand as="li" className="gap-3 max-w-fit">
                     <NextLink className="flex justify-start items-center gap-3" href="/">
-                        <Logo/>
-                        <p className="font-bold text-inherit">图邮 ToYou</p>
+                        <LogoText/>
                     </NextLink>
                 </NavbarBrand>
                 <ul className="hidden lg:flex gap-4 justify-start ml-2">
