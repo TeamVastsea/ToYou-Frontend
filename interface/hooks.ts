@@ -1,3 +1,5 @@
+'use client'
+
 import cookie from "react-cookies";
 
 export var SetLoggedInState: any = null;

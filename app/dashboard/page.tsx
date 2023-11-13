@@ -9,17 +9,37 @@ import {Chip} from "@nextui-org/chip";
 import {FiChevronsUp, FiUploadCloud} from "react-icons/fi";
 import Picture from "@/components/picture";
 import {PictureAPI} from "@/interface/pictureAPI";
+import {useState} from "react";
+import {UserAPI} from "@/interface/userAPI";
+import {getGroupPrice} from "@/config/prices";
 
 export default function Page() {
-    let used = 1050;
-    let total = 2048;
+    let [used, setUsed] = useState(0);
+    let [total, setTotal] = useState(1);
 
-    let timeLeft = 17;
-    let timeTotal = 30;
+    let [timeLeft, setTimeLift] = useState(0);
+    let [timeTotal, setTimeTotal] = useState(1);
+
+    UserAPI.getExtendedInformation().then((r) => {
+        if (r == undefined) {
+            router.push("/authenticate");
+        }
+        let user = r!;
+        let price = getGroupPrice(r!.extend!.userGroup);
+
+        setUsed(Number((user.extend!.storageUsed / 1024 / 1024).toFixed(2)));
+        setTotal(Number(price.allSpace.substring(0, price.allSpace.length - 3)) * 1024);
+        if (user.extend!.groupStartDate != undefined || user.extend!.groupEndDate != undefined) {
+            let startDate = new Date(user.extend!.groupStartDate!);
+            let endDate = new Date(user.extend!.groupEndDate!);
+            console.log(startDate);
+            console.log(endDate);
+        }
+    })
+    PictureAPI.getPicturesList().then();
 
     let router = useRouter();
 
-    PictureAPI.getPicturesList().then(() => {});
 
     return (
         <div className="space-y-5">

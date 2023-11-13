@@ -9,7 +9,7 @@ import {Message} from "@/components/message";
 import {useRouter} from "next/navigation";
 import {UserModel} from "@/interface/model/user";
 import {SetLoggedInState} from "@/interface/hooks";
-import {UserAPI} from "@/interface/user";
+import {UserAPI} from "@/interface/userAPI";
 
 type colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
 
@@ -32,9 +32,11 @@ export default function Page() {
 
     UserAPI.loginSession().then(([state, user]) => {
         if (state) {
-            router.push("/dashboard");
             let userModel: UserModel = JSON.parse(user);
             Message.message("欢迎回来, " + userModel.username);
+            // setTimeout(() => {
+                router.push("/dashboard");
+            // }, 1000);
         }
     })
 

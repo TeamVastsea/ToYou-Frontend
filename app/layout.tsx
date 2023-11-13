@@ -58,6 +58,10 @@ export default function RootLayout({children,}: {
                         {children}
                 </main>
                 <footer className="w-full flex items-center justify-center py-3">
+                    <Link href="https://beian.miit.gov.cn/" isExternal>
+                        鄂ICP备2023011709号-7
+                    </Link>
+                    <p>&nbsp;|&nbsp;</p>
                     <Link
                         href="about"
                         className="flex items-center gap-1 text-current"

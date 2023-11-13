@@ -1,11 +1,14 @@
 import cookie from "react-cookies";
 import {SERVER_URL} from "@/interface/api";
+import {UserModel} from "@/interface/model/user";
+import {Message} from "@/components/message";
 
 export class UserAPI {
     static async checkEmail(email: string): Promise<boolean> {
         //request
-        var requestOptions: RequestInit = {
+        let requestOptions: RequestInit = {
             method: 'GET',
+            credentials: 'include',
             redirect: 'follow'
         };
 
@@ -25,6 +28,7 @@ export class UserAPI {
         let requestOptions: RequestInit = {
             method: 'POST',
             body: formData,
+            credentials: 'include',
             redirect: 'follow'
         };
 
@@ -37,6 +41,7 @@ export class UserAPI {
     static async login(username: String, password: String): Promise<[boolean, string]> {
         let requestOptions: RequestInit = {
             method: 'GET',
+            // credentials: 'include',
             redirect: 'follow'
         };
 
@@ -49,24 +54,64 @@ export class UserAPI {
         return [response.ok, await response.text()]
     }
 
-    static async loginSession(): Promise<[boolean, string]> {
+    static async getExtendedInformation(): Promise<UserModel | undefined> {
         if (cookie.load("token") == null) {
-            return [false, ""];
+            Message.error("登录状态过期");
+            return undefined;
         }
-
 
         let headers = new Headers();
         headers.append("token", cookie.load("token"));
 
         let requestOptions: RequestInit = {
             method: 'GET',
+            credentials: 'include',
             redirect: 'follow',
             headers: headers
         };
 
-        let response = await fetch(SERVER_URL + "/user", requestOptions);
-        cookie.save("token", response.headers.get("token")!, {});
+        let response = await fetch(SERVER_URL + "/user?extended=true", requestOptions);
 
-        return [response.ok, await response.text()];
+        if (response.headers.get("token") != null) {
+            cookie.save("token", response.headers.get("token")!, {});
+        }
+
+        let text = await response.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            Message.error("登录错误：" + e + ", " + text);
+            cookie.remove("token");
+            return undefined;
+        }
+    }
+
+    static async loginSession(): Promise<[boolean, string]> {
+        if (cookie.load("token") == null) {
+            return [false, ""];
+        }
+
+        let headers = new Headers();
+        headers.append("token", cookie.load("token"));
+
+        let requestOptions: RequestInit = {
+            method: 'GET',
+            credentials: 'include',
+            redirect: 'follow',
+            headers: headers
+        };
+
+        try {
+
+            let response = await fetch(SERVER_URL + "/user", requestOptions);
+
+            if (response.headers.get("token") != null) {
+                cookie.save("token", response.headers.get("token")!, {});
+            }
+
+            return [response.ok, await response!.text()];
+        } catch (e) {
+            return [false, "登录错误：" + e];
+        }
     }
 }

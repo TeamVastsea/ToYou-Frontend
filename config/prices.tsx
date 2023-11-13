@@ -31,3 +31,15 @@ export const priceProfessional: PriceInfo = {
     allSpace: "200 GB",
     price: 150, // 0.7 1250
 }
+
+export function getGroupPrice(name: string): PriceInfo {
+    let lower = name.toLowerCase();
+    switch (lower) {
+        case "default":
+        case "free": return priceFree;
+        case "started": return priceStarted;
+        case "advanced": return priceAdvanced;
+        case "professional": return priceProfessional;
+        default: return priceFree;
+    }
+}

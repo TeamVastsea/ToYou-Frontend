@@ -1,16 +1,23 @@
 import {SERVER_URL} from "@/interface/api";
 import {base} from "next/dist/build/webpack/config/blocks/base";
 import {Message} from "@/components/message";
+import cookie from "react-cookies";
 
 export class PictureAPI {
     static async uploadFile(file: File) {
+        let headers = new Headers();
+        headers.append("token", cookie.load("token"));
+
         let formData = new FormData();
         formData.append("file", file);
+        formData.append("fileName", file.name)
 
         let requestOptions: RequestInit = {
             method: 'POST',
             body: formData,
-            redirect: 'follow'
+            credentials: 'include',
+            redirect: 'follow',
+            headers: headers
         };
 
         let response = await fetch(SERVER_URL + "/picture?name=" + file.name, requestOptions);
@@ -22,9 +29,14 @@ export class PictureAPI {
     }
 
     static async getPicturesList() {
+        let headers = new Headers();
+        headers.append("token", cookie.load("token"));
+
         let requestOptions: RequestInit = {
             method: 'GET',
-            redirect: 'follow'
+            credentials: 'include',
+            redirect: 'follow',
+            headers: headers
         };
 
         let result = await fetch(SERVER_URL + "/picture", requestOptions);
