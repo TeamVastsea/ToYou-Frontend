@@ -1,25 +1,26 @@
 import React, {useState} from "react";
-import {Button, Card, CardFooter, Divider, Dropdown, DropdownItem, Image, useDisclosure} from "@nextui-org/react";
+import {Button, Card, CardFooter, Dropdown, DropdownItem, Image, useDisclosure} from "@nextui-org/react";
 import copy from "copy-to-clipboard";
 import {CheckLinearIcon} from "@nextui-org/shared-icons";
 import {Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@nextui-org/modal";
 import {DropdownMenu, DropdownTrigger} from "@nextui-org/dropdown";
 import {Message} from "@/components/message";
-import {FiShare} from "react-icons/fi";
+import {FiClipboard, FiShare} from "react-icons/fi";
 import {Input} from "@nextui-org/input";
-import { Snippet } from "@nextui-org/snippet";
 
 export default function Picture(props: PictureProps) {
     let [isChecked, setIsChecked] = useState(false);
+    let [isModelChecked, setIsModelChecked] = useState(false);
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const descriptionOpen = useDisclosure();
     let [name, setName] = useState(props.name);
     let [shareMode, setShareMode] = useState(props.pubicMode);
     let timeout: NodeJS.Timeout | null = null;
-    let [link, setShareLink] = useState(<Button onClick={generateShareLink}>生成分享链接</Button>);
+    let modelTimeout: NodeJS.Timeout | null = null;
+    let [link, setShareLink] = useState("");
 
     function generateShareLink() {
-        setShareLink(<span className="max-w-[250px]">{"ituyou.cc/pinture/share/23338"}</span>);
+        setShareLink("ituyou.cc/pinture/share/23338");
         Message.success("已生成链接")
     }
 
@@ -112,17 +113,47 @@ export default function Picture(props: PictureProps) {
                                         >
                                             <DropdownItem key="watermark">公开水印版本</DropdownItem>
                                             <DropdownItem key="compressed">公开压缩版本</DropdownItem>
-                                            <DropdownItem key="original" description="需要高级用户">公开原图</DropdownItem>
+                                            <DropdownItem key="original"
+                                                          description="需要高级用户">公开原图</DropdownItem>
                                         </DropdownMenu>
                                     </Dropdown>
-                                    <Snippet color="default" symbol="" className="max-w-[310px]">{link}</Snippet>
+                                    <div>
+                                        {link == "" ?
+                                            <Button onClick={generateShareLink}>生成分享链接</Button>
+                                            :
+                                            <Input value={link} style={{width: 247}} endContent={
+                                                <Button isIconOnly style={{position: "relative", left: 7}} size="sm"
+                                                        onClick={() => {
+                                                            copy(link);
+
+                                                            setIsModelChecked(true);
+
+                                                            if (modelTimeout != null) {
+                                                                clearTimeout(modelTimeout);
+                                                                modelTimeout = null;
+                                                            }
+
+                                                            modelTimeout = setTimeout(() => {
+                                                                setIsModelChecked(false);
+                                                                timeout = null;
+                                                            }, 1000);
+                                                        }}>
+                                                    {isModelChecked ? <CheckLinearIcon/> : <FiClipboard/>}
+                                                </Button>}>
+                                            </Input>}
+                                    </div>
                                 </p>
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="danger" variant="light" onPress={onClose}>
+                                <Button color="danger" variant="light" onPress={() => {
+                                    
+                                }}>
                                     取消
                                 </Button>
-                                <Button color="primary" onPress={onClose}>
+                                <Button color="primary" onPress={() => {
+                                    Message.success("已保存");
+                                    onClose();
+                                }}>
                                     保存
                                 </Button>
                             </ModalFooter>
