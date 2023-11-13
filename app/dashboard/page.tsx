@@ -19,6 +19,8 @@ export default function Page() {
 
     let router = useRouter();
 
+    PictureAPI.getPicturesList().then(() => {});
+
     return (
         <div className="space-y-5">
             <Card className="max-w-4xl">
@@ -47,7 +49,6 @@ export default function Page() {
                             </a>
                         } onChange={(e) => {
                             let files = e.target.files!;
-                            console.log(e.target.files);
                             let file = files[0];
                             PictureAPI.uploadFile(file).then(() => {});
                         }}></Uploader>

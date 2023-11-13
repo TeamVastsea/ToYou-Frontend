@@ -1,5 +1,6 @@
 import {SERVER_URL} from "@/interface/api";
 import {base} from "next/dist/build/webpack/config/blocks/base";
+import {Message} from "@/components/message";
 
 export class PictureAPI {
     static async uploadFile(file: File) {
@@ -12,17 +13,21 @@ export class PictureAPI {
             redirect: 'follow'
         };
 
-        fetch(SERVER_URL + "/picture?name=" + file.name, requestOptions)
-            .then(response => response.text())
-            .then(result => console.log(result))
-            .catch(error => console.log('error', error));
+        let response = await fetch(SERVER_URL + "/picture?name=" + file.name, requestOptions);
+        if (!response.ok) {
+            Message.error("上传失败：" + await response.text());
+        } else {
+            Message.success("上传成功");
+        }
     }
-}
-async function getBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-        let reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = (error) => reject(error);
-    })
+
+    static async getPicturesList() {
+        let requestOptions: RequestInit = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        let result = await fetch(SERVER_URL + "/picture", requestOptions);
+        console.log(result);
+    }
 }

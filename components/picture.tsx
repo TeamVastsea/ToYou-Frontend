@@ -20,7 +20,7 @@ export default function Picture(props: PictureProps) {
     let [link, setShareLink] = useState("");
 
     function generateShareLink() {
-        setShareLink("ituyou.cc/pinture/share/23338");
+        setShareLink("https://ituyou.cc/pinture/share/089DD440-C94C-DD70-8DAB-B1FC4A5BE095");
         Message.success("已生成链接")
     }
 
@@ -32,7 +32,7 @@ export default function Picture(props: PictureProps) {
                 radius="lg"
                 className="border-none items-center"
                 isPressable
-                onPress={(e) => {
+                onPress={() => {
                     descriptionOpen.onOpen();
                 }}
             >
@@ -119,9 +119,8 @@ export default function Picture(props: PictureProps) {
                                     </Dropdown>
                                     <div>
                                         {link == "" ?
-                                            <Button onClick={generateShareLink}>生成分享链接</Button>
-                                            :
-                                            <Input value={link} style={{width: 247}} endContent={
+                                            <Button onClick={generateShareLink}>生成分享链接</Button> :
+                                            <Input value={link} style={{width: 260}} variant={"underlined"} endContent={
                                                 <Button isIconOnly style={{position: "relative", left: 7}} size="sm"
                                                         onClick={() => {
                                                             copy(link);
@@ -145,9 +144,7 @@ export default function Picture(props: PictureProps) {
                                 </p>
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="danger" variant="light" onPress={() => {
-                                    
-                                }}>
+                                <Button color="danger" variant="light" onPress={onClose}>
                                     取消
                                 </Button>
                                 <Button color="primary" onPress={() => {
