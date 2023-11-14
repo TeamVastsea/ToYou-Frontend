@@ -34,9 +34,7 @@ export default function Page() {
         if (state) {
             let userModel: UserModel = JSON.parse(user);
             Message.message("欢迎回来, " + userModel.username);
-            // setTimeout(() => {
-                router.push("/dashboard");
-            // }, 1000);
+            router.push("/dashboard");
         }
     })
 

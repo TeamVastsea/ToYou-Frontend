@@ -2,6 +2,7 @@ import cookie from "react-cookies";
 import {SERVER_URL} from "@/interface/api";
 import {UserModel} from "@/interface/model/user";
 import {Message} from "@/components/message";
+import {SetLoggedInState} from "@/interface/hooks";
 
 export class UserAPI {
     static async checkEmail(email: string): Promise<boolean> {
@@ -82,6 +83,7 @@ export class UserAPI {
         } catch (e) {
             Message.error("登录错误：" + e + ", " + text);
             cookie.remove("token");
+            SetLoggedInState(false);
             return undefined;
         }
     }
@@ -111,6 +113,9 @@ export class UserAPI {
 
             return [response.ok, await response!.text()];
         } catch (e) {
+            Message.error("登录错误：" + e);
+            cookie.remove("token");
+            SetLoggedInState(false);
             return [false, "登录错误：" + e];
         }
     }

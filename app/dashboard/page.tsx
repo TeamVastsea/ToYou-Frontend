@@ -17,29 +17,37 @@ export default function Page() {
     let [used, setUsed] = useState(0);
     let [total, setTotal] = useState(1);
 
-    let [timeLeft, setTimeLift] = useState(0);
-    let [timeTotal, setTimeTotal] = useState(1);
+    let [timeLeft, setTimeLeft] = useState(100);
+    let [timeDescription, setTimeDescription] = useState("无限时间");
 
-    UserAPI.getExtendedInformation().then((r) => {
-        if (r == undefined) {
-            router.push("/authenticate");
-        }
-        let user = r!;
-        let price = getGroupPrice(r!.extend!.userGroup);
 
-        setUsed(Number((user.extend!.storageUsed / 1024 / 1024).toFixed(2)));
-        setTotal(Number(price.allSpace.substring(0, price.allSpace.length - 3)) * 1024);
-        if (user.extend!.groupStartDate != undefined || user.extend!.groupEndDate != undefined) {
-            let startDate = new Date(user.extend!.groupStartDate!);
-            let endDate = new Date(user.extend!.groupEndDate!);
-            console.log(startDate);
-            console.log(endDate);
-        }
-    })
-    PictureAPI.getPicturesList().then();
+    if (used == 0 && total == 1) {
+        UserAPI.getExtendedInformation().then((r) => {
+            if (r == undefined) {
+                router.push("/authenticate");
+            }
+            let user = r!;
+            let price = getGroupPrice(r!.extend!.userGroup);
+
+            setUsed(Number((user.extend!.storageUsed / 1024 / 1024).toFixed(2)));
+            setTotal(Number(price.allSpace.substring(0, price.allSpace.length - 3)) * 1024);
+            if (user.extend!.groupStartDate != undefined || user.extend!.groupEndDate != undefined) {
+                if (user.extend!.groupStartDate != 0 && user.extend!.groupEndDate != 0) {
+                    let startDate = user.extend!.groupStartDate!;
+                    let endDate = user.extend!.groupEndDate!;
+                    let now = new Date().getTime() / 1000;
+                    let validDate = new Date(endDate * 1000);
+
+                    setTimeLeft(100 - (now - startDate) / (endDate - startDate) * 100);
+                    setTimeDescription(validDate.toLocaleDateString() + " 过期");
+                }
+            }
+        })
+        PictureAPI.getPicturesList().then();
+    }
+
 
     let router = useRouter();
-
 
     return (
         <div className="space-y-5">
@@ -54,9 +62,8 @@ export default function Page() {
 
                     <div>
                         <Progress style={{width: 400}} label={"方案剩余时间"} value={timeLeft} className="max-w-md"
-                                  maxValue={timeTotal}
                                   formatOptions={{style: "percent"}} isStriped color="secondary"/>
-                        {timeLeft} 天 / {timeTotal} 天
+                        {timeDescription}
                     </div>
                 </CardBody>
                 <Divider/>
@@ -70,7 +77,8 @@ export default function Page() {
                         } onChange={(e) => {
                             let files = e.target.files!;
                             let file = files[0];
-                            PictureAPI.uploadFile(file).then(() => {});
+                            PictureAPI.uploadFile(file).then(() => {
+                            });
                         }}></Uploader>
 
                         <Button className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white" onClick={() => {
