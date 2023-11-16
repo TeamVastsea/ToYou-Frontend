@@ -1,7 +1,7 @@
 import {SERVER_URL} from "@/interface/api";
-import {base} from "next/dist/build/webpack/config/blocks/base";
 import {Message} from "@/components/message";
 import cookie from "react-cookies";
+import {PictureList} from "@/interface/model/picture";
 
 export class PictureAPI {
     static async uploadFile(file: File) {
@@ -40,6 +40,13 @@ export class PictureAPI {
         };
 
         let result = await fetch(SERVER_URL + "/picture", requestOptions);
-        console.log(result);
+        if (!result.ok) {
+            Message.error("登录状态失效");
+            cookie.remove('token');
+            return;
+        }
+        let list: PictureList = JSON.parse(await result.text());
+        console.log(list);
+        return list;
     }
 }

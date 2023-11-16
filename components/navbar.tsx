@@ -19,7 +19,7 @@ import NextLink from "next/link";
 import clsx from "clsx";
 
 import {ThemeSwitch} from "@/components/theme-switch";
-import {GithubIcon, Logo, LogoText,} from "@/components/icons";
+import {GithubIcon, LogoText,} from "@/components/icons";
 import {useRouter} from "next/navigation";
 import {useState} from "react";
 import cookie from "react-cookies";

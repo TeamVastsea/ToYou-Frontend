@@ -7,6 +7,7 @@ import {DropdownMenu, DropdownTrigger} from "@nextui-org/dropdown";
 import {Message} from "@/components/message";
 import {FiClipboard, FiShare} from "react-icons/fi";
 import {Input} from "@nextui-org/input";
+import cookie from "react-cookies";
 
 export default function Picture(props: PictureProps) {
     let [isChecked, setIsChecked] = useState(false);
@@ -14,7 +15,7 @@ export default function Picture(props: PictureProps) {
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
     const descriptionOpen = useDisclosure();
     let [name, setName] = useState(props.name);
-    let [shareMode, setShareMode] = useState(props.pubicMode);
+    let [shareMode, setShareMode] = useState(props.pubicMode == null ? "none" : props.pubicMode!);
     let timeout: NodeJS.Timeout | null = null;
     let modelTimeout: NodeJS.Timeout | null = null;
     let [link, setShareLink] = useState("");
@@ -23,6 +24,8 @@ export default function Picture(props: PictureProps) {
         setShareLink("https://ituyou.cc/pinture/share/089DD440-C94C-DD70-8DAB-B1FC4A5BE095");
         Message.success("已生成链接")
     }
+
+    console.log(cookie.load("token"));
 
     // @ts-ignore
     return (
@@ -35,17 +38,19 @@ export default function Picture(props: PictureProps) {
                 onPress={() => {
                     descriptionOpen.onOpen();
                 }}
+                style={{width: 450}}
             >
                 <Image
                     alt={props.name}
                     className="object-cover"
+                    width={450}
                     height={200}
                     src={props.url}
                     isZoomed
                 />
                 <CardFooter
                     className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-auto shadow-small ml-1 z-10 space-x-2">
-                    <p className="text-tiny font-mono text-white/80">{props.name}</p>&nbsp;
+                    <p className="text-tiny font-mono ">{props.name}</p>&nbsp;
                     <Button isIconOnly className="text-white bg-black/20 justify-center" variant="light" size="sm"
                             onClick={() => {
                                 copy(props.url);
@@ -81,6 +86,7 @@ export default function Picture(props: PictureProps) {
                                     <Image
                                         alt={props.name}
                                         className="object-cover"
+                                        width={450}
                                         height={200}
                                         src={props.url}
                                     />
@@ -95,7 +101,7 @@ export default function Picture(props: PictureProps) {
                                                 variant="bordered"
                                                 className="capitalize"
                                             >
-                                                {shareMode == "watermark" ? "水印" : shareMode == "compressed" ? "压缩" : "原图"}
+                                                {shareMode == "watermark" ? "水印" : shareMode == "compressed" ? "压缩" : shareMode == "none" ? "不公开" : "原图"}
                                             </Button>
                                         </DropdownTrigger>
                                         <DropdownMenu
@@ -107,10 +113,12 @@ export default function Picture(props: PictureProps) {
                                             disabledKeys={["original"]}
                                             onAction={(key) => {
                                                 setShareMode(key.toString());
-                                                let description = key == "watermark" ? "水印" : key == "compressed" ? "压缩" : "原图";
+                                                console.log(key);
+                                                let description = key == "watermark" ? "水印" : key == "compressed" ? "压缩" : key == "none" ? "不公开" : "原图";
                                                 Message.success("已经设置公开等级为：" + description);
                                             }}
                                         >
+                                            <DropdownItem key="none">不公开</DropdownItem>
                                             <DropdownItem key="watermark">公开水印版本</DropdownItem>
                                             <DropdownItem key="compressed">公开压缩版本</DropdownItem>
                                             <DropdownItem key="original"
@@ -119,7 +127,7 @@ export default function Picture(props: PictureProps) {
                                     </Dropdown>
                                     <div>
                                         {link == "" ?
-                                            <Button onClick={generateShareLink}>生成分享链接</Button> :
+                                            <Button disabled={shareMode == "none"} color={shareMode == "none" ? "default" : "primary"} onClick={generateShareLink}>生成分享链接</Button> :
                                             <Input value={link} style={{width: 260}} variant={"underlined"} endContent={
                                                 <Button isIconOnly style={{position: "relative", left: 7}} size="sm"
                                                         onClick={() => {

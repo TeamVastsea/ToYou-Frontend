@@ -1,6 +1,6 @@
 'use client'
 
-import {Card, CardBody, CardFooter, Spinner} from "@nextui-org/react";
+import {Card, CardBody, CardFooter} from "@nextui-org/react";
 import {Button} from "@nextui-org/button";
 import React, {ReactNode, useState} from "react";
 import {Input} from "@nextui-org/input";
@@ -118,7 +118,7 @@ export default function Page() {
                     </div>
                 </CardBody>
                 <CardFooter>
-                    <Button style={{position: "relative", left: 7}} color={buttonColor} disabled={buttonDisable}
+                    <Button style={{position: "relative", left: 7}} disabled={buttonDisable} color={buttonColor} isLoading={isLoading}
                             onClick={
                                 () => {
                                     if (state == "email") {
@@ -127,10 +127,8 @@ export default function Page() {
                                             return;
                                         }
                                         setLoading(true);
-                                        setButtonDisable(true);
                                         UserAPI.checkEmail(email).then(r => {
                                             setState(r ? "login" : "register")
-                                            setButtonDisable(false);
                                             setLoading(false);
                                             if (!r) {
                                                 Message.message("验证码已发送")
@@ -139,7 +137,6 @@ export default function Page() {
                                     }
                                     else if (state == "register") {
                                         setLoading(true);
-                                        setButtonDisable(true);
                                         if (password != confirmPassword) {
                                             Message.error("密码输入不一致")
                                         }
@@ -155,11 +152,9 @@ export default function Page() {
                                                 Message.error(message);
                                             }
                                             setLoading(false);
-                                            setButtonDisable(false);
                                         })
                                     } else {//login
                                         setLoading(true);
-                                        setButtonDisable(true);
 
                                         UserAPI.login(email, password).then((r) => {
                                             let [state, text] = r;
@@ -178,7 +173,7 @@ export default function Page() {
                                 }
                             }>
                         {isLoading ?
-                            <div className="justify-center flex space-x-3"><Spinner color="default" size="sm"/><p>加载中...</p></div> : state == "email" ? "下一步" : state == "login" ? "登录" : "注册"}
+                            "加载中..." : state == "email" ? "下一步" : state == "login" ? "登录" : "注册"}
                     </Button>
                 </CardFooter>
             </Card>

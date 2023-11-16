@@ -12,6 +12,9 @@ import {PictureAPI} from "@/interface/pictureAPI";
 import {useState} from "react";
 import {UserAPI} from "@/interface/userAPI";
 import {getGroupPrice} from "@/config/prices";
+import {PictureList} from "@/interface/model/picture";
+import {SERVER_URL} from "@/interface/api";
+import cookie from "react-cookies";
 
 export default function Page() {
     let [used, setUsed] = useState(0);
@@ -19,9 +22,9 @@ export default function Page() {
 
     let [timeLeft, setTimeLeft] = useState(100);
     let [timeDescription, setTimeDescription] = useState("无限时间");
+    let [pictures, setPictures] = useState<PictureList>();
 
-
-    if (used == 0 && total == 1) {
+    function updateInfo() {
         UserAPI.getExtendedInformation().then((r) => {
             if (r == undefined) {
                 router.push("/authenticate");
@@ -43,7 +46,13 @@ export default function Page() {
                 }
             }
         })
-        PictureAPI.getPicturesList().then();
+        PictureAPI.getPicturesList().then((r) => {
+            setPictures(r);
+        });
+    }
+
+    if (used == 0 && total == 1) {
+        updateInfo();
     }
 
 
@@ -78,6 +87,7 @@ export default function Page() {
                             let files = e.target.files!;
                             let file = files[0];
                             PictureAPI.uploadFile(file).then(() => {
+                                updateInfo();
                             });
                         }}></Uploader>
 
@@ -105,8 +115,10 @@ export default function Page() {
                     </a>
                 </CardFooter>
             </Card>
-
-            <Picture url="https://t7.baidu.com/it/u=2961459243,2146986594&fm=193&f=GIF" name="雪景.png"/>
+            {pictures?.records == null ? <a>请上传</a> : pictures!.records.map(picture => <Picture
+                url={SERVER_URL + "/picture/preview?shareMode=2&id=" + picture.id.toString() + "&token=" + cookie.load("token")}
+                name={picture.fileName}/>)}
+            {/*<Picture url="https://t7.baidu.com/it/u=2961459243,2146986594&fm=193&f=GIF" name="雪景.png"/>*/}
         </div>
     )
 }

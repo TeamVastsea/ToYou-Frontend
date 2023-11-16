@@ -4,8 +4,23 @@ import {Card, CardBody, CardFooter, CardHeader, Divider} from "@nextui-org/react
 import {Button} from "@nextui-org/button";
 import {Spacer} from "@nextui-org/spacer";
 import {ReactNode} from "react";
+import {IsLoggedIn} from "@/interface/hooks";
+import {useRouter} from "next/navigation";
 
 export const Price = (price: PriceProps) => {
+    const router = useRouter();
+    function onStart() {
+        if (IsLoggedIn) {
+            if (price.price.price == 0) {
+                router.push("/dashboard");
+            } else {
+                router.push("/buy");
+            }
+        } else {
+            router.push("/authenticate");
+        }
+    }
+
 
     return (
         <>
@@ -22,7 +37,7 @@ export const Price = (price: PriceProps) => {
                 </CardBody>
                 <Divider/>
                 <CardFooter>
-                    <Button variant="ghost" color="primary">开始使用</Button>
+                    <Button variant="ghost" color="primary" onClick={onStart}>开始使用</Button>
                     <Spacer style={{width: 20}}/>
                     <p>{price.price.price} 元/月</p>
                     <Spacer style={{width: 20}}/>
@@ -38,7 +53,8 @@ export type PriceInfo = {
     name: ReactNode,
     singleFile: string,
     allSpace: string,
-    price: number
+    price: number,
+    plainName: string
 }
 
 type PriceProps = {
