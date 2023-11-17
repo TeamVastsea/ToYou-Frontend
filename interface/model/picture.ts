@@ -22,3 +22,15 @@ export interface PictureList {
     countId?: string;
     pages: number;
 }
+
+export interface ShareResponse {
+    sid: string;
+    id: number;
+    password?: any;
+    downloads?: any;
+    shareMode: number;
+    expiry: number;
+    createTime?: any;
+    updateTime?: any;
+    available?: any;
+}

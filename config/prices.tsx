@@ -7,6 +7,7 @@ export const priceFree: PriceInfo = {
     singleFile: "50 MB",
     allSpace: "2 GB",
     price: 0,
+    disabled: ["compressed", "original", "none"]
 }
 
 export const priceStarted: PriceInfo = {
@@ -15,6 +16,7 @@ export const priceStarted: PriceInfo = {
     singleFile: "50 MB",
     allSpace: "10 GB",
     price: 30, // 0.9 320
+    disabled: ["original", "none"]
 }
 
 export const priceAdvanced: PriceInfo = {
@@ -26,6 +28,7 @@ export const priceAdvanced: PriceInfo = {
     singleFile: "100 MB",
     allSpace: "50 GB",
     price: 50, // 0.8 480
+    disabled: ["original", "none"]
 }
 
 export const priceProfessional: PriceInfo = {
@@ -34,6 +37,7 @@ export const priceProfessional: PriceInfo = {
     singleFile: "不限",
     allSpace: "200 GB",
     price: 150, // 0.7 1250
+    disabled: ["none"]
 }
 
 export function getGroupPrice(name: string): PriceInfo {

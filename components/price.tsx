@@ -54,7 +54,8 @@ export type PriceInfo = {
     singleFile: string,
     allSpace: string,
     price: number,
-    plainName: string
+    plainName: string,
+    disabled: string[]
 }
 
 type PriceProps = {

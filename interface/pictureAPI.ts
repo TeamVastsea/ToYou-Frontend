@@ -1,7 +1,7 @@
 import {SERVER_URL} from "@/interface/api";
 import {Message} from "@/components/message";
 import cookie from "react-cookies";
-import {PictureList} from "@/interface/model/picture";
+import {PictureList, ShareResponse} from "@/interface/model/picture";
 
 export class PictureAPI {
     static async uploadFile(file: File) {
@@ -46,7 +46,25 @@ export class PictureAPI {
             return;
         }
         let list: PictureList = JSON.parse(await result.text());
+        console.log(cookie.load("token"));
         console.log(list);
         return list;
+    }
+
+    static async sharePicture(pid: string, sharMode?: number, password?: string): Promise<ShareResponse> {
+        let myHeaders = new Headers();
+        myHeaders.append("token", cookie.load("token"));
+
+        let requestOptions: RequestInit = {
+            method: 'POST',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        console.log(sharMode == undefined ? 1 : sharMode);
+
+        let res = await fetch(SERVER_URL + "/picture/share/" + pid + "?shareMode=" + (sharMode == undefined ? 1 : sharMode) + (password == null ? "" : "&password=" + password), requestOptions);
+
+        return JSON.parse(await res.text());
     }
 }

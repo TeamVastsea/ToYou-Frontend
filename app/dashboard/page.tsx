@@ -15,6 +15,8 @@ import {getGroupPrice} from "@/config/prices";
 import {PictureList} from "@/interface/model/picture";
 import {SERVER_URL} from "@/interface/api";
 import cookie from "react-cookies";
+import {userInfo} from "os";
+import {PriceInfo} from "@/components/price";
 
 export default function Page() {
     let [used, setUsed] = useState(0);
@@ -23,6 +25,7 @@ export default function Page() {
     let [timeLeft, setTimeLeft] = useState(100);
     let [timeDescription, setTimeDescription] = useState("无限时间");
     let [pictures, setPictures] = useState<PictureList>();
+    let [group, setGroup] = useState<PriceInfo>()
 
     function updateInfo() {
         UserAPI.getExtendedInformation().then((r) => {
@@ -34,6 +37,7 @@ export default function Page() {
 
             setUsed(Number((user.extend!.storageUsed / 1024 / 1024).toFixed(2)));
             setTotal(Number(price.allSpace.substring(0, price.allSpace.length - 3)) * 1024);
+            setGroup(price);
             if (user.extend!.groupStartDate != undefined || user.extend!.groupEndDate != undefined) {
                 if (user.extend!.groupStartDate != 0 && user.extend!.groupEndDate != 0) {
                     let startDate = user.extend!.groupStartDate!;
@@ -115,9 +119,10 @@ export default function Page() {
                     </a>
                 </CardFooter>
             </Card>
+            {/* eslint-disable-next-line react/jsx-key */}
             {pictures?.records == null ? <a>请上传</a> : pictures!.records.map(picture => <Picture
                 url={SERVER_URL + "/picture/preview?shareMode=2&id=" + picture.id.toString() + "&token=" + cookie.load("token")}
-                name={picture.fileName}/>)}
+                name={picture.fileName} pid={picture.id.toString()} group={group}/>)}
             {/*<Picture url="https://t7.baidu.com/it/u=2961459243,2146986594&fm=193&f=GIF" name="雪景.png"/>*/}
         </div>
     )

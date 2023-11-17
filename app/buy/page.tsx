@@ -73,7 +73,7 @@ export default function BuyPage() {
                 <CardHeader>支付</CardHeader>
                 <CardBody>
                     <p>请扫描下方的二维码进行支付，支付成功后请点击下方的刷新按钮或直接前往用户中心。</p>
-                    <p>将立即进行支付，恕不退款。</p>
+                    <p>将立即进行收费，恕不退款。</p>
                 </CardBody>
                 <Divider/>
                 <CardFooter className={"space-x-3"}>
