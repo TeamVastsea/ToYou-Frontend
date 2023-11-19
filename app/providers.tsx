@@ -36,10 +36,7 @@ export function AuthProvider({children, whiteList}: AuthProvider) {
             redirect('/authenticate');
         }
     }, [setToken,value, whiteList, pathName])
-
-    // if (!value && !whiteList.includes(pathName)){
-    //     return null;
-    // }
+    
     return (
         <>
             {children}
