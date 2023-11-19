@@ -67,21 +67,21 @@ export default function Page() {
             <Card className="max-w-4xl">
                 <CardBody className="space-y-5">
                     <div>
-                        <Progress style={{width: 400}} label={"空间已用"} value={used} className="max-w-md"
+                        <Progress label={"空间已用"} value={used} className="max-w-md w-full"
                                   maxValue={total}
                                   showValueLabel={true} formatOptions={{style: "percent"}}/>
                         {used} MB / {total} MB
                     </div>
 
                     <div>
-                        <Progress style={{width: 400}} label={"方案剩余时间"} value={timeLeft} className="max-w-md"
+                        <Progress label={"方案剩余时间"} value={timeLeft} className="max-w-md w-full"
                                   formatOptions={{style: "percent"}} isStriped color="secondary"/>
                         {timeDescription}
                     </div>
                 </CardBody>
                 <Divider/>
                 <CardFooter>
-                    <a className="flex space-x-5">
+                    <a className="flex flex-wrap justify-center gap-5">
                         <Uploader label={
                             <a className="flex space-x-2 items-center">
                                 <FiUploadCloud/>
@@ -109,7 +109,7 @@ export default function Page() {
                             <Chip style={{position: "relative", left: 5}}
                                   variant="shadow"
                                   classNames={{
-                                      base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30",
+                                      base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30 flex-shrink-0",
                                       content: "drop-shadow shadow-black text-white",
                                   }}
                             >
