@@ -9,7 +9,7 @@ import {Chip} from "@nextui-org/chip";
 import {FiChevronsUp, FiUploadCloud} from "react-icons/fi";
 import Picture from "@/components/picture";
 import {PictureAPI} from "@/interface/pictureAPI";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {UserAPI} from "@/interface/userAPI";
 import {getGroupPrice} from "@/config/prices";
 import {PictureList} from "@/interface/model/picture";
@@ -26,6 +26,7 @@ export default function Page() {
     let [timeDescription, setTimeDescription] = useState("无限时间");
     let [pictures, setPictures] = useState<PictureList>();
     let [group, setGroup] = useState<PriceInfo>()
+    const router = useRouter();
 
     function updateInfo() {
         UserAPI.getExtendedInformation().then((r) => {
@@ -55,12 +56,11 @@ export default function Page() {
         });
     }
 
-    if (used == 0 && total == 1) {
-        updateInfo();
-    }
-
-
-    let router = useRouter();
+    useEffect(()=>{
+        if (used == 0 && total == 1) {
+            updateInfo();
+        }
+    }, [])
 
     return (
         <div className="space-y-5">

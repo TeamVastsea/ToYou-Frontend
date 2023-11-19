@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import {Metadata} from "next";
 import {siteConfig} from "@/config/site";
 import {fontSans} from "@/config/fonts";
-import {Providers} from "./providers";
+import {AuthProvider, Providers} from "./providers";
 import {Navbar} from "@/components/navbar";
 import {Link} from "@nextui-org/link";
 import clsx from "clsx";
@@ -42,37 +42,37 @@ export default function RootLayout({children,}: {
                 fontSans.variable
             )}
         >
-        <Providers themeProps={{attribute: "class", defaultTheme: "dark"}}>
-            <div className="relative flex flex-col h-screen">
-                <Navbar/>
-                <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-                    <Toaster toastOptions={{
-                        className: '',
-                        duration: 5000,
-                        style: {
-                            background: rgba(0, 0, 0, 0),
-                            color: rgba(0, 0, 0, 0),
-                            borderStyle: 'none',
-                            boxShadow: 'none'
-                        },}} gutter={-15}/>
-                        {children}
-                </main>
-                <footer className="w-full flex items-center justify-center py-3">
-                    <Link href="https://beian.miit.gov.cn/" isExternal>
-                        鄂ICP备2023011709号-7
-                    </Link>
-                    <p>&nbsp;|&nbsp;</p>
-                    <Link
-                        href="about"
-                        className="flex items-center gap-1 text-current"
-                    >
-                        <span className="text-default-600">Powered by</span>
-                        <p className="text-primary">Team Vastsea</p>
-                        <span className="text-default-600">With ❤</span>
-                    </Link>
-                </footer>
-            </div>
-        </Providers>
+            <Providers themeProps={{attribute: "class", defaultTheme: "dark"}}>
+                <div className="relative flex flex-col h-screen">
+                    <Navbar/>
+                    <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+                        <Toaster toastOptions={{
+                            className: '',
+                            duration: 5000,
+                            style: {
+                                background: rgba(0, 0, 0, 0),
+                                color: rgba(0, 0, 0, 0),
+                                borderStyle: 'none',
+                                boxShadow: 'none'
+                            },}} gutter={-15}/>
+                            {children}
+                    </main>
+                    <footer className="w-full flex items-center justify-center py-3">
+                        <Link href="https://beian.miit.gov.cn/" isExternal>
+                            鄂ICP备2023011709号-7
+                        </Link>
+                        <p>&nbsp;|&nbsp;</p>
+                        <Link
+                            href="about"
+                            className="flex items-center gap-1 text-current"
+                        >
+                            <span className="text-default-600">Powered by</span>
+                            <p className="text-primary">Team Vastsea</p>
+                            <span className="text-default-600">With ❤</span>
+                        </Link>
+                    </footer>
+                </div>
+            </Providers>
         </body>
         </html>
     );

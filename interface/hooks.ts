@@ -2,8 +2,8 @@
 
 import cookie from "react-cookies";
 
-export var SetLoggedInState: any = null;
-export var IsLoggedIn: boolean = cookie.load("token") != undefined;
+export let SetLoggedInState: any = null;
+export let IsLoggedIn = cookie.load("token") != undefined;
 
 export function UpdateSetLoggedInHook(hook: any) {
     SetLoggedInState = (loggedIn: boolean) => {
