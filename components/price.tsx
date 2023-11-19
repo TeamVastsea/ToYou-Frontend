@@ -10,14 +10,10 @@ import {useRouter} from "next/navigation";
 export const Price = (price: PriceProps) => {
     const router = useRouter();
     function onStart() {
-        if (IsLoggedIn) {
-            if (price.price.price == 0) {
-                router.push("/dashboard");
-            } else {
-                router.push("/buy");
-            }
+        if (price.price.price == 0) {
+            router.push("/dashboard");
         } else {
-            router.push("/authenticate");
+            router.push("/buy");
         }
     }
 

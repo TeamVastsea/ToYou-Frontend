@@ -7,6 +7,8 @@ import {ThemeProvider as NextThemesProvider} from "next-themes";
 import {ThemeProviderProps} from "next-themes/dist/types";
 import { IsLoggedIn, UpdateSetLoggedInHook } from "@/interface/hooks";
 import { redirect, useRouter, usePathname } from "next/navigation";
+import { getDefaultStore, useAtom } from "jotai";
+import { token } from "@/store";
 
 export interface ProvidersProps {
     children: React.ReactNode;
@@ -27,14 +29,17 @@ export function Providers({children, themeProps}: ProvidersProps) {
 }
 export function AuthProvider({children, whiteList}: AuthProvider) {
     const pathName = usePathname();
+    const [value, setToken] = useAtom(token);
+
     useEffect(()=>{
-        if (!whiteList.includes(pathName) && !IsLoggedIn){
-            redirect('/authenticate')
+        if (!whiteList.includes(pathName) && !value){
+            redirect('/authenticate');
         }
-    }, [pathName, whiteList])
-    if (!IsLoggedIn && !whiteList.includes(pathName)){
-        return null;
-    }
+    }, [setToken,value, whiteList, pathName])
+
+    // if (!value && !whiteList.includes(pathName)){
+    //     return null;
+    // }
     return (
         <>
             {children}
