@@ -61,10 +61,23 @@ export class PictureAPI {
             redirect: 'follow'
         };
 
-        console.log(sharMode == undefined ? 1 : sharMode);
-
         let res = await fetch(SERVER_URL + "/picture/share/" + pid + "?shareMode=" + (sharMode == undefined ? 1 : sharMode) + (password == null ? "" : "&password=" + password), requestOptions);
 
         return JSON.parse(await res.text());
+    }
+
+    static async changePictureName(name: string, id: string) {
+        let myHeaders = new Headers();
+        myHeaders.append("token", cookie.load("token"));
+
+        let requestOptions: RequestInit = {
+            method: 'PATCH',
+            headers: myHeaders,
+            redirect: 'follow'
+        };
+
+        await fetch("http://127.0.0.1:8102/picture/" + id + "?name=" + name, requestOptions).catch((e) => {
+            Message.error(e);
+        });
     }
 }

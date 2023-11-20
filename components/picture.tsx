@@ -16,9 +16,9 @@ export default function Picture(props: PictureProps) {
     let [isChecked, setIsChecked] = useState(false);
     const descriptionOpen = useDisclosure();
     let [name, setName] = useState(props.name);
-    let [shareMode, setShareMode] = useState(props.pubicMode == null ? "none" : props.pubicMode!);
     let timeout: NodeJS.Timeout | null = null;
     let [link, setShareLink] = useState("");
+    let [saveLoading, setSaveLoading] = useState(false);
 
     function generateShareLink(shareMode?: number, password?: string) {
         PictureAPI.sharePicture(props.pid, shareMode, password).then((r) => {
@@ -105,7 +105,7 @@ export default function Picture(props: PictureProps) {
                                         <DropdownMenu
                                             disallowEmptySelection
                                             selectionMode="single"
-                                            selectedKeys={[shareMode!]}
+                                            selectedKeys={["none"]}
                                             disabledKeys={props.group == undefined ? [] : props.group.disabled}
                                             onAction={(key) => {
                                                 let mode = key == "watermark" ? 1 : key == "compressed" ? 2 : 3;
@@ -146,12 +146,16 @@ export default function Picture(props: PictureProps) {
                                 </p>
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="danger" variant="light" onPress={onClose}>
+                                <Button disabled={saveLoading} color="danger" variant="light" onPress={onClose}>
                                     取消
                                 </Button>
-                                <Button color="primary" onPress={() => {
-                                    Message.success("已保存");
-                                    onClose();
+                                <Button isLoading={saveLoading} color="primary" onPress={() => {
+                                    setSaveLoading(true);
+                                    PictureAPI.changePictureName(name, props.pid).then(() => {
+                                        Message.success("已保存");
+                                        setSaveLoading(false);
+                                        onClose();
+                                    });
                                 }}>
                                     保存
                                 </Button>
