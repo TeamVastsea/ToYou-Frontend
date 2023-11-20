@@ -63,7 +63,7 @@ export default function Page() {
     }, [])
 
     return (
-        <div className="space-y-5">
+        <div className="space-y-5 max-w-[450px] mx-auto">
             <Card className="max-w-4xl">
                 <CardBody className="space-y-5">
                     <div>
@@ -123,7 +123,7 @@ export default function Page() {
             {pictures?.records == null ? <a>请上传</a> : pictures!.records.map(picture => <Picture
                 url={SERVER_URL + "/picture/preview?shareMode=2&id=" + picture.id.toString() + "&token=" + cookie.load("token")}
                 name={picture.fileName} pid={picture.id.toString()} group={group}/>)}
-            {/*<Picture url="https://t7.baidu.com/it/u=2961459243,2146986594&fm=193&f=GIF" name="雪景.png"/>*/}
+            {/* <Picture url="https://t7.baidu.com/it/u=2961459243,2146986594&fm=193&f=GIF" name="雪景.png" pid="" /> */}
         </div>
     )
 }

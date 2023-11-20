@@ -41,7 +41,7 @@ export default function Picture(props: PictureProps) {
                 onPress={() => {
                     descriptionOpen.onOpen();
                 }}
-                style={{width: 450}}
+                style={{maxWidth: 450, width: '100%'}}
             >
                 <Image
                     alt={props.name}
