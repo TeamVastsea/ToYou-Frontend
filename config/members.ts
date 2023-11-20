@@ -35,4 +35,10 @@ export const members = [
         jobs: ["前端", "后端", "应用"],
         githubLink: "https://github.com/NorrisRg",
     },
+    {
+        name: "GaoNeng",
+        avatarSrc: "https://avatars.githubusercontent.com/u/129368033?v=4",
+        jobs: ["前端", "设计", "运维"],
+        githubLink: "https://github.com/GaoNeng-wWw",
+    },
 ];
