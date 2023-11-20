@@ -1,3 +1,3 @@
-export const SERVER_URL = "http://127.0.0.1:8102";
+export const SERVER_URL = process.env.NEXT_PUBLIC_API_SERVER;
 
 
