@@ -39,7 +39,7 @@ export default function Home() {
                 <Link
                     as={NextLink}
                     className={buttonStyles({variant: "bordered"})}
-                    href={siteConfig.links.github}
+                    href={siteConfig.navItems[2].href}
                 >
                     <HiOutlineNewspaper size={20}/>
                     日志
