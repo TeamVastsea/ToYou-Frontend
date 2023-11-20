@@ -6,9 +6,8 @@ ENV NEXT_PUBLIC_API_SERVER="http://127.0.0.1:8102"
 
 ADD . .
 
-RUN npm install -g pnpm && \
-    pnpm install && \
-    pnpm build
+RUN yarn install && \
+    yarn build
 
 FROM nginx
 
