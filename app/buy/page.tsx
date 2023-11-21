@@ -84,6 +84,11 @@ export default function BuyPage() {
                 </CardFooter>
             </Card></>
     ]
+    useEffect(()=>{
+        if (!IsLoggedIn) {
+            router.push("/authenticate");
+        }
+    }, [router])
     return (
         <div className="max-w-7xl space-y-10">
             <h1 className={title()}>购买</h1>
