@@ -76,7 +76,7 @@ export class PictureAPI {
             redirect: 'follow'
         };
 
-        await fetch("http://127.0.0.1:8102/picture/" + id + "?name=" + name, requestOptions).catch((e) => {
+        await fetch(SERVER_URL + "/picture/" + id + "?name=" + name, requestOptions).catch((e) => {
             Message.error(e);
         });
     }
