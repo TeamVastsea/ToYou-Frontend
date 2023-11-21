@@ -38,7 +38,6 @@ export default function Page() {
         }
     })
 
-
     function getAdditionalInput(state: string): ReactNode {
         if (state == "login") {
             return (

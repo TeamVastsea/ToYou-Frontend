@@ -13,3 +13,7 @@ export interface UserModel {
     updateTime: string;
     extend?: Extend;
 }
+export interface LoginData {
+    username: string;
+    password: string;
+}
