@@ -1,4 +1,4 @@
-import {http} from './http';
+import { http } from './http';
 import { Picture } from './picture';
 import { User } from './user';
 
