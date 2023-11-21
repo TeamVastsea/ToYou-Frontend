@@ -2,7 +2,7 @@
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-    output: 'export',
+    output: process.env.NODE_ENV === 'development' ? 'export' : undefined,
     webpack(config) {
         config.module.rules.push({
             test: /\.svg$/,
@@ -12,6 +12,14 @@ const nextConfig = {
     },
     compiler:{
         removeConsole: process.env.NODE_ENV === 'production',
+    },
+    async rewrites(){
+        return process.env.NODE_ENV === 'development' && [
+            {
+                source: '/api/:path',
+                destination: `${process.env.NEXT_PUBLIC_API_SERVER}/:path*`
+            }
+        ]
     }
 }
 

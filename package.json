@@ -31,6 +31,7 @@
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
+    "axios": "^1.6.2",
     "clsx": "^2.0.0",
     "color2k": "^2.0.2",
     "cookie": "^0.6.0",
