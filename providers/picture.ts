@@ -1,5 +1,5 @@
 import { Axios } from "axios";
-import {PictureList, ShareResponse} from "@/interface/model/picture";
+import { PictureList, ShareResponse } from "@/interface/model/picture";
 
 export class Picture {
     private axios: Axios
