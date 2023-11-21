@@ -32,6 +32,6 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/mc-zulu20-python3-env:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/toyou-frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
