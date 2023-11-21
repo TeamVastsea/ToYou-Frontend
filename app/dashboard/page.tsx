@@ -17,8 +17,6 @@ import {SERVER_URL} from "@/interface/api";
 import cookie from "react-cookies";
 import {userInfo} from "os";
 import {PriceInfo} from "@/components/price";
-import { useAtom } from "jotai";
-import { token } from "@/store";
 
 export default function Page() {
     let [used, setUsed] = useState(0);
@@ -28,14 +26,12 @@ export default function Page() {
     let [timeDescription, setTimeDescription] = useState("无限时间");
     let [pictures, setPictures] = useState<PictureList>();
     let [group, setGroup] = useState<PriceInfo>()
-    const [, setToken] = useAtom(token);
     const router = useRouter();
 
     function updateInfo() {
-        UserAPI.getExtendedInformation()
-        .then((r) => {
+        UserAPI.getExtendedInformation().then((r) => {
             if (r == undefined) {
-                setToken(null)
+                router.push("/authenticate");
             }
             let user = r!;
             let price = getGroupPrice(r!.extend!.userGroup);
