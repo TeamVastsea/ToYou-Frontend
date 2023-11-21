@@ -2,7 +2,7 @@ FROM node:21-alpine3.18 as builder
 
 WORKDIR /usr/builder
 
-ENV NEXT_PUBLIC_API_SERVER="http://127.0.0.1:8102"
+ENV NEXT_PUBLIC_API_SERVER="https://api.itoyou.cc/"
 
 ADD . .
 
