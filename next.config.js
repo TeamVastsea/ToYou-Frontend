@@ -2,7 +2,7 @@
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-    output: process.env.NODE_ENV === 'development' ? 'export' : undefined,
+    output: process.env.NODE_ENV === 'development' ? undefined : 'export',
     webpack(config) {
         config.module.rules.push({
             test: /\.svg$/,
