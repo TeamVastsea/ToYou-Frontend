@@ -43,7 +43,7 @@ export default function RootLayout({children,}: {
             )}
         >
             <Providers themeProps={{attribute: "class", defaultTheme: "dark"}}>
-                <div className="relative flex flex-col h-screen">
+                <div className="relative flex flex-col min-h-screen">
                     <Navbar/>
                     <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
                         <Toaster toastOptions={{
@@ -57,11 +57,11 @@ export default function RootLayout({children,}: {
                             },}} gutter={-15}/>
                             {children}
                     </main>
-                    <footer className="w-full flex items-center justify-center py-3">
+                    <footer className="w-full flex items-center justify-center py-3 flex-col sm:flex-row">
                         <Link href="https://beian.miit.gov.cn/" isExternal>
                             鄂ICP备2023011709号-7
                         </Link>
-                        <p>&nbsp;|&nbsp;</p>
+                        <p className="hidden sm:inline-block">&nbsp;|&nbsp;</p>
                         <Link
                             href="about"
                             className="flex items-center gap-1 text-current"
