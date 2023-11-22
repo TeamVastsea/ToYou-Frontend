@@ -12,6 +12,14 @@ const nextConfig = {
     },
     compiler:{
         removeConsole: process.env.NODE_ENV === 'production',
+    },
+    rewrites: async () => {
+        return process.env.NODE_ENV === 'development' ? [
+            {
+                source: '/api/:path',
+                destination: `${process.env.NEXT_PUBLIC_API_SERVER}/:path*`
+            }
+        ] : []
     }
 }
 
