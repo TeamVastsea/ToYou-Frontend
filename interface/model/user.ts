@@ -17,3 +17,9 @@ export interface LoginData {
     username: string;
     password: string;
 }
+export interface CheckCodeData {
+    /**
+     * 最短间隔时间 (ms)
+     */
+    cd: number;
+}
