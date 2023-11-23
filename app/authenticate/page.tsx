@@ -2,7 +2,7 @@
 
 import {Card, CardBody, CardFooter} from "@nextui-org/react";
 import {Button} from "@nextui-org/button";
-import React, {useEffect, useReducer, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Input} from "@nextui-org/input";
 import {Checkbox} from "@nextui-org/checkbox";
 import {Message} from "@/components/message";
@@ -15,6 +15,8 @@ import { IoCloseSharp } from "react-icons/io5";
 import { IoCheckmark } from "react-icons/io5";
 import Password from "@/components/password";
 
+export type Colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
+export type PageType = 'wait-check' | 'login' | 'register'
 export type Colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
 export type PageType = 'wait-check' | 'login' | 'register'
 
