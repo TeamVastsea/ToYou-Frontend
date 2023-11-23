@@ -11,12 +11,16 @@
   "dependencies": {
     "@nextui-org/button": "2.0.18",
     "@nextui-org/code": "2.0.16",
+    "@nextui-org/dropdown": "^2.1.16",
     "@nextui-org/input": "2.1.6",
     "@nextui-org/kbd": "2.0.17",
     "@nextui-org/link": "2.0.19",
+    "@nextui-org/modal": "^2.0.28",
     "@nextui-org/navbar": "2.0.19",
     "@nextui-org/react": "^2.1.13",
+    "@nextui-org/shared-icons": "^2.0.6",
     "@nextui-org/snippet": "2.0.22",
+    "@nextui-org/spacer": "^2.0.24",
     "@nextui-org/switch": "2.0.18",
     "@nextui-org/system": "2.0.7",
     "@nextui-org/theme": "2.1.6",
@@ -27,7 +31,9 @@
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
+    "axios": "^1.6.2",
     "clsx": "^2.0.0",
+    "color2k": "^2.0.2",
     "cookie": "^0.6.0",
     "cookies": "^0.8.0",
     "copy-to-clipboard": "^3.3.3",
@@ -37,7 +43,7 @@
     "intl-messageformat": "^10.5.0",
     "next": "13.4.19",
     "next-themes": "^0.2.1",
-    "postcss": "8.4.29",
+    "postcss": "8.4.31",
     "react": "18.2.0",
     "react-cookies": "^0.1.1",
     "react-device-detect": "^2.2.3",
@@ -49,6 +55,7 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
+    "@nextui-org/checkbox": "^2.0.25",
     "@nextui-org/chip": "^2.0.25",
     "@nextui-org/progress": "^2.0.24",
     "@types/react-cookies": "^0.1.3"

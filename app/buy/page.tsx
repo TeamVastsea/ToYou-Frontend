@@ -3,7 +3,7 @@
 import {title} from "@/components/primitives";
 import {IsLoggedIn} from "@/interface/hooks";
 import {useRouter} from "next/navigation";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Card, CardBody, CardFooter, CardHeader, Divider, Select, SelectItem} from "@nextui-org/react";
 import {Button, ButtonGroup} from "@nextui-org/button";
 
@@ -84,10 +84,11 @@ export default function BuyPage() {
                 </CardFooter>
             </Card></>
     ]
-
-    if (!IsLoggedIn) {
-        router.push("/authenticate");
-    }
+    useEffect(()=>{
+        if (!IsLoggedIn) {
+            router.push("/authenticate");
+        }
+    }, [router])
     return (
         <div className="max-w-7xl space-y-10">
             <h1 className={title()}>购买</h1>

@@ -2,24 +2,25 @@
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-    output: 'export',
+    output: process.env.NODE_ENV === 'development' ? undefined : 'export',
     webpack(config) {
         config.module.rules.push({
             test: /\.svg$/,
             use: ["@svgr/webpack"]
         }); // 针对 SVG 的处理规则
-
         return config;
-    }
-
-    // Optional: Change links `/me` -> `/me/` and emit `/me.html` -> `/me/index.html`
-    // trailingSlash: true,
-
-    // Optional: Prevent automatic `/me` -> `/me/`, instead preserve `href`
-    // skipTrailingSlashRedirect: true,
-
-    // Optional: Change the output directory `out` -> `dist`
-    // distDir: 'dist',
+    },
+    compiler:{
+        removeConsole: process.env.NODE_ENV === 'production',
+    },
+    rewrites: process.env.NODE_ENV === 'development' ? ()=>{
+        return [
+            {
+                source: '/api/:path',
+                destination: `${process.env.NEXT_PUBLIC_API_SERVER}/:path*`
+            }
+        ]
+    } : undefined
 }
 
 module.exports = nextConfig

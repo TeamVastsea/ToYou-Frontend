@@ -21,7 +21,6 @@ export const Price = (price: PriceProps) => {
         }
     }
 
-
     return (
         <>
             <Card style={{width: "auto"}}>
