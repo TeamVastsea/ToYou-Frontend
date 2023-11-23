@@ -49,6 +49,67 @@ const useButtonColor = (policyState: boolean) => {
     }
 }
 
+const Login = (
+    props: {
+        password: string;
+        setPassword: (val: string)=>void
+    }
+) => {
+    return (
+     <>
+         <Input
+             key="password"
+             type="password"
+             label="密码"
+             placeholder="密码"
+             style={{width: 300}}
+             value={props.password}
+             onValueChange={props.setPassword}
+         />
+     </>
+    )
+}
+
+const Register = (
+    props: {
+        code: string;
+        userName: string,
+        password: string,
+        confirmPassword: string,
+        setCode: (val: string)=>void;
+        setPassword: (val:string)=>void,
+        setUsername: (val:string)=>void,
+        setConfirmPassword: (val:string)=>void,
+    }
+) => {
+    const {code, userName,password,confirmPassword,setCode,setPassword,setUsername,setConfirmPassword} = props;
+    return (
+        <div className="space-y-5">
+            <div className="flex space-x-3" style={{width: "auto", display: "flex"}}>
+                <Input key={"code"} value={code} onValueChange={setCode} type="text" label="验证码" placeholder="验证码" style={{height: "auto", flex: 3}} />
+            </div>
+            <Input key="username" placeholder="用户名" label="用户名" value={userName} onValueChange={setUsername}/>
+            <div className="flex space-x-3">
+                <Input
+                key="password"
+                type="password"
+                placeholder="密码"
+                label="密码"
+                value={password}
+                onValueChange={setPassword}/>
+                <Input
+                    key="confirm-password"
+                    type="password"
+                    placeholder="确认密码"
+                    label="确认密码"
+                    value={confirmPassword}
+                    onValueChange={setConfirmPassword}
+                />
+            </div>
+        </div>
+    );
+};
+
 export default function Page() {
     const [email, setEmail] = useState('');
     const [pageType, setPageType] = useState<PageType>('wait-check');
@@ -70,46 +131,6 @@ export default function Page() {
         return validateEmail(email) ? true : false;
     }, [email]);
 
-    const Register = () => {
-        return (
-            <div className="space-y-5">
-                <div className="flex space-x-3" style={{width: "auto", display: "flex"}}>
-                    <Input key={"code"} value={code} onValueChange={setCode} type="text" label="验证码" placeholder="验证码" style={{height: "auto", flex: 3}} />
-                </div>
-                <Input key="username" placeholder="用户名" label="用户名" value={userName} onValueChange={setUsername}/>
-                <div className="flex space-x-3">
-                    <Input
-                    key="password"
-                    type="password"
-                    placeholder="密码"
-                    label="密码"
-                    value={password}
-                    onValueChange={setPassword}/>
-                    <Input
-                        key="confirm-password"
-                        type="password"
-                        placeholder="确认密码"
-                        label="确认密码"
-                        value={confirmPassword}
-                        onValueChange={setConfirmPassword}
-                    />
-                </div>
-            </div>
-        );
-    };
-    const Login = () => {
-       return (
-        <Input
-            key={"password"}
-            type="password"
-            label="密码"
-            placeholder="密码"
-            style={{width: 300}}
-            value={password}
-            onValueChange={setPassword}
-        />
-       )
-    }
     const handleClick = () => {
         const login = () => {
             if (!isEmail){
@@ -185,7 +206,12 @@ export default function Page() {
                             style={{width: 300}}
                         />
                         {
-                            pageType !== 'wait-check' && (pageType === 'login' ? <Login /> : <Register />)
+                            pageType !== 'wait-check' && (
+                                pageType === 'login' ? <Login password={password} setPassword={setPassword} /> :
+                                <Register
+                                    code={code} userName={userName} password={password} confirmPassword={confirmPassword}
+                                    setPassword={setPassword} setConfirmPassword={setConfirmPassword} setCode={setCode} setUsername={setUsername} />
+                                )
                         }
                         <Checkbox isSelected={policyState} onValueChange={setPolicyState}>登录或注册即代表同意服务条款</Checkbox>
                     </div>
