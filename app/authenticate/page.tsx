@@ -2,52 +2,18 @@
 
 import {Card, CardBody, CardFooter} from "@nextui-org/react";
 import {Button} from "@nextui-org/button";
-import React, {ReactNode, useEffect, useMemo, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Input} from "@nextui-org/input";
 import {Checkbox} from "@nextui-org/checkbox";
 import {Message} from "@/components/message";
 import {useRouter} from "next/navigation";
-import {UserModel} from "@/interface/model/user";
 import {SetLoggedInState} from "@/interface/hooks";
 import {UserAPI} from "@/interface/userAPI";
+import IOC from "@/providers";
+import { useCountDown, useButtonColor, useButtonMessage, useType, useIsPhone, useIsEmail } from "./hooks";
 
-type Colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
-type PageType = 'wait-check' | 'login' | 'register'
-
-const useButtonMessage = (pageType: PageType, initMessage: string) => {
-    const [buttonMessage, setButtonMessage] = useState(initMessage);
-    useEffect(()=>{
-        let msg = '下一步';
-        switch (pageType) {
-            case 'login':
-                msg = '登录'
-                break;
-            case 'register':
-                msg = '注册'
-                break;
-        }
-        setButtonMessage(msg);
-    }, [pageType,]);
-    return {
-        buttonMessage,
-        setButtonMessage
-    }
-}
-
-const useButtonColor = (policyState: boolean) => {
-    const [buttonColor, setButtonColor] = useState<Colors>('default');
-    useEffect(()=>{
-        if (policyState){
-            setButtonColor('primary')
-            return;
-        }
-        setButtonColor('default')
-    }, [policyState])
-    return {
-        buttonColor,
-        setButtonColor
-    }
-}
+export type Colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
+export type PageType = 'wait-check' | 'login' | 'register'
 
 const Login = (
     props: {
@@ -69,9 +35,50 @@ const Login = (
      </>
     )
 }
-
+const CheckCode = (props: {type: 'email' | 'phone' | 'unknown', userInput: string}) => {
+    const {type} = props;
+    const [loading, setLoading] = useState(true);
+    const [cd, setCD] = useState(1000)
+    const [time, setTime] = useCountDown(cd)
+    const getCode = () => {
+        if (type === 'email'){
+            setLoading(true)
+            IOC.user.getCheckCodeByEmail(props.userInput)
+            .then((val)=>{
+                setCD(val.data.cd);
+            })
+            .finally(()=>setLoading(false));
+        }
+        if (type === 'phone'){
+            setLoading(true)
+            IOC.user.getCheckCodeByPhone(props.userInput)
+            .then((val)=>{
+                setCD(val.data.cd);
+            })
+            .finally(()=>setLoading(false));
+        }
+    }
+    useEffect(()=>{
+        if (!time){
+            setLoading(false);
+        }
+    },[time])
+    return (
+        <Button size="lg" onClick={getCode} isLoading={loading}>
+            {
+                loading ? 
+                <span>
+                    请等待 {time} 秒
+                </span>
+                : <span>发送验证码</span>
+            }
+        </Button>
+    )
+}
 const Register = (
     props: {
+        type: 'email' | 'phone' | 'unknown';
+        userInput: string;
         code: string;
         userName: string,
         password: string,
@@ -82,11 +89,19 @@ const Register = (
         setConfirmPassword: (val:string)=>void,
     }
 ) => {
-    const {code, userName,password,confirmPassword,setCode,setPassword,setUsername,setConfirmPassword} = props;
+    const {code, userName,password,confirmPassword,userInput,setCode,setPassword,setUsername,setConfirmPassword} = props;
     return (
         <div className="space-y-5">
-            <div className="flex space-x-3" style={{width: "auto", display: "flex"}}>
-                <Input key={"code"} value={code} onValueChange={setCode} type="text" label="验证码" placeholder="验证码" style={{height: "auto", flex: 3}} />
+            <div className="flex gap-2 items-center">
+                <Input
+                    key={"code"}
+                    value={code}
+                    onValueChange={setCode}
+                    type="text"
+                    label="验证码"
+                    placeholder="验证码"
+                />
+                <CheckCode type={props.type} userInput={userInput} />
             </div>
             <Input key="username" placeholder="用户名" label="用户名" value={userName} onValueChange={setUsername}/>
             <div className="flex space-x-3">
@@ -112,6 +127,7 @@ const Register = (
 
 export default function Page() {
     const [email, setEmail] = useState('');
+    const [userInput, setUserInput] = useState('');
     const [pageType, setPageType] = useState<PageType>('wait-check');
     const {buttonMessage} = useButtonMessage(pageType, '下一步');
     const [policyState, setPolicyState] = useState(false);
@@ -121,20 +137,16 @@ export default function Page() {
     const [userName, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword,setConfirmPassword] = useState('');
-    
     const router = useRouter();
-    const validateEmail  = (val: string)=>val.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,10}$/i);
-    const isEmail = useMemo(()=>{
-        if (!email){
-            return false;
-        }
-        return validateEmail(email) ? true : false;
-    }, [email]);
+    const isPhone = useIsPhone(userInput);
+    const isEmail = useIsEmail(userInput);
+
+    const [type,setType] = useType(isPhone,isEmail)
 
     const handleClick = () => {
         const login = () => {
-            if (!isEmail){
-                Message.error("请输入邮箱")
+            if (!isEmail && !isPhone){
+                Message.error("请输入邮箱或手机号")
             }
             UserAPI.login(email, password)
             .then((r) => {
@@ -169,8 +181,8 @@ export default function Page() {
             .finally(() => setLoading(false))
         }
         const waitCheck = () => {
-            if (!isEmail){
-                Message.error("请输入邮箱")
+            if (!isEmail && !isPhone){
+                Message.error("请输入邮箱或手机号")
                 setLoading(false);
                 return;
             }
@@ -195,20 +207,21 @@ export default function Page() {
                 <CardBody>
                     <div className="space-y-5">
                         <Input 
-                            label="Email"
-                            placeholder="email"
-                            key={"email"}
-                            isInvalid={isEmail}
-                            errorMessage={!isEmail && (email.length ? "邮箱格式不正确" : "请输入邮箱")}
-                            type="email"
-                            value={email}
-                            onValueChange={setEmail}
+                            label="邮箱或手机号"
+                            placeholder="请输入邮箱或手机号"
+                            key={"emailOrPhone"}
+                            isInvalid={isEmail || isPhone}
+                            errorMessage={!isEmail && !isPhone && ('请输入手机或邮箱')}
+                            type="text"
+                            value={userInput}
+                            onValueChange={setUserInput}
                             style={{width: 300}}
                         />
                         {
                             pageType !== 'wait-check' && (
                                 pageType === 'login' ? <Login password={password} setPassword={setPassword} /> :
                                 <Register
+                                    type={type} userInput={userInput}
                                     code={code} userName={userName} password={password} confirmPassword={confirmPassword}
                                     setPassword={setPassword} setConfirmPassword={setConfirmPassword} setCode={setCode} setUsername={setUsername} />
                                 )
