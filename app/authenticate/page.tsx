@@ -30,7 +30,7 @@ const Login = (
              key="password"
              type="password"
              label="密码"
-             placeholder="密码"
+             placeholder="请输入密码"
              style={{width: 300}}
              value={props.password}
              onValueChange={props.setPassword}
@@ -159,13 +159,13 @@ const Register = (
                     onValueChange={setCode}
                     type="text"
                     label="验证码"
-                    placeholder="验证码"
+                    placeholder="请输入验证码"
                 />
                 <CheckCode type={props.type} userInput={userInput} />
             </div>
             <Input
                 key="username"
-                placeholder="用户名"
+                placeholder="请输入用户名"
                 label="用户名"
                 value={userName}
                 onValueChange={setUsername}
@@ -176,7 +176,7 @@ const Register = (
                 <Password
                     key="password"
                     label="密码"
-                    placeholder="密码"
+                    placeholder="请输入密码"
                     value={password}
                     isInValide={password !== confirmPassword && confirmPassword.length > 0}
                     errorMessage={password !== confirmPassword && confirmPassword.length > 0 && '两次输入的密码需要相同'}
@@ -188,7 +188,7 @@ const Register = (
                     (
                         <Password
                             key="confirm-password"
-                            placeholder="确认密码"
+                            placeholder="请确认密码"
                             label="确认密码"
                             value={confirmPassword}
                             isInValide={password !== confirmPassword && confirmPassword.length > 0}
