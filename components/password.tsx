@@ -5,15 +5,15 @@ import { useState } from "react";
 export interface PasswordProps {
     label: string;
     placeholder: string;
-    key: string
     value?: string;
     onValueChange?: (val:string)=>void;
 }
 
 export default function Password(
-    props: PasswordProps
+    props: PasswordProps,
+    key: string
 ){
-    const {key, label, placeholder, value, onValueChange} = props
+    const {label, placeholder, value, onValueChange} = props
     const [visible, setVisible] = useState(false);
     const toggleVisible = () => setVisible(!visible);
     const endContent = () => {

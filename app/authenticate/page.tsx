@@ -40,7 +40,7 @@ const Login = (
 }
 const CheckCode = (props: {type: 'email' | 'phone' | 'unknown', userInput: string}) => {
     const {type} = props;
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false );
     const [cd, setCD] = useState(1000)
     const [time, setTime] = useCountDown(cd)
     const getCode = () => {

@@ -33,7 +33,7 @@ export function AuthProvider({children, whiteList}: AuthProvider) {
         }
     }, [pathName, whiteList])
     if (!IsLoggedIn && !whiteList.includes(pathName)){
-        return null;
+        return <></>;
     }
     return (
         <>
