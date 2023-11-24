@@ -170,7 +170,7 @@ const Register = (
                 value={userName}
                 onValueChange={setUsername}
                 isInvalid={!valide}
-                errorMessage={!valide && '用户名只能包含. _ - 数字 字母 汉字且至少两位'}
+                errorMessage={!valide && '用户名只能包含字母、汉字、数字和连接号(-)、下划线(_)、句点(.)'}
             />
             <div className="flex flex-col space-y-3 gap-2">
                 <Password
