@@ -30,8 +30,9 @@ export default function Home() {
             <div className="flex gap-3">
                 <Link
                     as={NextLink}
-                    href={IsLoggedIn ? "/pricing" : "/dashboard"}
+                    href={IsLoggedIn ? "/dashboard" : "/authenticate"}
                     className={buttonStyles({color: "primary", variant: "shadow"})}
+                    prefetch
                 >
                     <FaLocationArrow size={20}/>
                     开始使用
@@ -40,6 +41,7 @@ export default function Home() {
                     as={NextLink}
                     className={buttonStyles({variant: "bordered"})}
                     href={siteConfig.navItems[2].href}
+                    prefetch
                 >
                     <HiOutlineNewspaper size={20}/>
                     日志

@@ -4,7 +4,7 @@ import Uploader from "@/components/uploader";
 import {Card, CardBody, CardFooter, Divider} from "@nextui-org/react";
 import {Progress} from "@nextui-org/progress";
 import {Button} from "@nextui-org/button";
-import {useRouter} from "next/navigation";
+import {redirect, useRouter} from "next/navigation";
 import {Chip} from "@nextui-org/chip";
 import {FiChevronsUp, FiUploadCloud} from "react-icons/fi";
 import Picture from "@/components/picture";
@@ -15,10 +15,14 @@ import {getGroupPrice} from "@/config/prices";
 import {PictureList} from "@/interface/model/picture";
 import {SERVER_URL} from "@/interface/api";
 import cookie from "react-cookies";
-import {userInfo} from "os";
 import {PriceInfo} from "@/components/price";
+import { IsLoggedIn } from "@/interface/hooks";
+import { RedirectType } from "next/dist/client/components/redirect";
 
 export default function Page() {
+    if (!IsLoggedIn){
+        redirect('/authenticate', RedirectType.replace);
+    }
     let [used, setUsed] = useState(0);
     let [total, setTotal] = useState(1);
 
