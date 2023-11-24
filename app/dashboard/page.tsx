@@ -16,8 +16,13 @@ import {PictureList} from "@/interface/model/picture";
 import {SERVER_URL} from "@/interface/api";
 import cookie from "react-cookies";
 import {PriceInfo} from "@/components/price";
+import { IsLoggedIn } from "@/interface/hooks";
+import { RedirectType } from "next/dist/client/components/redirect";
 
 export default function Page() {
+    if (!IsLoggedIn){
+        redirect('/authenticate', RedirectType.replace);
+    }
     let [used, setUsed] = useState(0);
     let [total, setTotal] = useState(1);
 
