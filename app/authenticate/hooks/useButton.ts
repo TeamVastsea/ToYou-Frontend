@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Colors, PageType } from "../page";
 
 export const useButtonMessage = (pageType: PageType, initMessage: string) => {
@@ -20,16 +20,37 @@ export const useButtonMessage = (pageType: PageType, initMessage: string) => {
         setButtonMessage
     }
 }
-
-export const useButtonColor = (policyState: boolean) => {
+export const useDisabled = (
+    policyState: boolean,
+    userName: string,
+    password: string,
+    confirmPassword: string,
+    valide: boolean
+):[boolean,React.Dispatch<SetStateAction<boolean>>] => {
+    const [disabled, setDisabled] = useState<boolean>(
+        !policyState ||
+        (userName.length > 30 || userName.length < 2) ||
+        password !== confirmPassword
+    )
+    useEffect(()=>{
+        setDisabled(!policyState ||
+        (password !== confirmPassword) || !valide)
+    }, [policyState, userName.length, password, confirmPassword, valide])
+    return [disabled, setDisabled]
+}
+export const useButtonColor = (
+    disabled: boolean
+) => {
     const [buttonColor, setButtonColor] = useState<Colors>('default');
     useEffect(()=>{
-        if (policyState){
+        if (
+            !disabled
+        ){
             setButtonColor('primary')
             return;
         }
         setButtonColor('default')
-    }, [policyState])
+    }, [disabled])
     return {
         buttonColor,
         setButtonColor

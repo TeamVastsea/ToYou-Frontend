@@ -1,11 +1,13 @@
 import { Input } from "@nextui-org/react";
 import { EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import React, { useState } from "react";
 export interface PasswordProps {
     label: string;
     placeholder: string;
     value?: string;
+    isInValide?: boolean;
+    errorMessage?: React.ReactNode;
     onValueChange?: (val:string)=>void;
 }
 
@@ -13,7 +15,7 @@ export default function Password(
     props: PasswordProps,
     key: string
 ){
-    const {label, placeholder, value, onValueChange} = props
+    const {label, placeholder, value,isInValide, errorMessage, onValueChange} = props
     const [visible, setVisible] = useState(false);
     const toggleVisible = () => setVisible(!visible);
     const endContent = () => {
@@ -32,6 +34,8 @@ export default function Password(
             label={label}
             placeholder={placeholder}
             value={value}
+            isInvalid={isInValide}
+            errorMessage={errorMessage}
             onValueChange={onValueChange}
             endContent={endContent()}
         />

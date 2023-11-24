@@ -10,7 +10,7 @@ import {useRouter} from "next/navigation";
 import {SetLoggedInState} from "@/interface/hooks";
 import {UserAPI} from "@/interface/userAPI";
 import IOC from "@/providers";
-import { useCountDown, useButtonColor, useButtonMessage, useType, useIsPhone, useIsEmail } from "./hooks";
+import { useCountDown, useButtonColor, useButtonMessage, useType, useIsPhone, useIsEmail, useDisabled } from "./hooks";
 import { IoCloseSharp } from "react-icons/io5";
 import { IoCheckmark } from "react-icons/io5";
 import Password from "@/components/password";
@@ -82,41 +82,36 @@ const PasswordRobustnessList = (props: {active: boolean[]}) => {
     const labels = [
         {
             key: 'min',
-            label: '至少8位'
+            label: '至少8位',
+            defaultShow: true
         },
         {
-            key: 'number',
-            label: '至少一个数字'
-        },
-        {
-            key: 'uppercase',
-            label: '至少一个大写字符'
-        },
-        {
-            key: 'lowercase',
-            label: '至少一个小写字符'
-        },
-        {
-            key: 'special',
-            label: '至少包含一个特殊字符'
+            key: 'fuck',
+            label: '大写字母、小写字母、数字、特殊符号中至少包含两种',
+            defaultShow: true
         },
         {
             key: 'max',
-            label: '至多30位'
+            label: '至多30位',
+            defaultShow: false
         }
     ]
     return (
         <ul className="w-full">
             {
-                labels.map(({label, key}, idx)=>{
-                    return (
+                labels.map(({label, key, defaultShow}, idx)=>{
+                    let show = defaultShow;
+                    if (idx === labels.length-1){
+                        show = !props.active[idx];
+                    }
+                    return show && (
                         <li
-                            key={key}
-                            className={`
-                                flex items-center transition
-                                ${props.active[idx] ? 'text-green-600 dark:text-green-500' : 'text-red-600 dark:text-red-500'}`
-                            }
-                        >
+                                key={key}
+                                className={`
+                                    flex items-center transition
+                                    ${props.active[idx] ? 'text-green-600 dark:text-green-500' : 'text-red-600 dark:text-red-500'}`
+                                }
+                            >
                             {
                                 props.active[idx] ?  <IoCheckmark className="inline text-xl" /> : <IoCloseSharp className="inline text-xl" />
                             }
@@ -134,18 +129,27 @@ const Register = (
         type: 'email' | 'phone' | 'unknown';
         userInput: string;
         code: string;
-        userName: string,
-        password: string,
-        confirmPassword: string,
-        passwordRobustness: boolean[]
+        userName: string;
+        password: string;
+        confirmPassword: string;
+        passwordRobustness: boolean[];
+        valide: boolean;
         setCode: (val: string)=>void;
         setPassword: (val:string)=>void,
         setUsername: (val:string)=>void,
         setConfirmPassword: (val:string)=>void,
     }
 ) => {
-    const {code, userName,password,confirmPassword,userInput,setCode,setPassword,setUsername,setConfirmPassword} = props;
-
+    const {code, userName,password,confirmPassword,userInput,valide,setCode,setPassword,setUsername,setConfirmPassword} = props;
+    const [visible, setVisible] = useState(props.passwordRobustness.every(v => v));
+    useEffect(()=>{
+        setVisible(props.passwordRobustness.every(v => v));
+    }, [props.passwordRobustness])
+    useEffect(()=>{
+        if (!visible){
+            setConfirmPassword('');
+        }
+    }, [setConfirmPassword, visible])
     return (
         <div className="space-y-5">
             <div className="flex gap-2 items-center">
@@ -159,24 +163,36 @@ const Register = (
                 />
                 <CheckCode type={props.type} userInput={userInput} />
             </div>
-            <Input key="username" placeholder="用户名" label="用户名" value={userName} onValueChange={setUsername}/>
+            <Input
+                key="username"
+                placeholder="用户名"
+                label="用户名"
+                value={userName}
+                onValueChange={setUsername}
+                isInvalid={!valide}
+                errorMessage={!valide && '用户名只能包含. _ - 数字 字母 汉字且至少两位'}
+            />
             <div className="flex flex-col space-y-3 gap-2">
                 <Password
                     key="password"
                     label="密码"
                     placeholder="密码"
                     value={password}
+                    isInValide={password !== confirmPassword && confirmPassword.length > 0}
+                    errorMessage={password !== confirmPassword && confirmPassword.length > 0 && '两次输入的密码需要相同'}
                     onValueChange={setPassword}
-                    />
-                {props.passwordRobustness.some(v => !v) && <PasswordRobustnessList active={props.passwordRobustness} />}
+                />
+                <PasswordRobustnessList active={props.passwordRobustness} />
                 {
-                    props.passwordRobustness.every(v => v) && 
+                    visible && 
                     (
                         <Password
                             key="confirm-password"
                             placeholder="确认密码"
                             label="确认密码"
                             value={confirmPassword}
+                            isInValide={password !== confirmPassword && confirmPassword.length > 0}
+                            errorMessage={password !== confirmPassword && confirmPassword.length > 0 && '两次输入的密码需要相同'}
                             onValueChange={setConfirmPassword}
                         />
                     )
@@ -192,20 +208,22 @@ export default function Page() {
     const [pageType, setPageType] = useState<PageType>('register');
     const {buttonMessage} = useButtonMessage(pageType, '下一步');
     const [policyState, setPolicyState] = useState(false);
-    const {buttonColor} = useButtonColor(policyState);
     const [loading, setLoading] = useState(false);
     const [code, setCode] = useState('');
     const [userName, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword,setConfirmPassword] = useState('');
+    const [valide, setValide] = useState(false);
+    useEffect(()=>{
+        setValide(/^[\w\d.\-_a-zA-Z\u4e00-\u9fa5]+$/gm.test(userName) && userName.length >= 2);
+    }, [userName]);
+    const [disabled] = useDisabled(policyState,userName,password,confirmPassword, valide);
+    const {buttonColor} = useButtonColor(disabled);
     const [passwordRobustness, setPasswordRobustness] = useState(new Array(6).fill(false));
     const fns = useMemo(()=>{
         return [
             (val: string) => val.length >= 8,
-            (val: string) => /[0-9]{1}/.test(val),
-            (val: string) => /[A-Z]{1}/.test(val),
-            (val: string) => /[a-z]{1}/.test(val),
-            (val: string) => /[!@#$%^&*()\-=_+{}\[\]|\\:;"'<>,.?\/]{1}/.test(val),
+            (val: string) => /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_]+$)(?![a-z0-9]+$)(?![a-z\W_]+$)(?![0-9\W_]+$)[a-zA-Z0-9\W_]/.test(val),
             (val: string)=> val.length <= 30
         ]
     }, [])
@@ -248,20 +266,28 @@ export default function Page() {
                 Message.error("密码输入不一致")
                 return;
             }
-            UserAPI.creatUser(email, password, userName, code)
-            .then(r => {
-                let [status, message] = r;
-                if (status) {
-                    Message.success("注册成功，请登录");
-                    setPageType("login");
-                    setEmail("");
-                    setUsername("");
-                    setPassword("");
-                } else {
-                    Message.error(message);
-                }
+            setLoading(true);
+            IOC.user.createUser({
+                phone: type === 'phone' ? userInput : undefined,
+                email: type === 'email' ? userInput : undefined,
+                password,
+                username: userName,
+                code
             })
-            .finally(() => setLoading(false))
+            .then((
+                {data: [status, message]}
+            )=>{
+                if (status){
+                    Message.success('注册成功, 请登录');
+                    setPageType('login');
+                    setUserInput('');
+                    setPassword('');
+                    setUsername('');
+                    return;
+                }
+                Message.error(message)
+            })
+            .finally(() => setLoading(false));
         }
         const waitCheck = () => {
             if (!isEmail && !isPhone){
@@ -304,7 +330,7 @@ export default function Page() {
                             pageType !== 'wait-check' && (
                                 pageType === 'login' ? <Login password={password} setPassword={setPassword} /> :
                                 <Register
-                                    type={type} userInput={userInput}
+                                    type={type} userInput={userInput} valide={valide}
                                     passwordRobustness={passwordRobustness}
                                     code={code} userName={userName} password={password} confirmPassword={confirmPassword}
                                     setPassword={setPassword} setConfirmPassword={setConfirmPassword} setCode={setCode} setUsername={setUsername} />
@@ -316,7 +342,9 @@ export default function Page() {
                 <CardFooter className="px-5">
                     <Button
                         isLoading={loading}
-                        disabled={!policyState}
+                        disabled={
+                            disabled
+                        }
                         color={buttonColor}
                         onClick={handleClick()[pageType]}
                     >
