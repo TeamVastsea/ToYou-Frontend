@@ -164,6 +164,7 @@ const Register = (
                 <CheckCode type={props.type} userInput={userInput} />
             </div>
             <Input
+                isClearable
                 key="username"
                 placeholder="请输入用户名"
                 label="用户名"
@@ -315,7 +316,8 @@ export default function Page() {
             <Card>
                 <CardBody>
                     <div className="space-y-5">
-                        <Input 
+                        <Input
+                            isClearable
                             label="邮箱或手机号"
                             placeholder="请输入邮箱或手机号"
                             key={"emailOrPhone"}
