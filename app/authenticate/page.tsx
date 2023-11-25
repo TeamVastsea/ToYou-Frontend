@@ -208,7 +208,7 @@ const Register = (
 export default function Page() {
     const [email, setEmail] = useState('');
     const [userInput, setUserInput] = useState('');
-    const [pageType, setPageType] = useState<PageType>('register');
+    const [pageType, setPageType] = useState<PageType>('wait-check');
     const {buttonMessage} = useButtonMessage(pageType, '下一步');
     const [policyState, setPolicyState] = useState(false);
     const [loading, setLoading] = useState(false);
