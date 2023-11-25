@@ -160,6 +160,8 @@ const Register = (
                     type="text"
                     label="验证码"
                     placeholder="请输入验证码"
+                    maxLength={6}
+                    
                 />
                 <CheckCode type={props.type} userInput={userInput} />
             </div>
@@ -218,7 +220,7 @@ export default function Page() {
     useEffect(()=>{
         setValide(/^[\w\d.\-_a-zA-Z\u4e00-\u9fa5]+$/gm.test(userName) && userName.length >= 2);
     }, [userName]);
-    const [disabled] = useDisabled(policyState,userName,password,confirmPassword, valide);
+    const [disabled] = useDisabled(policyState,userName,password,confirmPassword,code,valide);
     const {buttonColor} = useButtonColor(disabled);
     const [passwordRobustness, setPasswordRobustness] = useState(new Array(6).fill(false));
     const fns = useMemo(()=>{

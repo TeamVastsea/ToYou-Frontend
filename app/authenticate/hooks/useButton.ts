@@ -25,6 +25,7 @@ export const useDisabled = (
     userName: string,
     password: string,
     confirmPassword: string,
+    checkCode: string,
     valide: boolean
 ):[boolean,React.Dispatch<SetStateAction<boolean>>] => {
     const [disabled, setDisabled] = useState<boolean>(
@@ -34,8 +35,9 @@ export const useDisabled = (
     )
     useEffect(()=>{
         setDisabled(!policyState ||
-        (password !== confirmPassword) || !valide)
-    }, [policyState, userName.length, password, confirmPassword, valide])
+        (password !== confirmPassword) || !valide || 
+        checkCode.length !== 0) 
+    }, [policyState, userName.length, password, confirmPassword, valide, checkCode])
     return [disabled, setDisabled]
 }
 export const useButtonColor = (
