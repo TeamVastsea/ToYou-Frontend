@@ -176,8 +176,6 @@ const Register = (
                     label="密码"
                     placeholder="请输入密码"
                     value={password}
-                    isInValide={password !== confirmPassword && confirmPassword.length > 0}
-                    errorMessage={password !== confirmPassword && confirmPassword.length > 0 && '两次输入的密码需要相同'}
                     onValueChange={setPassword}
                 />
                 <PasswordRobustnessList active={props.passwordRobustness} />
@@ -189,7 +187,6 @@ const Register = (
                             placeholder="请确认密码"
                             label="确认密码"
                             value={confirmPassword}
-                            isInValide={password !== confirmPassword && confirmPassword.length > 0}
                             errorMessage={password !== confirmPassword && confirmPassword.length > 0 && '两次输入的密码需要相同'}
                             onValueChange={setConfirmPassword}
                         />
@@ -256,6 +253,7 @@ export default function Page() {
             .finally(()=>setLoading(false))
         }
         const register = ()=>{
+            console.log('click')
             if (!passwordRobustness.every(val => val)){
                 Message.error('密码不符合规范')
                 return;
@@ -342,10 +340,10 @@ export default function Page() {
                     <Button
                         isLoading={loading}
                         disabled={
-                            pageType !== 'wait-check' ? disabled : !policyState && (isEmail || isPhone)
+                            pageType === 'login' ? false : pageType !== 'wait-check' ? disabled : !policyState && (isEmail || isPhone)
                         }
                         color={
-                            pageType !== 'wait-check' ? buttonColor : policyState && (isEmail || isPhone) ? 'primary' : 'default'
+                            pageType === 'login' ? 'primary' : pageType !== 'wait-check' ? buttonColor : policyState && (isEmail || isPhone) ? 'primary' : 'default'
                         }
                         onClick={handleClick()[pageType]}
                     >
