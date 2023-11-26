@@ -239,7 +239,7 @@ export default function Page() {
             if (!isEmail && !isPhone){
                 Message.error("请输入邮箱或手机号")
             }
-            UserAPI.login(email, password)
+            UserAPI.login(userInput, password)
             .then((r) => {
                 let [state, text] = r;
                 if (state) {
