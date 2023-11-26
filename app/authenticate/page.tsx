@@ -48,15 +48,16 @@ const CheckCode = (props: {type: 'email' | 'phone' | 'unknown', userInput: strin
             setLoading(true)
             IOC.user.getCheckCodeByEmail(props.userInput)
             .then((val)=>{
-                setCD(val.data.cd);
+                // setCD(val.data.cd);
             })
+            .catch((err)=>console.log(err))
             .finally(()=>setLoading(false));
         }
         if (type === 'phone'){
             setLoading(true)
             IOC.user.getCheckCodeByPhone(props.userInput)
             .then((val)=>{
-                setCD(val.data.cd);
+                // setCD(val.data.cd);
             })
             .finally(()=>setLoading(false));
         }
@@ -68,13 +69,7 @@ const CheckCode = (props: {type: 'email' | 'phone' | 'unknown', userInput: strin
     },[time])
     return (
         <Button size="lg" onClick={getCode} isLoading={loading}>
-            {
-                loading ? 
-                <span>
-                    请等待 {time} 秒
-                </span>
-                : <span>发送验证码</span>
-            }
+            <span>点击发送验证码</span>
         </Button>
     )
 }
@@ -220,9 +215,9 @@ export default function Page() {
     useEffect(()=>{
         setValide(/^[\w\d.\-_a-zA-Z\u4e00-\u9fa5]+$/gm.test(userName) && userName.length >= 2);
     }, [userName]);
-    const [disabled] = useDisabled(policyState,userName,password,confirmPassword,code,valide);
-    const {buttonColor} = useButtonColor(disabled);
     const [passwordRobustness, setPasswordRobustness] = useState(new Array(6).fill(false));
+    const [disabled] = useDisabled(policyState,userName,password,confirmPassword,code,valide, passwordRobustness);
+    const {buttonColor} = useButtonColor(disabled);
     const fns = useMemo(()=>{
         return [
             (val: string) => val.length >= 8,
@@ -271,8 +266,8 @@ export default function Page() {
             }
             setLoading(true);
             IOC.user.createUser({
-                phone: type === 'phone' ? userInput : undefined,
-                email: type === 'email' ? userInput : undefined,
+                phone: type === 'phone' ? userInput : '',
+                email: type === 'email' ? userInput : '',
                 password,
                 username: userName,
                 code
@@ -347,10 +342,10 @@ export default function Page() {
                     <Button
                         isLoading={loading}
                         disabled={
-                            pageType !== 'wait-check' ? disabled : !policyState && isEmail || isPhone
+                            pageType !== 'wait-check' ? disabled : !policyState && (isEmail || isPhone)
                         }
                         color={
-                            pageType !== 'wait-check' ? buttonColor : policyState && isEmail || isPhone ? 'primary' : 'default'
+                            pageType !== 'wait-check' ? buttonColor : policyState && (isEmail || isPhone) ? 'primary' : 'default'
                         }
                         onClick={handleClick()[pageType]}
                     >

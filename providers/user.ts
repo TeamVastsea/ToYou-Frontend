@@ -26,7 +26,7 @@ export class User {
         return this.axios.get('/user', { withCredentials: true });
     }
     async getCheckCodeByPhone(phone: string){
-        return this.axios.get<CheckCodeData>('/user/code/phone', {params:{phone}});
+        return this.axios.get<'success'>(`/sms/${phone}`);
     }
     async getCheckCodeByEmail(email: string){
         return this.axios.get<CheckCodeData>('/user/code/email', {params: {email}});
