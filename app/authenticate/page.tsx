@@ -298,7 +298,7 @@ export default function Page() {
                 setLoading(false);
                 return;
             }
-            UserAPI.checkEmail(email)
+            UserAPI.checkEmail(userInput)
             .then(r => {
                 setPageType(r ? "login" : "register")
                 if (!r) {
@@ -347,9 +347,11 @@ export default function Page() {
                     <Button
                         isLoading={loading}
                         disabled={
-                            disabled
+                            pageType !== 'wait-check' ? disabled : !policyState && isEmail || isPhone
                         }
-                        color={buttonColor}
+                        color={
+                            pageType !== 'wait-check' ? buttonColor : policyState && isEmail || isPhone ? 'primary' : 'default'
+                        }
                         onClick={handleClick()[pageType]}
                     >
                         {buttonMessage}
