@@ -3,7 +3,7 @@ import axios, { AxiosError } from "axios";
 import cookie from 'react-cookies';
 
 export const http = axios.create({
-    baseURL: '/api',
+    baseURL: process.env.NODE_ENV === 'development' ? '/api' : process.env.NEXT_PUBLIC_API_SERVER,
     timeout: 6000,
     withCredentials: true,
 });
