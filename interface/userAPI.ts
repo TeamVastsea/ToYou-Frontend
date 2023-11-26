@@ -46,7 +46,7 @@ export class UserAPI {
             redirect: 'follow'
         };
 
-        let response = await fetch(SERVER_URL + "/user?email=" + username + "&password=" + password, requestOptions);
+        let response = await fetch(SERVER_URL + "/user?acccount=" + username + "&password=" + password, requestOptions);
 
         if (response.ok) {
             cookie.save("token", response.headers.get("token")!, {});
