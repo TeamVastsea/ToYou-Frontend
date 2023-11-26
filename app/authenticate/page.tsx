@@ -347,9 +347,11 @@ export default function Page() {
                     <Button
                         isLoading={loading}
                         disabled={
-                            disabled
+                            pageType !== 'wait-check' ? disabled : false
                         }
-                        color={buttonColor}
+                        color={
+                            pageType !== 'wait-check' ? buttonColor : 'primary'
+                        }
                         onClick={handleClick()[pageType]}
                     >
                         {buttonMessage}
