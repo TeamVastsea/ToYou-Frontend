@@ -213,7 +213,9 @@ export default function Page() {
         setValide(/^[\w\d.\-_a-zA-Z\u4e00-\u9fa5]+$/gm.test(userName) && userName.length >= 2);
     }, [userName]);
     const [passwordRobustness, setPasswordRobustness] = useState(new Array(6).fill(false));
-    const [disabled] = useDisabled(policyState,userName,password,confirmPassword,code,valide, passwordRobustness);
+    const isPhone = useIsPhone(userInput);
+    const isEmail = useIsEmail(userInput);
+    const [disabled] = useDisabled(policyState,userName,password,confirmPassword,code,valide, passwordRobustness, isPhone);
     const {buttonColor} = useButtonColor(disabled);
     const fns = useMemo(()=>{
         return [
@@ -224,8 +226,6 @@ export default function Page() {
     }, [])
 
     const router = useRouter();
-    const isPhone = useIsPhone(userInput);
-    const isEmail = useIsEmail(userInput);
 
     const [type,setType] = useType(isPhone,isEmail)
     useEffect(()=>{
@@ -265,7 +265,6 @@ export default function Page() {
             setLoading(true);
             IOC.user.createUser({
                 phone: type === 'phone' ? userInput : '',
-                email: type === 'email' ? userInput : '',
                 password,
                 username: userName,
                 code
@@ -313,11 +312,17 @@ export default function Page() {
                     <div className="space-y-5">
                         <Input
                             isClearable
-                            label="邮箱或手机号"
-                            placeholder="请输入邮箱或手机号"
+                            label={pageType !== 'register' ? '请输入邮箱或手机号' : '请输入手机号'}
+                            placeholder={pageType !== 'register' ? '请输入邮箱或手机号' : '请输入手机号'}
                             key={"emailOrPhone"}
-                            isInvalid={isEmail || isPhone}
-                            errorMessage={!isEmail && !isPhone && ('请输入手机或邮箱')}
+                            isInvalid={
+                                pageType === 'login' ? isEmail || isPhone : 
+                                pageType === 'register' ? isPhone : true
+                            }
+                            errorMessage={
+                                pageType === 'login' ? !isEmail && !isPhone && ('请输入手机或邮箱') :
+                                pageType === 'register' ? !isPhone && ('请输入手机号') : null
+                            }
                             type="text"
                             value={userInput}
                             onValueChange={setUserInput}
@@ -340,7 +345,9 @@ export default function Page() {
                     <Button
                         isLoading={loading}
                         disabled={
-                            pageType === 'login' ? false : pageType !== 'wait-check' ? disabled : !policyState && (isEmail || isPhone)
+                            pageType === 'wait-check' ? !policyState && (isEmail || isPhone) : 
+                            pageType === 'login' ? !policyState : 
+                            pageType === 'register' ? disabled : true
                         }
                         color={
                             pageType === 'login' ? 'primary' : pageType !== 'wait-check' ? buttonColor : policyState && (isEmail || isPhone) ? 'primary' : 'default'
