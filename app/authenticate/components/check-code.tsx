@@ -1,44 +1,42 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import { useCountDown } from "../hooks";
+import { useState } from "react";
 import IOC from "@/providers";
 import { Button } from "@nextui-org/react";
 import CountDown from "./count-down";
 
 const CheckCode = (props: {type: 'email' | 'phone' | 'unknown', userInput: string}) => {
     const {type} = props;
-    const [loading, setLoading] = useState(true);
-    const [cd, setCD] = useState(60000)
-    const [time] = useCountDown(cd)
+    const [cd, setCD] = useState(0)
+    const onCountdownFinish = () => {
+        setCD(0)
+    }
     const getCode = () => {
         if (type === 'email'){
-            setLoading(true)
             IOC.user.getCheckCodeByEmail(props.userInput)
             .then((val)=>{
-                setCD(val.data.cd);
+                setCD(val.data.cd + 1);
             })
-            .catch((err)=>console.log(err))
-            .finally(()=>setLoading(false));
+            .catch((err)=>{
+                console.log(err);
+                setCD(60 * 1000);
+            })
         }
         if (type === 'phone'){
-            setLoading(true)
             IOC.user.getCheckCodeByPhone(props.userInput)
             .then((val)=>{
-                setCD(val.data.cd);
+                setCD(val.data.cd + 1);
+                console.log(val.data.cd)
             })
-            .finally(()=>setLoading(false));
+            .catch(()=>{
+                setCD(60 * 1000);
+            })
         }
     }
-    useEffect(()=>{
-        if (time === '0'){
-            setLoading(false);
-        }
-    },[time])
     return (
-        <Button onClick={getCode} isDisabled={loading} size="lg" className="flex gap-2 flex-grow-0 flex-shrink-0 basis-auto px-2 w-32 break-words">
+        <Button onClick={getCode} isDisabled={cd > 0} size="lg" className="flex gap-2 flex-grow-0 flex-shrink-0 basis-auto px-2 w-32 break-words">
             {
-                loading ? <CountDown cd={cd} /> : '发送验证码'
+                cd > 0 ? <CountDown countDown={cd} onFinish={onCountdownFinish} /> : '发送验证码'
             }
         </Button>
     )

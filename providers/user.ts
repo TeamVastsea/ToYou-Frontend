@@ -9,6 +9,9 @@ export class User {
     async checkEmail(email: string){
         return (await this.axios.get('/user/email', {params: {email}})).data === 'exists';
     }
+    async checkPhone(phone: string){
+        return (await this.axios.get(`/user/phone/${phone}`)).data;
+    }
     async createUser(data: RegisterRequestData){
         const formData = new FormData();
         for (const [key, value] of Object.entries(data)){

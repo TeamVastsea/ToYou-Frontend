@@ -1,11 +1,21 @@
 'use client'
 
+import { useEffect, useRef, useState } from "react";
 import { useCountDown } from "../hooks"
 
 const CountDown = (
-    props: {cd: number}
+    props: {countDown: number, onFinish: () => void}
 ) => {
-    const [time] = useCountDown(props.cd);
+    const [cd, setCD] = useState(props.countDown / 1000);
+    const [time, start] = useCountDown(cd);
+    useEffect(()=>{
+        start();
+    },[])
+    useEffect(()=>{
+        if (time === 0){
+            props.onFinish();
+        }
+    },[time, props])
     return (
         <span>{time}秒后重新获取</span>
     )

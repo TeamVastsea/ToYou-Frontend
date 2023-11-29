@@ -215,14 +215,18 @@ export default function Page() {
                 setLoading(false);
                 return;
             }
-            UserAPI.checkEmail(userInput)
-            .then(r => {
-                setPageType(r ? "login" : "register")
-                if (!r) {
-                    Message.message("验证码已发送")
-                }
-            })
-            .finally(()=>setLoading(false))
+            if (isEmail){
+                UserAPI.checkEmail(userInput)
+                .then(r => {
+                    setPageType(r ? "login" : "register")
+                })
+                .finally(()=>setLoading(false))
+            }
+            if (isPhone){
+                IOC.user.checkPhone(userInput)
+                .then(r => setPageType(r ? 'login' : 'register'))
+                .finally(()=>setLoading(false))
+            }
         }
         return {
             login,
