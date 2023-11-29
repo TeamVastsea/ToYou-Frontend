@@ -1,8 +1,8 @@
 import { SetStateAction, useEffect, useState } from "react"
 
 export const useCountDown = (
-    cd: number
-):[string, React.Dispatch<SetStateAction<string>>] => {
+    cd: number,
+):[string, React.Dispatch<SetStateAction<string>>, number] => {
     let _cd = cd >= 1000 ? Number((cd/1000).toFixed()) : cd;
     const [time, setTime] = useState('');
     let timer:any = null;
@@ -20,8 +20,8 @@ export const useCountDown = (
     useEffect(()=>{
         dealData();
         return ()=>{
-            timer && clearTimeout(timer)
+            timer && clearTimeout(timer);
         }
     },[]);
-    return [time,setTime]
+    return [time,setTime,_cd]
 }

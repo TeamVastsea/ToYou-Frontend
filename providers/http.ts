@@ -24,10 +24,9 @@ http.interceptors.request.use(
     }
 )
 http.interceptors.response.use((val)=>{
-    
     return val;
 }, (err: AxiosError)=>{
-    const msg = typeof err.response?.data === 'object' ? JSON.stringify(err.response?.data ?? {}) : '未知错误'
-    Message.error(msg);
+    const msg = typeof err.response?.data === 'object' ? JSON.stringify(err.response?.data ?? {}) : err.response?.data
+    Message.error(JSON.stringify(msg));
     return Promise.reject(err);
 })
