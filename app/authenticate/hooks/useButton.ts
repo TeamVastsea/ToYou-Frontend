@@ -32,7 +32,8 @@ export const useDisabled = (
         passwordRobustness: boolean[],
         pageType: PageType,
         isEmail: boolean,
-        isPhone: boolean
+        isPhone: boolean,
+        account: string
     },
 ) => {
     const {
@@ -45,17 +46,18 @@ export const useDisabled = (
         valide,
         passwordRobustness,
         isEmail,
-        isPhone
+        isPhone,
+        account
     } = props;
     const [disabled, setDisabled] = useState(true);
     useEffect(()=>{
         if (pageType === 'wait-check'){
             setDisabled(
-                !policyState && (!isEmail || !isPhone)
+                !policyState || account.length === 0
             )
         }
         if (pageType === 'login'){
-            setDisabled(!policyState);
+            setDisabled(!policyState || password.length === 0 || account.length === 0);
         }
         if (pageType === 'register') {
             setDisabled(
@@ -64,7 +66,7 @@ export const useDisabled = (
                 )
             )
         }
-    }, [checkCode, confirmPassword, isEmail, isPhone, pageType, password, passwordRobustness, policyState, valide])
+    }, [checkCode, confirmPassword, isEmail, isPhone, pageType, password, passwordRobustness, policyState, valide, userName, account])
     return {disabled, setDisabled};
 }
 
@@ -79,7 +81,8 @@ export const useButton = (props: {
         passwordRobustness: boolean[],
         pageType: PageType,
         isEmail: boolean,
-        isPhone: boolean
+        isPhone: boolean,
+        account: string
 }) => {
     const {disabled} = useDisabled(props);
     const [color, setColor] = useState<"default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined>(disabled ? 'default' : 'primary');

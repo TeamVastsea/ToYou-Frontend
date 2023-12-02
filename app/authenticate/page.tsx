@@ -141,7 +141,7 @@ export default function Page() {
     const isEmail = useIsEmail(userInput);
     const {
         color,disabled,buttonMessage
-    } = useButton({policyState,userName,password,confirmPassword,checkCode:code,valide, passwordRobustness, isPhone,pageType,isEmail});
+    } = useButton({policyState,userName,password,confirmPassword,checkCode:code,valide, passwordRobustness, isPhone,pageType,isEmail, account: userInput});
     const fns = useMemo(()=>{
         return [
             (val: string) => val.length >= 8,
