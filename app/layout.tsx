@@ -1,5 +1,3 @@
-'use client'
-
 import "@/styles/globals.css";
 import {Metadata} from "next";
 import {siteConfig} from "@/config/site";
@@ -8,11 +6,10 @@ import {AuthProvider, Providers} from "./providers";
 import {Navbar} from "@/components/navbar";
 import {Link} from "@nextui-org/link";
 import clsx from "clsx";
-import React, { useEffect } from "react";
+import React from "react";
 import {rgba} from "color2k";
-import toast, {Toaster, useToasterStore} from "react-hot-toast";
+import {Toaster} from "react-hot-toast";
 import { LogoText } from "@/components/icons";
-import { Message } from "@/components/message";
 
 export const metadata: Metadata = {
     title: {
@@ -30,17 +27,10 @@ export const metadata: Metadata = {
         apple: "/apple-touch-icon.png",
     },
 };
+
 export default function RootLayout({children,}: {
     children: React.ReactNode;
 }) {
-    const {toasts} = useToasterStore();
-    
-    const LIMIT = 2;
-    useEffect(()=>{
-        toasts.filter(t => t.visible)
-              .filter((_,i) => i >= LIMIT)
-              .forEach(t => toast.remove(t.id))
-    }, [toasts])
     return (
         <html lang="cn" suppressHydrationWarning>
         <head>
