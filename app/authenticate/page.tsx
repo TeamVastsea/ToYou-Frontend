@@ -10,10 +10,16 @@ import {useRouter} from "next/navigation";
 import {SetLoggedInState} from "@/interface/hooks";
 import {UserAPI} from "@/interface/userAPI";
 import IOC from "@/providers";
-import { useCountDown, useButtonColor, useButtonMessage, useType, useIsPhone, useIsEmail, useDisabled } from "./hooks";
-import { IoCloseSharp } from "react-icons/io5";
-import { IoCheckmark } from "react-icons/io5";
+import {
+    useType,
+    useIsPhone,
+    useIsEmail,
+    useDisabled,
+    useButton
+} from "./hooks";
 import Password from "@/components/password";
+import PasswordRobustnessList from "./components/password-robustness-list";
+import CheckCode from "./components/check-code";
 
 export type Colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
 export type PageType = 'wait-check' | 'login' | 'register'
@@ -36,86 +42,6 @@ const Login = (
              onValueChange={props.setPassword}
          />
      </>
-    )
-}
-const CheckCode = (props: {type: 'email' | 'phone' | 'unknown', userInput: string}) => {
-    const {type} = props;
-    const [loading, setLoading] = useState(false );
-    const [cd, setCD] = useState(1000)
-    const [time, setTime] = useCountDown(cd)
-    const getCode = () => {
-        if (type === 'email'){
-            setLoading(true)
-            IOC.user.getCheckCodeByEmail(props.userInput)
-            .then((val)=>{
-                // setCD(val.data.cd);
-            })
-            .catch((err)=>console.log(err))
-            .finally(()=>setLoading(false));
-        }
-        if (type === 'phone'){
-            setLoading(true)
-            IOC.user.getCheckCodeByPhone(props.userInput)
-            .then((val)=>{
-                // setCD(val.data.cd);
-            })
-            .finally(()=>setLoading(false));
-        }
-    }
-    useEffect(()=>{
-        if (!time){
-            setLoading(false);
-        }
-    },[time])
-    return (
-        <Button size="lg" onClick={getCode} isLoading={loading}>
-            <span>点击发送验证码</span>
-        </Button>
-    )
-}
-const PasswordRobustnessList = (props: {active: boolean[]}) => {
-    const labels = [
-        {
-            key: 'min',
-            label: '至少8位',
-            defaultShow: true
-        },
-        {
-            key: 'fuck',
-            label: '大写字母、小写字母、数字、特殊符号中至少包含两种',
-            defaultShow: true
-        },
-        {
-            key: 'max',
-            label: '至多30位',
-            defaultShow: false
-        }
-    ]
-    return (
-        <ul className="w-full">
-            {
-                labels.map(({label, key, defaultShow}, idx)=>{
-                    let show = defaultShow;
-                    if (idx === labels.length-1){
-                        show = !props.active[idx];
-                    }
-                    return show && (
-                        <li
-                                key={key}
-                                className={`
-                                    flex items-center transition
-                                    ${props.active[idx] ? 'text-green-600 dark:text-green-500' : 'text-red-600 dark:text-red-500'}`
-                                }
-                            >
-                            {
-                                props.active[idx] ?  <IoCheckmark className="inline text-xl" /> : <IoCloseSharp className="inline text-xl" />
-                            }
-                            <span>{label}</span>
-                        </li>
-                    )
-                })
-            }
-        </ul>
     )
 }
 
@@ -198,10 +124,8 @@ const Register = (
 };
 
 export default function Page() {
-    const [email, setEmail] = useState('');
     const [userInput, setUserInput] = useState('');
     const [pageType, setPageType] = useState<PageType>('wait-check');
-    const {buttonMessage} = useButtonMessage(pageType, '下一步');
     const [policyState, setPolicyState] = useState(false);
     const [loading, setLoading] = useState(false);
     const [code, setCode] = useState('');
@@ -215,8 +139,9 @@ export default function Page() {
     const [passwordRobustness, setPasswordRobustness] = useState(new Array(6).fill(false));
     const isPhone = useIsPhone(userInput);
     const isEmail = useIsEmail(userInput);
-    const [disabled] = useDisabled(policyState,userName,password,confirmPassword,code,valide, passwordRobustness, isPhone);
-    const {buttonColor} = useButtonColor(disabled);
+    const {
+        color,disabled,buttonMessage
+    } = useButton({policyState,userName,password,confirmPassword,checkCode:code,valide, passwordRobustness, isPhone,pageType,isEmail, account: userInput});
     const fns = useMemo(()=>{
         return [
             (val: string) => val.length >= 8,
@@ -290,14 +215,18 @@ export default function Page() {
                 setLoading(false);
                 return;
             }
-            UserAPI.checkEmail(userInput)
-            .then(r => {
-                setPageType(r ? "login" : "register")
-                if (!r) {
-                    Message.message("验证码已发送")
-                }
-            })
-            .finally(()=>setLoading(false))
+            if (isEmail){
+                UserAPI.checkEmail(userInput)
+                .then(r => {
+                    setPageType(r ? "login" : "register")
+                })
+                .finally(()=>setLoading(false))
+            }
+            if (isPhone){
+                IOC.user.checkPhone(userInput)
+                .then(r => setPageType(r ? 'login' : 'register'))
+                .finally(()=>setLoading(false))
+            }
         }
         return {
             login,
@@ -345,12 +274,10 @@ export default function Page() {
                     <Button
                         isLoading={loading}
                         disabled={
-                            pageType === 'wait-check' ? !policyState && (isEmail || isPhone) : 
-                            pageType === 'login' ? !policyState : 
-                            pageType === 'register' ? disabled : true
+                            disabled
                         }
                         color={
-                            pageType === 'login' ? 'primary' : pageType !== 'wait-check' ? buttonColor : policyState && (isEmail || isPhone) ? 'primary' : 'default'
+                            color
                         }
                         onClick={handleClick()[pageType]}
                     >

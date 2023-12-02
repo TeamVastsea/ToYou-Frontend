@@ -1,27 +1,30 @@
-import { SetStateAction, useEffect, useState } from "react"
+import React, { useState, useEffect } from "react";
 
-export const useCountDown = (
-    cd: number
-):[string, React.Dispatch<SetStateAction<string>>] => {
-    let _cd = cd >= 1000 ? Number((cd/1000).toFixed()) : cd;
-    const [time, setTime] = useState('');
-    let timer:any = null;
-    const dealData = () => {
-        if (_cd < 0){
-            setTime('');
-            return timer && clearTimeout(timer);
-        }
-        setTime(`${_cd}`)
-        _cd --;
-        timer = setTimeout(()=>{
-            dealData()
-        },1000)
+export function useCountDown(ms: number):[number, ()=>void,()=>void,()=>void] {
+  const [time, setTime] = useState(ms);
+  const [isRunning, setIsRunning] = useState(false);
+  useEffect(() => {
+    if (isRunning && time > 0) {
+      const timerId = setTimeout(() => {
+        setTime(time - 1);
+      }, 1000);
+      return () => {
+        clearTimeout(timerId);
+      };
     }
-    useEffect(()=>{
-        dealData();
-        return ()=>{
-            timer && clearTimeout(timer)
-        }
-    },[]);
-    return [time,setTime]
+    else {
+      setIsRunning(false);
+    }
+  }, [isRunning, time]);
+  const start = () => {
+    setIsRunning(true)
+  }
+  const pause = ()=>{
+    setIsRunning(false);
+  }
+  const reset = () => {
+    setTime(ms);
+    setIsRunning(false);
+  }
+  return [time, start, pause, reset];
 }
