@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import {Metadata} from "next";
 import {siteConfig} from "@/config/site";
 import {fontSans} from "@/config/fonts";
-import {AuthProvider, Providers} from "./providers";
+import {AuthProvider, Providers, ToastProvider} from "./providers";
 import {Navbar} from "@/components/navbar";
 import {Link} from "@nextui-org/link";
 import clsx from "clsx";
@@ -47,16 +47,20 @@ export default function RootLayout({children,}: {
                 <div className="relative flex flex-col min-h-screen">
                     <Navbar/>
                     <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-                        <Toaster toastOptions={{
-                            className: '',
-                            duration: 5000,
-                            style: {
-                                background: rgba(0, 0, 0, 0),
-                                color: rgba(0, 0, 0, 0),
-                                borderStyle: 'none',
-                                boxShadow: 'none'
-                            },}} gutter={-15}/>
-                            {children}
+                        <ToastProvider>
+                            <Toaster toastOptions={{
+                                className: '',
+                                duration: 5000,
+                                style: {
+                                    background: rgba(0, 0, 0, 0),
+                                    color: rgba(0, 0, 0, 0),
+                                    borderStyle: 'none',
+                                    boxShadow: 'none'
+                                }
+                                }
+                            } gutter={-15} />
+                                {children}
+                        </ToastProvider>
                     </main>
                     <footer className="max-w-[900px] mx-auto px-6 py-3 w-full flex flex-col gap-2 text-sm">
                         <ul className="w-fit flex gap-2 mx-auto">
