@@ -59,7 +59,9 @@ export default function RootLayout({children,}: {
                                 }
                                 }
                             } gutter={-15} />
+                            <AuthProvider whiteList={['/', '/authenticate', '/pricing']}>
                                 {children}
+                            </AuthProvider>
                         </ToastProvider>
                     </main>
                     <footer className="max-w-[900px] mx-auto px-6 py-3 w-full flex flex-col gap-2 text-sm">
