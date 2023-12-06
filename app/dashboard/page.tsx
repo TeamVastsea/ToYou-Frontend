@@ -18,6 +18,8 @@ import cookie from "react-cookies";
 import {PriceInfo} from "@/components/price";
 import { IsLoggedIn } from "@/interface/hooks";
 import { RedirectType } from "next/dist/client/components/redirect";
+import Cert from "./component/cert";
+import IOC from "@/providers";
 
 export default function Page() {
     if (!IsLoggedIn){
@@ -30,14 +32,18 @@ export default function Page() {
     let [timeDescription, setTimeDescription] = useState("无限时间");
     let [pictures, setPictures] = useState<PictureList>();
     let [group, setGroup] = useState<PriceInfo>()
+
+    const [certify, setCertify] = useState(true);
+
     const router = useRouter();
 
     function updateInfo() {
         UserAPI.getExtendedInformation().then((r) => {
             if (r == undefined) {
                 router.push("/authenticate");
+                return;
             }
-            let user = r!;
+            let user = r;
             let price = getGroupPrice(r!.extend!.userGroup);
 
             setUsed(Number((user.extend!.storageUsed / 1024 / 1024).toFixed(2)));
@@ -59,12 +65,16 @@ export default function Page() {
             setPictures(r);
         });
     }
-
     useEffect(()=>{
+        IOC.certify.getCertifyState()
+        .catch(()=>{
+            setCertify(false)
+        })
         if (used == 0 && total == 1) {
             updateInfo();
         }
     }, [])
+    
 
     return (
         <div className="space-y-5 max-w-[450px] mx-auto">
@@ -128,6 +138,7 @@ export default function Page() {
                 url={SERVER_URL + "/picture/preview?shareMode=2&id=" + picture.id.toString() + "&token=" + cookie.load("token")}
                 name={picture.fileName} pid={picture.id.toString()} group={group}/>)}
             {/* <Picture url="https://t7.baidu.com/it/u=2961459243,2146986594&fm=193&f=GIF" name="雪景.png" pid="" /> */}
+            {!certify && <Cert />}
         </div>
     )
 }
