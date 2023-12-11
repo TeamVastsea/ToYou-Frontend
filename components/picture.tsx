@@ -21,6 +21,7 @@ import {Input} from "@nextui-org/input";
 import {PictureAPI} from "@/interface/pictureAPI";
 import {SERVER_URL} from "@/interface/api";
 import {PriceInfo} from "@/components/price";
+import IOC from "@/providers";
 
 const SharedButton = (props: {link: string, pid?:string}) => {
     const {link, pid} = props;
@@ -60,6 +61,8 @@ export default function Picture(props: PictureProps) {
     let [link, setShareLink] = useState("");
     let [saveLoading, setSaveLoading] = useState(false);
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(['none']));
+    let originName = props.name;
+
     function generateShareLink(shareMode?: number, password?: string) {
         PictureAPI.sharePicture(props.pid, shareMode, password).then((r) => {
             setShareLink(SERVER_URL + "/picture/share/" + r.sid);
@@ -91,7 +94,7 @@ export default function Picture(props: PictureProps) {
                 />
                 <CardFooter
                     className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-auto shadow-small ml-1 z-10 space-x-2">
-                    <p className="text-tiny font-mono">{props.name}</p>&nbsp;
+                    <p className="text-tiny font-mono">{name}</p>&nbsp;
                     <SharedButton link={link} pid={props.pid} />
                 </CardFooter>
             </Card>
@@ -144,13 +147,22 @@ export default function Picture(props: PictureProps) {
                                 </p>
                             </ModalBody>
                             <ModalFooter>
-                                <Button disabled={saveLoading} color="danger" variant="light" onPress={onClose}>
+                                <Button disabled={saveLoading} color="danger" variant="light" onPress={() => {
+                                    //TODO: add picture deletion confirm
+                                    //IOC.picture.deletePicture(props.pid).then(_ => {});
+                                    onClose();
+                                }}>删除图片</Button>
+                                <Button disabled={saveLoading} color="danger" onPress={() => {
+                                    setName(originName);
+                                    onClose();
+                                }}>
                                     取消
                                 </Button>
                                 <Button isLoading={saveLoading} color="primary" onPress={() => {
                                     setSaveLoading(true);
                                     PictureAPI.changePictureName(name, props.pid).then(() => {
                                         Message.success("已保存");
+                                        originName = name;
                                         setSaveLoading(false);
                                         onClose();
                                     });
