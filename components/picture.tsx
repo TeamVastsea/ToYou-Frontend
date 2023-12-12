@@ -140,12 +140,7 @@ export default function Picture(props: PictureProps) {
                     }
                 >
                     <div ref={footerRef} className='w-fit flex gap-1 justify-center items-center'>
-                        <p className={
-                            `
-                            text-tiny font-mono truncate
-                            ${textColor}
-                            `
-                        } title={name}>{name}</p>&nbsp;
+                        <p className={`text-tiny font-mono truncate ${textColor}`} title={name}>{name}</p>&nbsp;
                         <SharedButton link={link} pid={props.pid} className={
                             `${textColor}`
                         } />
