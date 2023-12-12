@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import {
     Selection,
     Button,
@@ -15,6 +15,7 @@ import {
     DropdownTrigger,
     PopoverProvider
 } from "@nextui-org/react";
+import {getImgContrast} from 'react-img-contrast';
 import copy from "copy-to-clipboard";
 import {CheckLinearIcon, DeleteIcon} from "@nextui-org/shared-icons";
 import {Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@nextui-org/modal";
@@ -26,7 +27,7 @@ import {SERVER_URL} from "@/interface/api";
 import {PriceInfo} from "@/components/price";
 import IOC from "@/providers";
 
-const SharedButton = (props: {link: string, pid?:string}) => {
+const SharedButton = (props: {link: string, pid?:string, className?: string}) => {
     const {link, pid} = props;
     const [isChecked, setIsChecked] = useState(false);
     let timeout: NodeJS.Timeout | null = null;
@@ -53,7 +54,7 @@ const SharedButton = (props: {link: string, pid?:string}) => {
                     timeout = null;
                 }, 1000);
             }}>
-            {isChecked ? <CheckLinearIcon/> : <FiCopy/>}
+            {isChecked ? <CheckLinearIcon className={props.className}/> : <FiCopy className={props.className}/>}
         </Button>
     )
 }
@@ -65,7 +66,8 @@ export default function Picture(props: PictureProps) {
     let [saveLoading, setSaveLoading] = useState(false);
     const [delLoading, setDelLoading] = useState(false);
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(['none']));
-    const [delConfirmPopoverState, setDelConfirmPopoverState] = useState(false);
+    
+    const [textColor, setTextColor] = useState('text-black');
     let originName = props.name;
 
     function generateShareLink(shareMode?: number, password?: string) {
@@ -97,7 +99,17 @@ export default function Picture(props: PictureProps) {
         generateShareLink(mode);
     }, [selectedKeys])
 
-    const deleteModal = useDisclosure();
+    const footerRef = useRef(null);
+
+    useEffect(()=>{
+        getImgContrast({
+            imgSrc: props.url,
+        })
+        .then((textState) => {
+            setTextColor(textState === 'white' ? 'text-white' : 'text-black')
+        })
+    },[props.url, setTextColor])
+
 
     return (
         <>
@@ -118,26 +130,43 @@ export default function Picture(props: PictureProps) {
                     isZoomed
                 />
                 <CardFooter
-                    className="justify-between bg-default dark:bg-black overflow-hidden py-2 absolute rounded-large bottom-1 w-auto max-w-[75%] shadow-small ml-1 z-10 space-x-2">
-                    <p className="text-tiny font-mono truncate" title={name}>{name}</p>&nbsp;
-                    <SharedButton link={link} pid={props.pid} />
-                    <Popover>
-                        <PopoverTrigger>
-                            <Button isIconOnly className="justify-center" variant="bordered" size="sm" isLoading={delLoading}>
-                                {!delLoading && <DeleteIcon />}
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent>
-                            {(titleStyle) => (
-                                <div className="px-2 py-1">
-                                    <h3 className="text-lg" {...titleStyle}>确定要删除吗</h3>
-                                    <div className="my-2">
-                                        <Button color="danger" size="sm" fullWidth onClick={()=>deletePicture(()=>{})}>确认</Button>
+                    className={
+                    `
+                    w-auto max-w-[75%] justify-between
+                    before:bg-white/10 before:rounded-xl
+                    border-white/20 overflow-hidden py-2 absolute rounded-large bottom-1 shadow-small ml-1 z-10 space-x-2
+                    ${textColor}
+                    `
+                    }
+                >
+                    <div ref={footerRef} className='w-fit flex gap-1 justify-center items-center'>
+                        <p className={
+                            `
+                            text-tiny font-mono truncate
+                            ${textColor}
+                            `
+                        } title={name}>{name}</p>&nbsp;
+                        <SharedButton link={link} pid={props.pid} className={
+                            `${textColor}`
+                        } />
+                        <Popover>
+                            <PopoverTrigger>
+                                <Button isIconOnly className="justify-center" variant="bordered" size="sm" isLoading={delLoading}>
+                                    {!delLoading && <DeleteIcon className={`${textColor}`} />}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent>
+                                {(titleStyle) => (
+                                    <div className="px-2 py-1">
+                                        <h3 className="text-lg" {...titleStyle}>确定要删除吗</h3>
+                                        <div className="my-2">
+                                            <Button color="danger" size="sm" fullWidth onClick={()=>deletePicture(()=>{})}>确认</Button>
+                                        </div>
                                     </div>
-                                </div>
-                            )}
-                        </PopoverContent>
-                    </Popover>
+                                )}
+                            </PopoverContent>
+                        </Popover>
+                    </div>
                 </CardFooter>
             </Card>
 
