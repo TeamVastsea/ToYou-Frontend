@@ -66,6 +66,14 @@ export default function Page() {
         }
     }, [])
 
+    const deletePicture = (pid: string) => {
+        const records = pictures?.records?.filter((record) => record.id !== Number(pid) );
+        console.log(records, pid);
+        if (pictures && records){
+            setPictures({...pictures, records});
+        }
+    }
+
     return (
         <div className="space-y-5 max-w-[450px] mx-auto">
             <Card className="max-w-4xl">
@@ -126,7 +134,7 @@ export default function Page() {
             {/* eslint-disable-next-line react/jsx-key */}
             {pictures?.records == null ? <a>请上传</a> : pictures!.records.map(picture => <Picture
                     url={SERVER_URL + "/picture/preview?shareMode=2&id=" + picture.id.toString() + "&token=" + cookie.load("token")}
-                    name={picture.fileName} pid={picture.id.toString()} group={group}/>)}
+                    name={picture.fileName} pid={picture.id.toString()} group={group} onDelete={deletePicture} />)}
             {/* <Picture url="https://t7.baidu.com/it/u=2961459243,2146986594&fm=193&f=GIF" name="雪景.png" pid="" onPress={onOpen} /> */}
         </div>
     )

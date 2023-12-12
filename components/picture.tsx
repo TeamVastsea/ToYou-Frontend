@@ -10,13 +10,16 @@ import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-    useDisclosure
+    useDisclosure,
+    Dropdown,
+    DropdownTrigger,
+    PopoverProvider
 } from "@nextui-org/react";
 import copy from "copy-to-clipboard";
-import {CheckLinearIcon} from "@nextui-org/shared-icons";
+import {CheckLinearIcon, DeleteIcon} from "@nextui-org/shared-icons";
 import {Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@nextui-org/modal";
 import {Message} from "@/components/message";
-import {FiCopy, FiShare} from "react-icons/fi";
+import {FiCopy} from "react-icons/fi";
 import {Input} from "@nextui-org/input";
 import {PictureAPI} from "@/interface/pictureAPI";
 import {SERVER_URL} from "@/interface/api";
@@ -60,7 +63,9 @@ export default function Picture(props: PictureProps) {
     let [name, setName] = useState(props.name);
     let [link, setShareLink] = useState("");
     let [saveLoading, setSaveLoading] = useState(false);
+    const [delLoading, setDelLoading] = useState(false);
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(['none']));
+    const [delConfirmPopoverState, setDelConfirmPopoverState] = useState(false);
     let originName = props.name;
 
     function generateShareLink(shareMode?: number, password?: string) {
@@ -69,17 +74,38 @@ export default function Picture(props: PictureProps) {
             Message.success("成功分享'" + props.name + "'");
         });
     }
+
+    const deletePicture = (onClose: () => void) => {
+        setDelLoading(true);
+        IOC.picture.deletePicture(props.pid)
+        .then(()=>{
+            Message.success('删除成功')
+            props.onDelete?.(props.pid);
+        })
+        .catch((reason) => {
+            Message.error(reason)
+        })
+        .finally(() => {
+            onClose();
+            setDelLoading(false)
+        })
+    }
+    const toggleDelConfirmPopoverState = () => setDelConfirmPopoverState(!delConfirmPopoverState);
+
     useMemo(()=>{
         const key = Array.from(selectedKeys).join('');
         let mode = key == "watermark" ? 1 : key == "compressed" ? 2 : 3;
         generateShareLink(mode);
     }, [selectedKeys])
+
+    const deleteModal = useDisclosure();
+
     return (
         <>
             <Card
                 isFooterBlurred
                 radius="lg"
-                className="border-none items-center"
+                className="border-none items-center relative"
                 isPressable
                 onPress={descriptionOpen.onOpen}
                 style={{maxWidth: 450, width: '100%'}}
@@ -93,9 +119,26 @@ export default function Picture(props: PictureProps) {
                     isZoomed
                 />
                 <CardFooter
-                    className="justify-between before:bg-white/10 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-auto shadow-small ml-1 z-10 space-x-2">
-                    <p className="text-tiny font-mono">{name}</p>&nbsp;
+                    className="justify-between bg-black overflow-hidden py-2 absolute rounded-large bottom-1 w-auto max-w-[50%] shadow-small ml-1 z-10 space-x-2">
+                    <p className="text-tiny font-mono truncate" title={name}>{name}</p>&nbsp;
                     <SharedButton link={link} pid={props.pid} />
+                    <Popover>
+                        <PopoverTrigger>
+                            <Button isIconOnly className="justify-center" variant="bordered" size="sm" isLoading={delLoading}>
+                                {!delLoading && <DeleteIcon />}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                            {(titleStyle) => (
+                                <div className="px-2 py-1">
+                                    <h3 className="text-lg" {...titleStyle}>确定要删除吗</h3>
+                                    <div className="my-2">
+                                        <Button color="danger" size="sm" fullWidth onClick={()=>deletePicture(()=>{})}>确认</Button>
+                                    </div>
+                                </div>
+                            )}
+                        </PopoverContent>
+                    </Popover>
                 </CardFooter>
             </Card>
 
@@ -105,15 +148,15 @@ export default function Picture(props: PictureProps) {
                         <>
                             <ModalHeader className="flex flex-col gap-1">图片详情</ModalHeader>
                             <ModalBody>
-                                <p>
+                                <div className="w-fit mx-auto">
                                     <Image
                                         alt={props.name}
-                                        className="object-cover"
-                                        width={450}
+                                        className="object-cover mx-auto"
+                                        width={200}
                                         height={200}
                                         src={props.url}
                                     />
-                                </p>
+                                </div>
                                 <p>
                                     <Input placeholder={"图片名称"} value={name} onValueChange={setName}/>
                                 </p>
@@ -147,17 +190,6 @@ export default function Picture(props: PictureProps) {
                                 </p>
                             </ModalBody>
                             <ModalFooter>
-                                <Button disabled={saveLoading} color="danger" variant="light" onPress={() => {
-                                    //TODO: add picture deletion confirm
-                                    //IOC.picture.deletePicture(props.pid).then(_ => {});
-                                    onClose();
-                                }}>删除图片</Button>
-                                <Button disabled={saveLoading} color="danger" onPress={() => {
-                                    setName(originName);
-                                    onClose();
-                                }}>
-                                    取消
-                                </Button>
                                 <Button isLoading={saveLoading} color="primary" onPress={() => {
                                     setSaveLoading(true);
                                     PictureAPI.changePictureName(name, props.pid).then(() => {
@@ -168,6 +200,12 @@ export default function Picture(props: PictureProps) {
                                     });
                                 }}>
                                     保存
+                                </Button>
+                                <Button disabled={saveLoading} color="danger" onPress={() => {
+                                    setName(originName);
+                                    onClose();
+                                }}>
+                                    取消
                                 </Button>
                             </ModalFooter>
                         </>
@@ -184,5 +222,6 @@ export type PictureProps = {
     name: string,
     pubicMode?: string,
     group?: PriceInfo,
-    onPress?: ()=>void
+    onPress?: ()=>void;
+    onDelete?: (pid:string)=>void;
 }
