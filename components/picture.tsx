@@ -118,7 +118,7 @@ export default function Picture(props: PictureProps) {
                     isZoomed
                 />
                 <CardFooter
-                    className="justify-between bg-default dark:bg-black overflow-hidden py-2 absolute rounded-large bottom-1 w-auto max-w-[50%] shadow-small ml-1 z-10 space-x-2">
+                    className="justify-between bg-default dark:bg-black overflow-hidden py-2 absolute rounded-large bottom-1 w-auto max-w-[75%] shadow-small ml-1 z-10 space-x-2">
                     <p className="text-tiny font-mono truncate" title={name}>{name}</p>&nbsp;
                     <SharedButton link={link} pid={props.pid} />
                     <Popover>
