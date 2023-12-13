@@ -125,7 +125,7 @@ export default function Page() {
                                     content: "drop-shadow shadow-black text-white",
                                 }}
                             >
-                                高级
+                                {group?.name}
                             </Chip>
                         </a>
                     </a>
