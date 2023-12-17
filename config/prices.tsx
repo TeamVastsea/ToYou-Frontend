@@ -44,10 +44,27 @@ export function getGroupPrice(name: string): PriceInfo {
     let lower = name.toLowerCase();
     switch (lower) {
         case "default":
-        case "free": return priceFree;
-        case "started": return priceStarted;
-        case "advanced": return priceAdvanced;
-        case "professional": return priceProfessional;
+        case "free": return priceFree; // 白色/灰色
+        case "started": return priceStarted; // 蓝色
+        case "advanced": return priceAdvanced; // 紫色
+        case "professional": return priceProfessional;  // 金色
         default: return priceFree;
+    }
+}
+
+export const getPriceColor = (
+    price: 'free' | 'started' | 'advanced' | 'professional'
+) => {
+    switch (price.toLowerCase()){
+        case 'free':
+            return ''
+        case 'started':
+            return 'from-sky-500 to-indigo-500'
+        case 'advanced':
+            return 'from-[#213cc4] to-[#9c13cd]'
+        case 'professional':
+            return 'from-[#d6ac22] to-[#d87b24]'
+        default:
+            return 'default'
     }
 }

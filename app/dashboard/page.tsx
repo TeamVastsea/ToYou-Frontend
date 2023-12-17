@@ -11,7 +11,7 @@ import Picture from "@/components/picture";
 import { PictureAPI } from "@/interface/pictureAPI";
 import { useEffect, useState } from "react";
 import { UserAPI } from "@/interface/userAPI";
-import { getGroupPrice } from "@/config/prices";
+import { getGroupPrice, getPriceColor } from "@/config/prices";
 import { PictureList } from "@/interface/model/picture";
 import { SERVER_URL } from "@/interface/api";
 import cookie from "react-cookies";
@@ -30,6 +30,7 @@ export default function Page() {
     let [timeDescription, setTimeDescription] = useState("无限时间");
     let [pictures, setPictures] = useState<PictureList>();
     let [group, setGroup] = useState<PriceInfo>()
+    const [groupColor, setGroupColor] = useState('');
     const router = useRouter();
 
     function updateInfo() {
@@ -39,10 +40,10 @@ export default function Page() {
             }
             let user = r!;
             let price = getGroupPrice(r!.extend!.userGroup);
-
             setUsed(Number((user.extend!.storageUsed / 1024 / 1024).toFixed(2)));
             setTotal(Number(price.allSpace.substring(0, price.allSpace.length - 3)) * 1024);
             setGroup(price);
+            setGroupColor(getPriceColor(r!.extend!.userGroup as "free" | "started" | "advanced" | "professional"))
             if (user.extend!.groupStartDate != undefined || user.extend!.groupEndDate != undefined) {
                 if (user.extend!.groupStartDate != 0 && user.extend!.groupEndDate != 0) {
                     let startDate = user.extend!.groupStartDate!;
@@ -121,7 +122,7 @@ export default function Page() {
                             <Chip style={{ position: "relative", left: 5 }}
                                 variant="shadow"
                                 classNames={{
-                                    base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30 flex-shrink-0",
+                                    base: `bg-gradient-to-br ${groupColor}`,
                                     content: "drop-shadow shadow-black text-white",
                                 }}
                             >
