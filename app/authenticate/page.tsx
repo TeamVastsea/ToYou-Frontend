@@ -222,7 +222,6 @@ export default function Page() {
                     if (status) {
                         Message.success('注册成功, 请登录');
                         setPageType('login');
-                        setUserInput('');
                         setPassword('');
                         return;
                     }
