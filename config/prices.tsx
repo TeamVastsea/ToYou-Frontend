@@ -51,20 +51,3 @@ export function getGroupPrice(name: string): PriceInfo {
         default: return priceFree;
     }
 }
-
-export const getPriceColor = (
-    price: 'free' | 'started' | 'advanced' | 'professional'
-) => {
-    switch (price.toLowerCase()){
-        case 'free':
-            return ''
-        case 'started':
-            return 'from-sky-500 to-indigo-500'
-        case 'advanced':
-            return 'from-[#213cc4] to-[#9c13cd]'
-        case 'professional':
-            return 'from-[#d6ac22] to-[#d87b24]'
-        default:
-            return 'default'
-    }
-}

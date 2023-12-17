@@ -11,13 +11,43 @@ import Picture from "@/components/picture";
 import { PictureAPI } from "@/interface/pictureAPI";
 import { useEffect, useState } from "react";
 import { UserAPI } from "@/interface/userAPI";
-import { getGroupPrice, getPriceColor } from "@/config/prices";
+import { getGroupPrice } from "@/config/prices";
 import { PictureList } from "@/interface/model/picture";
 import { SERVER_URL } from "@/interface/api";
 import cookie from "react-cookies";
 import { PriceInfo } from "@/components/price";
 import { IsLoggedIn } from "@/interface/hooks";
 import { RedirectType } from "next/dist/client/components/redirect";
+
+const getPriceColor = (price: string) => {
+    switch (price.toLowerCase()){
+        case 'free':
+            return {
+                base: 'bg-gradient-to-br default',
+                content: "drop-shadow shadow-black text-black dark:text-white",
+            }
+        case 'started':
+            return {
+                base: 'bg-gradient-to-br from-sky-500 to-indigo-500',
+                content: "drop-shadow shadow-black text-white",
+            }
+        case 'advanced':
+            return {
+                base: 'bg-gradient-to-br from-[#213cc4] to-[#9c13cd]',
+                content: "drop-shadow shadow-black text-white",
+            }
+        case 'professional':
+            return {
+                base: 'bg-gradient-to-br from-[#d6ac22] to-[#d87b24]',
+                content: "drop-shadow shadow-black text-white",
+            }
+        default:
+            return {
+                base: 'bg-gradient-to-br default text-white',
+                content: "drop-shadow shadow-black text-black dark:text-white",
+            }
+    }
+}
 
 export default function Page() {
     if (!IsLoggedIn) {
@@ -30,7 +60,7 @@ export default function Page() {
     let [timeDescription, setTimeDescription] = useState("无限时间");
     let [pictures, setPictures] = useState<PictureList>();
     let [group, setGroup] = useState<PriceInfo>()
-    const [groupColor, setGroupColor] = useState('');
+    const [groupColor, setGroupColor] = useState({});
     const router = useRouter();
 
     function updateInfo() {
@@ -65,6 +95,7 @@ export default function Page() {
         if (used == 0 && total == 1) {
             updateInfo();
         }
+        console.log(groupColor);
     }, [])
 
     const deletePicture = (pid: string) => {
@@ -121,10 +152,7 @@ export default function Page() {
                             <span>当前方案:</span>
                             <Chip style={{ position: "relative", left: 5 }}
                                 variant="shadow"
-                                classNames={{
-                                    base: `bg-gradient-to-br ${groupColor}`,
-                                    content: "drop-shadow shadow-black text-white",
-                                }}
+                                classNames={groupColor}
                             >
                                 {group?.name}
                             </Chip>
