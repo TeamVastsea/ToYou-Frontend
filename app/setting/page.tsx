@@ -7,6 +7,7 @@ import {Button} from "@nextui-org/button";
 import React from "react";
 import ClickToEdit from "@/components/click-to-edit";
 import {Message} from "@/components/message";
+import ShareTable from "@/components/share-table";
 
 export default function SettingPage() {
 
@@ -74,6 +75,7 @@ export default function SettingPage() {
                         <span>分享链接管理</span>
                     </div>
                 }>
+                    <ShareTable/>
                 </Tab>
                 <Tab key="status" title={
                     <div className="flex items-center space-x-2">
