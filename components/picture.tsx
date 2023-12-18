@@ -154,7 +154,6 @@ export default function Picture(props: PictureProps) {
                                 )}
                             </PopoverContent>
                         </Popover>
-                    {/*</div>*/}
                 </CardFooter>
             </Card>
 
