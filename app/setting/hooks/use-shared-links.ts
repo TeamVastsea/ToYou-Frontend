@@ -17,7 +17,7 @@ export const useSharedLinks = () => {
         }
         IOC.picture.getAllSharedPicture(10, current)
         .then(({pages, records}) => {
-            setPage(pages)
+            setPage(pages);
             setList(records);
             if (caches[current] === undefined){
                 caches.push([]);

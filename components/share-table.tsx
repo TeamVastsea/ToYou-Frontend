@@ -6,7 +6,6 @@ import {Link} from "@nextui-org/link";
 import {Button} from "@nextui-org/button";
 
 export default function ShareTable({loading, list}: ReturnType<typeof useSharedLinks>) {
-    console.log(list);
     return(
         <p className="text-left">
             <Table aria-label="Example static collection table"
@@ -29,7 +28,7 @@ export default function ShareTable({loading, list}: ReturnType<typeof useSharedL
                     {(item) => (
                         <TableRow>
                             <TableCell><Link>{item.sid}</Link></TableCell>
-                            <TableCell>{item.password}</TableCell>
+                            <TableCell>{item.password ? "已设置" : "无"}</TableCell>
                             <TableCell>{item.expiry}</TableCell>
                             <TableCell>{item.downloads}</TableCell>
                             <TableCell><Button>hello</Button></TableCell>

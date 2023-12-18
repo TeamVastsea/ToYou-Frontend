@@ -24,7 +24,7 @@ http.interceptors.request.use(
     }
 )
 http.interceptors.response.use((val)=>{
-    return val;
+    return val.data;
 }, (err: AxiosError)=>{
     const msg = typeof err.response?.data === 'object' ? JSON.stringify(err.response?.data ?? {}) : err.response?.data
     Message.error(JSON.stringify(msg));
