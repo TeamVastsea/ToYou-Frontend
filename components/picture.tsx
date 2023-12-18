@@ -1,11 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
 import {
-    Button,
     Card,
     CardFooter,
     Image,
-    Listbox,
-    ListboxItem,
     Popover,
     PopoverContent,
     PopoverTrigger,
@@ -23,6 +20,7 @@ import {PictureAPI} from "@/interface/pictureAPI";
 import {SERVER_URL} from "@/interface/api";
 import {PriceInfo} from "@/components/price";
 import IOC from "@/providers";
+import {Button, ButtonGroup} from "@nextui-org/button";
 
 const SharedButton = (props: { link: string, pid?: string, className?: string }) => {
     const {link, pid} = props;
@@ -130,30 +128,30 @@ export default function Picture(props: PictureProps) {
                         `
                     }
                 >
-                        <p className={`text-tiny font-mono truncate ${textColor}`} title={name}>{name}</p>&nbsp;
-                        <SharedButton link={link} pid={props.pid} className={
-                            `${textColor}`
-                        }/>
-                        <Popover>
-                            <PopoverTrigger>
-                                <Button isIconOnly className="justify-center" variant="bordered" size="sm"
-                                        isLoading={delLoading}>
-                                    {!delLoading && <DeleteIcon className={`${textColor}`}/>}
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent>
-                                {(titleStyle) => (
-                                    <div className="px-2 py-1">
-                                        <h3 className="text-lg" {...titleStyle}>确定要删除吗</h3>
-                                        <div className="my-2">
-                                            <Button color="danger" size="sm" fullWidth
-                                                    onClick={() => deletePicture(() => {
-                                                    })}>确认</Button>
-                                        </div>
+                    <p className={`text-tiny font-mono truncate ${textColor}`} title={name}>{name}</p>&nbsp;
+                    <SharedButton link={link} pid={props.pid} className={
+                        `${textColor}`
+                    }/>
+                    <Popover>
+                        <PopoverTrigger>
+                            <Button isIconOnly className="justify-center" variant="bordered" size="sm"
+                                    isLoading={delLoading}>
+                                {!delLoading && <DeleteIcon className={`${textColor}`}/>}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                            {(titleStyle) => (
+                                <div className="px-2 py-1">
+                                    <h3 className="text-lg" {...titleStyle}>确定要删除吗</h3>
+                                    <div className="my-2">
+                                        <Button color="danger" size="sm" fullWidth
+                                                onClick={() => deletePicture(() => {
+                                                })}>确认</Button>
                                     </div>
-                                )}
-                            </PopoverContent>
-                        </Popover>
+                                </div>
+                            )}
+                        </PopoverContent>
+                    </Popover>
                 </CardFooter>
             </Card>
 
@@ -175,38 +173,27 @@ export default function Picture(props: PictureProps) {
                                 <p>
                                     <Input placeholder={"图片名称"} value={name} onValueChange={setName}/>
                                 </p>
-                                <p className="flex items-center justify-center space-x-3">
-                                    {link == "" ? <Popover>
-                                        <PopoverTrigger>
-                                            <Button className="capitalize">分享</Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent>
-                                            <Listbox
-                                                disallowEmptySelection
-                                                selectionMode="single"
-                                                selectedKeys={selectedKeys}
-                                                onSelectionChange={(e) => {
-                                                    setSelectedKeys(e);
-                                                    const key = Array.from(e).join('');
-                                                    let mode = key == "watermark" ? 1 : key == "compressed" ? 2 : 3;
-                                                    generateShareLink(mode);
-                                                }}
-                                                disabledKeys={props.group == undefined ? [] : props.group.disabled}
-                                            >
-                                                <ListboxItem key="none">不公开</ListboxItem>
-                                                <ListboxItem key="watermark">公开水印版本</ListboxItem>
-                                                <ListboxItem key="compressed"
-                                                             description={props.group?.name! == "professional" || props.group?.name! == "advanced" || props.group?.name! == "started" ? "" : "仅入门或以上套餐"}>公开压缩版本</ListboxItem>
-                                                <ListboxItem key="original"
-                                                             description={props.group?.name! == "professional" || props.group?.name! == "advanced" ? "" : "仅进阶或专业套餐"}>公开原图</ListboxItem>
-                                            </Listbox>
-                                        </PopoverContent>
-                                    </Popover> : <div className="flex" style={{width: 450}}>
-                                        <Input className={"font-mono"} variant={"underlined"} value={link} endContent={
-                                            <SharedButton link={link}/>
-                                        }></Input>
-
-                                    </div>}
+                                <p className="flex items-center justify-center">
+                                    {link == "" ?
+                                        <ButtonGroup>
+                                            <Button variant={"flat"} color={"secondary"} onClick={() =>{generateShareLink(1)}}>分享水印图片</Button>
+                                            <Button
+                                                variant={props.group?.disabled.includes("compressed") ? "solid" : "flat"}
+                                                color={props.group?.disabled.includes("compressed") ? "default" : "secondary"}
+                                                disabled={props.group?.disabled.includes("compressed")}
+                                                onClick={() =>{generateShareLink(2)}}>分享压缩图片</Button>
+                                            <Button
+                                                variant={props.group?.disabled.includes("original") ? "solid" : "flat"}
+                                                color={props.group?.disabled.includes("original") ? "default" : "secondary"}
+                                                disabled={props.group?.disabled.includes("original")}
+                                                onClick={() =>{generateShareLink(3)}}>分享原图</Button>
+                                        </ButtonGroup>
+                                        : <div className="flex space-x-3" style={{width: 450}}>
+                                            <Input className={"font-mono"} variant={"underlined"} value={link}
+                                                   endContent={
+                                                       <SharedButton link={link}/>
+                                                   }></Input>
+                                        </div>}
                                 </p>
                             </ModalBody>
                             <ModalFooter>
@@ -221,7 +208,7 @@ export default function Picture(props: PictureProps) {
                                 }}>
                                     保存
                                 </Button>
-                                <Button disabled={saveLoading} color="danger" onPress={() => {
+                                <Button disabled={saveLoading} color="danger" variant={"light"} onPress={() => {
                                     setName(originName);
                                     onClose();
                                 }}>
