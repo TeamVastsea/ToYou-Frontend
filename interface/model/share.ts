@@ -2,7 +2,7 @@ export interface Share {
     sid: string;
     id: number;
     uid: number;
-    password?: any;
+    password: boolean;
     downloads: number;
     shareMode: number;
     expiry: number;
