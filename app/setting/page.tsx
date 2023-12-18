@@ -8,9 +8,10 @@ import React from "react";
 import ClickToEdit from "@/components/click-to-edit";
 import {Message} from "@/components/message";
 import ShareTable from "@/components/share-table";
+import { useSharedLinks } from "./hooks/use-shared-links";
 
 export default function SettingPage() {
-
+    const data = useSharedLinks();
     return (
         <div className="max-w-7xl space-y-10">
             <h1 className={title()}>用户设置</h1><br/>
@@ -75,7 +76,7 @@ export default function SettingPage() {
                         <span>分享链接管理</span>
                     </div>
                 }>
-                    <ShareTable/>
+                    <ShareTable {...data}/>
                 </Tab>
                 <Tab key="status" title={
                     <div className="flex items-center space-x-2">
