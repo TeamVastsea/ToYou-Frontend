@@ -1,5 +1,6 @@
 import {Axios} from "axios";
 import {ShareResponse} from "@/interface/model/picture";
+import {ShareList} from "@/interface/model/share";
 
 export class Picture {
     private axios: Axios
@@ -26,6 +27,15 @@ export class Picture {
                 pid,
                 shareMode: mode ?? 1,
                 password: password ?? ''
+            }
+        })
+    }
+
+    getAllSharedPicture(pageSize?: number, current?: number): Promise<ShareList> {
+        return this.axios.get('/picture/share', {
+            params: {
+                pageSize,
+                current
             }
         })
     }

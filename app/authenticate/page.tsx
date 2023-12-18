@@ -27,21 +27,21 @@ export type PageType = 'wait-check' | 'login' | 'register'
 const Login = (
     props: {
         password: string;
-        setPassword: (val: string)=>void
+        setPassword: (val: string) => void
     }
 ) => {
     return (
-     <>
-         <Input
-             key="password"
-             type="password"
-             label="密码"
-             placeholder="请输入密码"
-             style={{width: 300}}
-             value={props.password}
-             onValueChange={props.setPassword}
-         />
-     </>
+        <>
+            <Input
+                key="password"
+                type="password"
+                label="密码"
+                placeholder="请输入密码"
+                style={{width: 300}}
+                value={props.password}
+                onValueChange={props.setPassword}
+            />
+        </>
     )
 }
 
@@ -55,19 +55,30 @@ const Register = (
         confirmPassword: string;
         passwordRobustness: boolean[];
         valide: boolean;
-        setCode: (val: string)=>void;
-        setPassword: (val:string)=>void,
-        setUsername: (val:string)=>void,
-        setConfirmPassword: (val:string)=>void,
+        setCode: (val: string) => void;
+        setPassword: (val: string) => void,
+        setUsername: (val: string) => void,
+        setConfirmPassword: (val: string) => void,
     }
 ) => {
-    const {code, userName,password,confirmPassword,userInput,valide,setCode,setPassword,setUsername,setConfirmPassword} = props;
+    const {
+        code,
+        userName,
+        password,
+        confirmPassword,
+        userInput,
+        valide,
+        setCode,
+        setPassword,
+        setUsername,
+        setConfirmPassword
+    } = props;
     const [visible, setVisible] = useState(props.passwordRobustness.every(v => v));
-    useEffect(()=>{
+    useEffect(() => {
         setVisible(props.passwordRobustness.every(v => v));
     }, [props.passwordRobustness])
-    useEffect(()=>{
-        if (!visible){
+    useEffect(() => {
+        if (!visible) {
             setConfirmPassword('');
         }
     }, [setConfirmPassword, visible])
@@ -82,9 +93,9 @@ const Register = (
                     label="验证码"
                     placeholder="请输入验证码"
                     maxLength={6}
-                    
+
                 />
-                <CheckCode type={props.type} userInput={userInput} />
+                <CheckCode type={props.type} userInput={userInput}/>
             </div>
             <Input
                 isClearable
@@ -104,9 +115,9 @@ const Register = (
                     value={password}
                     onValueChange={setPassword}
                 />
-                <PasswordRobustnessList active={props.passwordRobustness} />
+                <PasswordRobustnessList active={props.passwordRobustness}/>
                 {
-                    visible && 
+                    visible &&
                     (
                         <Password
                             key="confirm-password"
@@ -131,55 +142,66 @@ export default function Page() {
     const [code, setCode] = useState('');
     const [userName, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword,setConfirmPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [valide, setValide] = useState(false);
-    useEffect(()=>{
+    useEffect(() => {
         setValide(/^[\w\d.\-_a-zA-Z\u4e00-\u9fa5]+$/gm.test(userName) && userName.length >= 2);
     }, [userName]);
     const [passwordRobustness, setPasswordRobustness] = useState(new Array(6).fill(false));
     const isPhone = useIsPhone(userInput);
     const isEmail = useIsEmail(userInput);
     const {
-        color,disabled,buttonMessage
-    } = useButton({policyState,userName,password,confirmPassword,checkCode:code,valide, passwordRobustness, isPhone,pageType,isEmail, account: userInput});
-    const fns = useMemo(()=>{
+        color, disabled, buttonMessage
+    } = useButton({
+        policyState,
+        userName,
+        password,
+        confirmPassword,
+        checkCode: code,
+        valide,
+        passwordRobustness,
+        isPhone,
+        pageType,
+        isEmail,
+        account: userInput
+    });
+    const fns = useMemo(() => {
         return [
             (val: string) => val.length >= 8,
             (val: string) => /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_]+$)(?![a-z0-9]+$)(?![a-z\W_]+$)(?![0-9\W_]+$)[a-zA-Z0-9\W_]/.test(val),
-            (val: string)=> val.length <= 30
+            (val: string) => val.length <= 30
         ]
     }, [])
 
     const router = useRouter();
 
-    const [type,setType] = useType(isPhone,isEmail)
-    useEffect(()=>{
+    const [type, setType] = useType(isPhone, isEmail)
+    useEffect(() => {
         setPasswordRobustness(
             [...fns.map(fn => fn(password))]
         )
-    },[password, fns])
+    }, [password, fns])
 
     const handleClick = () => {
         const login = () => {
-            if (!isEmail && !isPhone){
+            if (!isEmail && !isPhone) {
                 Message.error("请输入邮箱或手机号")
             }
+            setLoading(true);
             UserAPI.login(userInput, password)
-            .then((r) => {
-                let [state, text] = r;
-                if (state) {
-                    Message.success("登录成功");
-                    SetLoggedInState(true);
-                    router.push("/dashboard");
-                } else {
-                    Message.error(text);
-                }
-            })
-            .finally(()=>setLoading(false))
+                .then((r) => {
+                    let [state, text] = r;
+                    if (state) {
+                        Message.success("登录成功");
+                        SetLoggedInState(true);
+                        router.push("/dashboard");
+                    } else {
+                        Message.error(text);
+                    }
+                })
         }
-        const register = ()=>{
-            console.log('click')
-            if (!passwordRobustness.every(val => val)){
+        const register = () => {
+            if (!passwordRobustness.every(val => val)) {
                 Message.error('密码不符合规范')
                 return;
             }
@@ -194,38 +216,37 @@ export default function Page() {
                 username: userName,
                 code
             })
-            .then((
-                {data: [status, message]}
-            )=>{
-                if (status){
-                    Message.success('注册成功, 请登录');
-                    setPageType('login');
-                    setUserInput('');
-                    setPassword('');
-                    setUsername('');
-                    return;
-                }
-                Message.error(message)
-            })
-            .finally(() => setLoading(false));
+                .then((
+                    {data: [status, message]}
+                ) => {
+                    if (status) {
+                        Message.success('注册成功, 请登录');
+                        setPageType('login');
+                        setPassword('');
+                        return;
+                    }
+                    Message.error(message)
+                })
+                .finally(() => setLoading(false));
         }
         const waitCheck = () => {
-            if (!isEmail && !isPhone){
+            if (!isEmail && !isPhone) {
                 Message.error("请输入邮箱或手机号")
                 setLoading(false);
                 return;
             }
-            if (isEmail){
+            setLoading(true);
+            if (isEmail) {
                 UserAPI.checkEmail(userInput)
-                .then(r => {
-                    setPageType(r ? "login" : "register")
-                })
-                .finally(()=>setLoading(false))
+                    .then(r => {
+                        setPageType(r ? "login" : "register")
+                    })
+                    .finally(() => setLoading(false))
             }
-            if (isPhone){
+            if (isPhone) {
                 IOC.user.checkPhone(userInput)
-                .then(r => setPageType(r ? 'login' : 'register'))
-                .finally(()=>setLoading(false))
+                    .then(r => setPageType(r ? 'login' : 'register'))
+                    .finally(() => setLoading(false))
             }
         }
         return {
@@ -245,12 +266,12 @@ export default function Page() {
                             placeholder={pageType !== 'register' ? '请输入邮箱或手机号' : '请输入手机号'}
                             key={"emailOrPhone"}
                             isInvalid={
-                                pageType === 'login' ? isEmail || isPhone : 
-                                pageType === 'register' ? isPhone : true
+                                pageType === 'login' ? isEmail || isPhone :
+                                    pageType === 'register' ? isPhone : true
                             }
                             errorMessage={
                                 pageType === 'login' ? !isEmail && !isPhone && ('请输入手机或邮箱') :
-                                pageType === 'register' ? !isPhone && ('请输入手机号') : null
+                                    pageType === 'register' ? !isPhone && ('请输入手机号') : null
                             }
                             type="text"
                             value={userInput}
@@ -259,15 +280,18 @@ export default function Page() {
                         />
                         {
                             pageType !== 'wait-check' && (
-                                pageType === 'login' ? <Login password={password} setPassword={setPassword} /> :
-                                <Register
-                                    type={type} userInput={userInput} valide={valide}
-                                    passwordRobustness={passwordRobustness}
-                                    code={code} userName={userName} password={password} confirmPassword={confirmPassword}
-                                    setPassword={setPassword} setConfirmPassword={setConfirmPassword} setCode={setCode} setUsername={setUsername} />
-                                )
+                                pageType === 'login' ? <Login password={password} setPassword={setPassword}/> :
+                                    <Register
+                                        type={type} userInput={userInput} valide={valide}
+                                        passwordRobustness={passwordRobustness}
+                                        code={code} userName={userName} password={password}
+                                        confirmPassword={confirmPassword}
+                                        setPassword={setPassword} setConfirmPassword={setConfirmPassword} setCode={setCode}
+                                        setUsername={setUsername}/>
+                            )
                         }
-                        <Checkbox isSelected={policyState} onValueChange={setPolicyState}>登录或注册即代表同意服务条款</Checkbox>
+                        <Checkbox isSelected={policyState}
+                                  onValueChange={setPolicyState}>登录或注册即代表同意服务条款</Checkbox>
                     </div>
                 </CardBody>
                 <CardFooter className="px-5">
