@@ -6,6 +6,7 @@ export interface Share {
     downloads: number;
     shareMode: number;
     expiry: number;
+    fileName: string;
 }
 
 export interface ShareList {
