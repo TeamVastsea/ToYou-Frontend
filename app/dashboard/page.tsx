@@ -95,7 +95,6 @@ export default function Page() {
         if (used == 0 && total == 1) {
             updateInfo();
         }
-        console.log(groupColor);
     }, [])
 
     const deletePicture = (pid: string) => {
