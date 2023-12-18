@@ -1,8 +1,6 @@
 import {Axios} from "axios";
 import {ShareResponse} from "@/interface/model/picture";
 import {ShareList} from "@/interface/model/share";
-import {util} from "zod";
-import noUndefined = util.noUndefined;
 
 export class Picture {
     private axios: Axios
