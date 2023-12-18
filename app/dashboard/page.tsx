@@ -19,6 +19,36 @@ import { PriceInfo } from "@/components/price";
 import { IsLoggedIn } from "@/interface/hooks";
 import { RedirectType } from "next/dist/client/components/redirect";
 
+const getPriceColor = (price: string) => {
+    switch (price.toLowerCase()){
+        case 'free':
+            return {
+                base: 'bg-gradient-to-br default',
+                content: "drop-shadow shadow-black text-black dark:text-white",
+            }
+        case 'started':
+            return {
+                base: 'bg-gradient-to-br from-sky-500 to-indigo-500',
+                content: "drop-shadow shadow-black text-white",
+            }
+        case 'advanced':
+            return {
+                base: 'bg-gradient-to-br from-[#213cc4] to-[#9c13cd]',
+                content: "drop-shadow shadow-black text-white",
+            }
+        case 'professional':
+            return {
+                base: 'bg-gradient-to-br from-[#d6ac22] to-[#d87b24]',
+                content: "drop-shadow shadow-black text-white",
+            }
+        default:
+            return {
+                base: 'bg-gradient-to-br default text-white',
+                content: "drop-shadow shadow-black text-black dark:text-white",
+            }
+    }
+}
+
 export default function Page() {
     if (!IsLoggedIn) {
         redirect('/authenticate', RedirectType.replace);
@@ -30,6 +60,7 @@ export default function Page() {
     let [timeDescription, setTimeDescription] = useState("无限时间");
     let [pictures, setPictures] = useState<PictureList>();
     let [group, setGroup] = useState<PriceInfo>()
+    const [groupColor, setGroupColor] = useState({});
     const router = useRouter();
 
     function updateInfo() {
@@ -39,10 +70,10 @@ export default function Page() {
             }
             let user = r!;
             let price = getGroupPrice(r!.extend!.userGroup);
-
             setUsed(Number((user.extend!.storageUsed / 1024 / 1024).toFixed(2)));
             setTotal(Number(price.allSpace.substring(0, price.allSpace.length - 3)) * 1024);
             setGroup(price);
+            setGroupColor(getPriceColor(r!.extend!.userGroup as "free" | "started" | "advanced" | "professional"))
             if (user.extend!.groupStartDate != undefined || user.extend!.groupEndDate != undefined) {
                 if (user.extend!.groupStartDate != 0 && user.extend!.groupEndDate != 0) {
                     let startDate = user.extend!.groupStartDate!;
@@ -120,10 +151,7 @@ export default function Page() {
                             <span>当前方案:</span>
                             <Chip style={{ position: "relative", left: 5 }}
                                 variant="shadow"
-                                classNames={{
-                                    base: "bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30 flex-shrink-0",
-                                    content: "drop-shadow shadow-black text-white",
-                                }}
+                                classNames={groupColor}
                             >
                                 {group?.name}
                             </Chip>
