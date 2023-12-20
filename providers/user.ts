@@ -34,4 +34,10 @@ export class User {
     async getCheckCodeByEmail(email: string){
         return this.axios.get<CheckCodeData>('/user/code/email', {params: {email}});
     }
+    changePassword(newPwd: string, oldPwd: string){
+        return this.axios.patch('/user/password', {}, {params: {new: newPwd, old: oldPwd}});
+    }
+    changeUserName(userName: string){
+        return this.axios.patch('/user/username', {}, {params: {userName}});
+    }
 }

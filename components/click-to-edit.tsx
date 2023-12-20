@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Button} from "@nextui-org/button";
 import {Input} from "@nextui-org/input";
 import {FaCheck, FaCheckDouble} from "react-icons/fa6";
@@ -18,8 +18,8 @@ export default function ClickToEdit(props: ClickToEditProps) {
                     <p className="flex gap-x-1">
                         <Input value={value} onValueChange={setValue}
                                className="max-w-fit"/>
-                        <Button onClick={() => {
-                            props.onComplete(value);
+                        <Button onClick={async () => {
+                            await props.onComplete(value);
                             setEdit(false);
                             if (props.verify) {
                                 setVerify(true);
@@ -61,7 +61,7 @@ export default function ClickToEdit(props: ClickToEditProps) {
 
 export type ClickToEditProps = {
     default: string,
-    onComplete: (value: string) => void,
+    onComplete: (value: string) => void | Promise<void>,
     verify?: boolean,
     onVerify?: (value: string) => boolean,
 }
