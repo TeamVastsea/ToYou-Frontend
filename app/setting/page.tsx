@@ -1,18 +1,177 @@
 'use client'
-
 import {title} from "@/components/primitives";
-import {Card, CardBody, Tab, Tabs} from "@nextui-org/react";
+import {ButtonProps, Card, CardBody, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tab, Tabs, useDisclosure} from "@nextui-org/react";
 import {FiDatabase, FiLink, FiUser} from "react-icons/fi";
 import {Button} from "@nextui-org/button";
-import React from "react";
+import React, { ReactNode, useState } from "react";
 import ClickToEdit from "@/components/click-to-edit";
 import {Message} from "@/components/message";
 import ShareTable from "@/components/share-table";
+import IOC from "@/providers";
+import Password from "@/components/password";
+
+interface SettingItem {
+    label: string;
+    button: {
+        variant: ButtonProps['variant'];
+        onClick: ButtonProps['onClick'];
+        children: ReactNode;
+    };
+    CliekToEdit: {
+        default: string;
+        onComplete: (value: string)=>void
+        verify?: boolean;
+        onVerify?: (value: string)=>boolean;
+    };
+    text: {
+        children: ReactNode
+    }
+}
+const renderItems = (item: Partial<SettingItem>) => {
+    const label = () => <p className="text-right">{item.label}</p>
+    const button = () => {
+        if (item.button){
+            return (
+                <Button className="capitalize w-fit" variant={item.button.variant} onClick={item.button.onClick}>
+                    {item.button.children}
+                </Button>
+            )
+        }
+    }
+    const edit = () => {
+        if (item.CliekToEdit){
+            return (
+                <ClickToEdit {...item.CliekToEdit} />
+            )
+        }
+    }
+    const text = () => {
+        if (item.text){
+            return (
+                <div className="px-unit-4 cursor-pointer">
+                    <span className="text-blue-500 dark:text-blue-600">{item.text.children}</span>
+                </div>
+            )
+        }
+    }
+    return (
+        <>
+            {item.label && label()}
+            {item.text && text()}
+            {item.button && button()}
+            {item.CliekToEdit && edit()}
+        </>
+    )
+}
+export const useSettingItems = (
+    items: Partial<SettingItem>[]
+) => {
+    return (
+        <>
+            {
+                items.map((item,idx) => {
+                    return (
+                        <div className="grid grid-cols-[100px_1fr] justify-start items-center gap-2" key={idx}>
+                            {renderItems(item)}
+                        </div>
+                    )
+                })
+            }
+        </>
+    )
+}
 
 export default function SettingPage() {
+    const items: Partial<SettingItem>[] = [
+        {
+            label: '当前实名:',
+            button:{
+                children: '王*翔',
+                onClick: ()=>{
+                    Message.success("更改实名");
+                },
+                variant: 'light'
+            },
+        },
+        {
+            label: '当前邮箱:',
+            CliekToEdit: {
+                default: 'aaa@bbb.com',
+                onComplete: ()=>{
+                    Message.success("已发送验证码");
+                },
+                verify: true,
+                onVerify:(e) => {
+                    if (e == "") {
+                        Message.error("请输入验证码");
+                        return false;
+                    }
+                    Message.success("验证成功, 验证码:" + e);
+                    return true;
+                },
+            }
+        },
+        {
+            label: '当前手机号:',
+            CliekToEdit:{
+                default: '18511111111',
+                onComplete: ()=>{
+                    Message.success("已发送验证码");
+                },
+                verify: true,
+                onVerify: (e)=>{
+                    if (e) {
+                        Message.error("请输入验证码");
+                        return false;
+                    }
+                    Message.success("验证成功, 验证码:" + e);
+                    return true;
+                },
+            }
+        },
+        {
+            label: '用户名',
+            CliekToEdit:{
+                default: 'Snowball_233',
+                onComplete: ()=>{
+                    Message.success("已保存")
+                },
+            }
+        },
+    ]
+    const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
+    const [oldPwd, setOldPwd] = useState('');
+    const [newPwd, setNewPwd] = useState('');
+    const [loading, setLoading] = useState(false);
 
+    const onChangePassword = () => {
+        if (!oldPwd){
+            Message.error('老密码不能为空')
+            return;
+        }
+        if (!newPwd){
+            Message.error('新密码不能为空')
+            return;
+        }
+        if (newPwd === oldPwd) {
+            Message.error('新密码不能与老密码相同')
+            setNewPwd('');
+            return;
+        }
+        setLoading(true)
+        IOC.user.changePassword(newPwd, oldPwd)
+        .catch()
+        .finally(()=>{
+            setLoading(false);
+        })
+    }
+    const onCancel = () => {
+        setNewPwd('');
+        setOldPwd('');
+        onClose()
+    }
     return (
-        <div className="max-w-7xl space-y-10">
+        <div className="w-full space-y-10">
             <h1 className={title()}>用户设置</h1><br/>
             <Tabs key={"navigation"} aria-label="Options" color="primary" variant="bordered">
                 <Tab key="user" title={
@@ -21,50 +180,37 @@ export default function SettingPage() {
                         <span>用户管理</span>
                     </div>
                 }>
-                    <Card>
-                        <CardBody className={"space-y-1"}>
-                            <div className="flex items-center">
-                                <p>当前实名：</p>
-                                <Button className="capitalize" variant={"light"} onClick={() => {
-                                    Message.success("更改实名");
-                                }}>
-                                    王*翔
-                                </Button>
-                            </div>
-
-                            <div className="flex items-center">
-                                <p>当前邮箱：</p>
-                                <ClickToEdit default={"aaa@bbb.com"} onComplete={() => {
-                                    Message.success("已发送验证码");
-                                }} verify onVerify={(e) => {
-                                    if (e == "") {
-                                        Message.error("请输入验证码");
-                                        return false;
-                                    }
-                                    Message.success("验证成功, 验证码：" + e);
-                                    return true;
-                                }}/>
-                            </div>
-
-                            <div className="flex items-center">
-                                <p>当前手机号：</p>
-                                <ClickToEdit default={"18511111111"} onComplete={() => {
-                                    Message.success("已发送验证码");
-                                }} verify onVerify={(e) => {
-                                    if (e == "") {
-                                        Message.error("请输入验证码");
-                                        return false;
-                                    }
-                                    Message.success("验证成功, 验证码：" + e);
-                                    return true;
-                                }}/>
-                            </div>
-
-                            <div className="flex items-center">
-                                <p>用户名：</p>
-                                <ClickToEdit default={"Snowball_233"} onComplete={() => {
-                                    Message.success("已保存")
-                                }}/>
+                    <Card className="w-full max-w-sm">
+                        <CardBody className={"space-y-1 w-full"}>
+                            <div>
+                                {useSettingItems(items)}
+                                <div className="grid grid-cols-[100px_1fr] justify-start items-center gap-2">
+                                    <span className="text-right">密码:</span>
+                                    <div className="px-unit-4 cursor-pointer">
+                                        <span className="text-blue-500 dark:text-blue-600" onClick={onOpen}>修改密码</span>
+                                    </div>
+                                    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                                        <ModalContent>
+                                        {(onClose) => (
+                                            <>
+                                            <ModalHeader className="flex flex-col gap-1">密码修改</ModalHeader>
+                                            <ModalBody>
+                                                <Password label="旧密码" value={oldPwd} onValueChange={setOldPwd} />
+                                                <Password label="新密码" value={newPwd} onValueChange={setNewPwd} />
+                                            </ModalBody>
+                                            <ModalFooter>
+                                                <Button color="primary" onPress={onChangePassword} isLoading={loading} disabled={loading}>
+                                                    确认
+                                                </Button>
+                                                <Button color="danger" variant="light" onPress={onCancel} disabled={loading}>
+                                                    取消
+                                                </Button>
+                                            </ModalFooter>
+                                            </>
+                                        )}
+                                        </ModalContent>
+                                    </Modal>
+                                </div>
                             </div>
                         </CardBody>
                     </Card>

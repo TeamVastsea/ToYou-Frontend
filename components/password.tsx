@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 export interface PasswordProps {
     label: string;
-    placeholder: string;
+    placeholder?: string;
     value?: string;
     isInValide?: boolean;
     errorMessage?: React.ReactNode;
