@@ -67,7 +67,7 @@ export const useSettingItems = (
     items: Partial<SettingItem>[]
 ) => {
     return (
-        <>
+        <a className="space-y-1">
             {
                 items.map((item,idx) => {
                     return (
@@ -77,7 +77,7 @@ export const useSettingItems = (
                     )
                 })
             }
-        </>
+        </a>
     )
 }
 
@@ -86,7 +86,7 @@ export default function SettingPage() {
         {
             label: '当前实名:',
             button:{
-                children: '王*翔',
+                children: '姓名',
                 onClick: ()=>{
                     Message.success("更改实名");
                 },
@@ -184,7 +184,7 @@ export default function SettingPage() {
                         <CardBody className={"space-y-1 w-full"}>
                             <div>
                                 {useSettingItems(items)}
-                                <div className="grid grid-cols-[100px_1fr] justify-start items-center gap-2">
+                                <div className="grid grid-cols-[100px_1fr] justify-start items-center gap-2 h-10">
                                     <span className="text-right">密码:</span>
                                     <div className="px-unit-4 cursor-pointer">
                                         <span className="text-blue-500 dark:text-blue-600" onClick={onOpen}>修改密码</span>
