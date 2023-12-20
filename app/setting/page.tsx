@@ -1,9 +1,21 @@
 'use client'
 import {title} from "@/components/primitives";
-import {ButtonProps, Card, CardBody, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tab, Tabs, useDisclosure} from "@nextui-org/react";
+import {
+    ButtonProps,
+    Card,
+    CardBody,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    Tab,
+    Tabs,
+    useDisclosure
+} from "@nextui-org/react";
 import {FiDatabase, FiLink, FiUser} from "react-icons/fi";
 import {Button} from "@nextui-org/button";
-import React, { ReactNode, useState } from "react";
+import React, {ReactNode, useState} from "react";
 import ClickToEdit from "@/components/click-to-edit";
 import {Message} from "@/components/message";
 import ShareTable from "@/components/share-table";
@@ -17,7 +29,7 @@ interface SettingItem {
         onClick: ButtonProps['onClick'];
         children: ReactNode;
     };
-    CliekToEdit: {
+    ClickToEdit: {
         default: string;
         onComplete: (value: string)=>void
         verify?: boolean;
@@ -39,9 +51,9 @@ const renderItems = (item: Partial<SettingItem>) => {
         }
     }
     const edit = () => {
-        if (item.CliekToEdit){
+        if (item.ClickToEdit){
             return (
-                <ClickToEdit {...item.CliekToEdit} />
+                <ClickToEdit {...item.ClickToEdit} />
             )
         }
     }
@@ -59,7 +71,7 @@ const renderItems = (item: Partial<SettingItem>) => {
             {item.label && label()}
             {item.text && text()}
             {item.button && button()}
-            {item.CliekToEdit && edit()}
+            {item.ClickToEdit && edit()}
         </>
     )
 }
@@ -95,7 +107,7 @@ export default function SettingPage() {
         },
         {
             label: '当前邮箱:',
-            CliekToEdit: {
+            ClickToEdit: {
                 default: 'aaa@bbb.com',
                 onComplete: ()=>{
                     Message.success("已发送验证码");
@@ -113,7 +125,7 @@ export default function SettingPage() {
         },
         {
             label: '当前手机号:',
-            CliekToEdit:{
+            ClickToEdit:{
                 default: '18511111111',
                 onComplete: ()=>{
                     Message.success("已发送验证码");
@@ -131,7 +143,7 @@ export default function SettingPage() {
         },
         {
             label: '用户名',
-            CliekToEdit:{
+            ClickToEdit:{
                 default: 'Snowball_233',
                 onComplete: ()=>{
                     Message.success("已保存")
