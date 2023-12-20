@@ -21,6 +21,7 @@ import {Message} from "@/components/message";
 import ShareTable from "@/components/share-table";
 import IOC from "@/providers";
 import Password from "@/components/password";
+import { setRawCookie } from "react-cookies";
 
 interface SettingItem {
     label: string;
@@ -38,6 +39,10 @@ interface SettingItem {
     text: {
         children: ReactNode
     }
+}
+const useForceUpdate = ()=>{
+    let [value, setState] = useState(true);
+    return () => setState(!value);
 }
 const renderItems = (item: Partial<SettingItem>) => {
     const label = () => <p className="text-right">{item.label}</p>
@@ -94,6 +99,41 @@ export const useSettingItems = (
 }
 
 export default function SettingPage() {
+    const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
+    const [oldPwd, setOldPwd] = useState('');
+    const [newPwd, setNewPwd] = useState('');
+    // TODO: get by API or local cache
+    let rawUsername = 'SnowBall_233';
+    const [userName, setUserName] = useState('SnowBall_233');
+    const [loading, setLoading] = useState(false);
+    const [updated, setUpdated] = useState(false);
+
+    const onChangePassword = () => {
+        if (!oldPwd){
+            Message.error('老密码不能为空')
+            return;
+        }
+        if (!newPwd){
+            Message.error('新密码不能为空')
+            return;
+        }
+        if (newPwd === oldPwd) {
+            Message.error('新密码不能与老密码相同')
+            setNewPwd('');
+            return;
+        }
+        setLoading(true)
+        IOC.user.changePassword(newPwd, oldPwd)
+        .catch()
+        .finally(()=>{
+            setLoading(false);
+        })
+    }
+    const onCancel = () => {
+        setNewPwd('');
+        setOldPwd('');
+        onClose()
+    }
     const items: Partial<SettingItem>[] = [
         {
             label: '当前实名:',
@@ -144,44 +184,22 @@ export default function SettingPage() {
         {
             label: '用户名',
             ClickToEdit:{
-                default: 'Snowball_233',
-                onComplete: ()=>{
-                    Message.success("已保存")
+                default: userName,
+                onComplete: async (value)=>{
+                    return IOC.user.changeUserName(value)
+                    .then(()=>{
+                        setUserName(value);
+                        rawUsername = value;
+                        return true;
+                    })
+                    .catch(()=>{
+                        setUserName(rawUsername)
+                        return true;
+                    })
                 },
             }
         },
     ]
-    const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
-    const [oldPwd, setOldPwd] = useState('');
-    const [newPwd, setNewPwd] = useState('');
-    const [loading, setLoading] = useState(false);
-
-    const onChangePassword = () => {
-        if (!oldPwd){
-            Message.error('老密码不能为空')
-            return;
-        }
-        if (!newPwd){
-            Message.error('新密码不能为空')
-            return;
-        }
-        if (newPwd === oldPwd) {
-            Message.error('新密码不能与老密码相同')
-            setNewPwd('');
-            return;
-        }
-        setLoading(true)
-        IOC.user.changePassword(newPwd, oldPwd)
-        .catch()
-        .finally(()=>{
-            setLoading(false);
-        })
-    }
-    const onCancel = () => {
-        setNewPwd('');
-        setOldPwd('');
-        onClose()
-    }
     return (
         <div className="w-full space-y-10">
             <h1 className={title()}>用户设置</h1><br/>

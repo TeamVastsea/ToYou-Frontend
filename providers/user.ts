@@ -37,4 +37,7 @@ export class User {
     changePassword(newPwd: string, oldPwd: string){
         return this.axios.patch('/user/password', {}, {params: {new: newPwd, old: oldPwd}});
     }
+    changeUserName(userName: string){
+        return this.axios.patch('/user/username', {}, {params: {userName}});
+    }
 }
