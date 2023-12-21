@@ -46,8 +46,6 @@ export class PictureAPI {
             return;
         }
         let list: PictureList = JSON.parse(await result.text());
-        console.log(cookie.load("token"));
-        console.log(list);
         return list;
     }
 

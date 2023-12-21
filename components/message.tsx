@@ -1,12 +1,12 @@
 import toast from "react-hot-toast";
 import {Card, CardBody, Spinner} from "@nextui-org/react";
-import React from "react";
+import React, {ReactNode} from "react";
 import {FiAlertCircle} from "react-icons/fi";
 import {VscError} from "react-icons/vsc";
 import {BsCheckCircle} from "react-icons/bs";
 
 export class Message {
-    static message(message: string) {
+    static message(message: ReactNode) {
         let id = toast(<Card isPressable
                              className="bg-background dark:bg-default-100" onPress={() => {
             toast.dismiss(id)
@@ -15,7 +15,7 @@ export class Message {
         </CardBody></Card>);
     }
 
-    static success(message: string, icon: boolean = true) {
+    static success(message: ReactNode, icon: boolean = true) {
         let id = toast(<Card isPressable
                              className="bg-success dark:bg-success" onPress={() => {
             toast.dismiss(id)
@@ -27,7 +27,7 @@ export class Message {
         </CardBody></Card>);
     }
 
-    static error(message: string, icon: boolean = true) {
+    static error(message: ReactNode, icon: boolean = true) {
         let id = toast(<Card isPressable
                              className="bg-danger dark:bg-danger" onPress={() => {
             toast.dismiss(id)
@@ -39,7 +39,7 @@ export class Message {
         </CardBody></Card>);
     }
 
-    static warning(message: string, icon: boolean = true) {
+    static warning(message: ReactNode, icon: boolean = true) {
         let id = toast(<Card isPressable
                              className="bg-warning dark:bg-warning" onPress={() => {
             toast.dismiss(id)

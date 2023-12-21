@@ -13,9 +13,9 @@ export class UserAPI {
             redirect: 'follow'
         };
 
-        let response = await fetch(SERVER_URL + "/user/email/" + email, requestOptions);
+        let response = await fetch(SERVER_URL + "/email/" + email, requestOptions);
 
-        return await response.text() == "exists";
+        return JSON.parse(await response.text());
     }
 
     static async creatUser(email: string, password: string, username: string, code: string): Promise<[boolean, string]> {
@@ -46,7 +46,7 @@ export class UserAPI {
             redirect: 'follow'
         };
 
-        let response = await fetch(SERVER_URL + "/user?email=" + username + "&password=" + password, requestOptions);
+        let response = await fetch(SERVER_URL + "/user?account=" + username + "&password=" + password, requestOptions);
 
         if (response.ok) {
             cookie.save("token", response.headers.get("token")!, {});

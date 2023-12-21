@@ -25,6 +25,7 @@ import {useState} from "react";
 import cookie from "react-cookies";
 import {UpdateSetLoggedInHook} from "@/interface/hooks";
 import {Message} from "@/components/message";
+import {FiSettings} from "react-icons/fi";
 
 export const Navbar = () => {
     let router = useRouter();
@@ -66,6 +67,9 @@ export const Navbar = () => {
                         <GithubIcon className="text-default-500"/>
                     </Link>
                     <ThemeSwitch/>
+                    <Link href="/setting">
+                        <FiSettings className="text-default-500" size={20}/>
+                    </Link>
                 </NavbarItem>
                 <NavbarItem className="hidden md:flex">
                     {loggedIn ? <Button color="danger" onClick={() => {

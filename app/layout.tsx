@@ -2,13 +2,14 @@ import "@/styles/globals.css";
 import {Metadata} from "next";
 import {siteConfig} from "@/config/site";
 import {fontSans} from "@/config/fonts";
-import {AuthProvider, Providers} from "./providers";
+import {AuthProvider, Providers, ToastProvider} from "./providers";
 import {Navbar} from "@/components/navbar";
 import {Link} from "@nextui-org/link";
 import clsx from "clsx";
 import React from "react";
 import {rgba} from "color2k";
 import {Toaster} from "react-hot-toast";
+import { LogoText } from "@/components/icons";
 
 export const metadata: Metadata = {
     title: {
@@ -46,30 +47,54 @@ export default function RootLayout({children,}: {
                 <div className="relative flex flex-col min-h-screen">
                     <Navbar/>
                     <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-                        <Toaster toastOptions={{
-                            className: '',
-                            duration: 5000,
-                            style: {
-                                background: rgba(0, 0, 0, 0),
-                                color: rgba(0, 0, 0, 0),
-                                borderStyle: 'none',
-                                boxShadow: 'none'
-                            },}} gutter={-15}/>
-                            {children}
+                        <ToastProvider>
+                            <Toaster toastOptions={{
+                                className: '',
+                                duration: 5000,
+                                style: {
+                                    background: rgba(0, 0, 0, 0),
+                                    color: rgba(0, 0, 0, 0),
+                                    borderStyle: 'none',
+                                    boxShadow: 'none'
+                                }
+                                }
+                            } gutter={-15} />
+                            <AuthProvider whiteList={['/', '/authenticate', '/pricing']}>
+                                {children}
+                            </AuthProvider>
+                        </ToastProvider>
                     </main>
-                    <footer className="w-full flex items-center justify-center py-3 flex-col sm:flex-row">
-                        <Link href="https://beian.miit.gov.cn/" isExternal>
-                            鄂ICP备2023011709号-7
-                        </Link>
-                        <p className="hidden sm:inline-block">&nbsp;|&nbsp;</p>
-                        <Link
-                            href="about"
-                            className="flex items-center gap-1 text-current"
-                        >
-                            <span className="text-default-600">Powered by</span>
-                            <p className="text-primary">Team Vastsea</p>
-                            <span className="text-default-600">With ❤</span>
-                        </Link>
+                    <footer className="max-w-[900px] mx-auto px-6 py-3 w-full flex flex-col gap-2 text-sm">
+                        <ul className="w-fit flex gap-2 mx-auto">
+                            <li>
+                                <Link href="#" size="sm">
+                                    使用条款
+                                </Link>
+                            </li>
+                            <li>|</li>
+                            <li>
+                                <Link href="#" size="sm">
+                                    用户协议
+                                </Link>
+                            </li>
+                            <li>|</li>
+                            <li>
+                                <Link href="/about" size="sm">
+                                    关于我们
+                                </Link>
+                            </li>
+                        </ul>
+
+                        <div className="text-center">
+                            <Link href="https://beian.miit.gov.cn/" isExternal size="sm">
+                                鄂ICP备2023011709号-7
+                            </Link>
+                            <div className="mx-auto text-default-600 text-center">
+                                <span>
+                                    Copyright &copy;2023 Vastsea, All rights reserved - ToYou Project
+                                </span>
+                            </div>
+                        </div>
                     </footer>
                 </div>
             </Providers>
