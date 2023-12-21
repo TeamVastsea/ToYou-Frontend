@@ -1,9 +1,21 @@
 'use client'
 import {title} from "@/components/primitives";
-import {ButtonProps, Card, CardBody, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Tab, Tabs, useDisclosure} from "@nextui-org/react";
+import {
+    ButtonProps,
+    Card,
+    CardBody,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    Tab,
+    Tabs,
+    useDisclosure
+} from "@nextui-org/react";
 import {FiDatabase, FiLink, FiUser} from "react-icons/fi";
 import {Button} from "@nextui-org/button";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, {ReactNode, useState} from "react";
 import ClickToEdit from "@/components/click-to-edit";
 import {Message} from "@/components/message";
 import ShareTable from "@/components/share-table";
@@ -18,7 +30,7 @@ interface SettingItem {
         onClick: ButtonProps['onClick'];
         children: ReactNode;
     };
-    CliekToEdit: {
+    ClickToEdit: {
         default: string;
         onComplete: (value: string)=>void
         verify?: boolean;
@@ -44,9 +56,9 @@ const renderItems = (item: Partial<SettingItem>) => {
         }
     }
     const edit = () => {
-        if (item.CliekToEdit){
+        if (item.ClickToEdit){
             return (
-                <ClickToEdit {...item.CliekToEdit} />
+                <ClickToEdit {...item.ClickToEdit} />
             )
         }
     }
@@ -64,7 +76,7 @@ const renderItems = (item: Partial<SettingItem>) => {
             {item.label && label()}
             {item.text && text()}
             {item.button && button()}
-            {item.CliekToEdit && edit()}
+            {item.ClickToEdit && edit()}
         </>
     )
 }
@@ -72,7 +84,7 @@ export const useSettingItems = (
     items: Partial<SettingItem>[]
 ) => {
     return (
-        <>
+        <a className="space-y-1">
             {
                 items.map((item,idx) => {
                     return (
@@ -82,7 +94,7 @@ export const useSettingItems = (
                     )
                 })
             }
-        </>
+        </a>
     )
 }
 
@@ -126,7 +138,7 @@ export default function SettingPage() {
         {
             label: '当前实名:',
             button:{
-                children: '王*翔',
+                children: '姓名',
                 onClick: ()=>{
                     Message.success("更改实名");
                 },
@@ -135,7 +147,7 @@ export default function SettingPage() {
         },
         {
             label: '当前邮箱:',
-            CliekToEdit: {
+            ClickToEdit: {
                 default: 'aaa@bbb.com',
                 onComplete: ()=>{
                     Message.success("已发送验证码");
@@ -153,7 +165,7 @@ export default function SettingPage() {
         },
         {
             label: '当前手机号:',
-            CliekToEdit:{
+            ClickToEdit:{
                 default: '18511111111',
                 onComplete: ()=>{
                     Message.success("已发送验证码");
@@ -171,7 +183,7 @@ export default function SettingPage() {
         },
         {
             label: '用户名',
-            CliekToEdit:{
+            ClickToEdit:{
                 default: userName,
                 onComplete: async (value)=>{
                     return IOC.user.changeUserName(value)
@@ -202,7 +214,7 @@ export default function SettingPage() {
                         <CardBody className={"space-y-1 w-full"}>
                             <div>
                                 {useSettingItems(items)}
-                                <div className="grid grid-cols-[100px_1fr] justify-start items-center gap-2">
+                                <div className="grid grid-cols-[100px_1fr] justify-start items-center gap-2 h-10">
                                     <span className="text-right">密码:</span>
                                     <div className="px-unit-4 cursor-pointer">
                                         <span className="text-blue-500 dark:text-blue-600" onClick={onOpen}>修改密码</span>
