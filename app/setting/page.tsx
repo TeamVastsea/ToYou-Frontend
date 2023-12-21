@@ -21,6 +21,7 @@ import {Message} from "@/components/message";
 import ShareTable from "@/components/share-table";
 import IOC from "@/providers";
 import Password from "@/components/password";
+import {useSharedLinks} from "@/app/setting/hooks/use-shared-links";
 
 interface SettingItem {
     label: string;
@@ -108,6 +109,7 @@ export default function SettingPage() {
     const [userName, setUserName] = useState('SnowBall_233');
     const [loading, setLoading] = useState(false);
     const [updated, setUpdated] = useState(false);
+    const data = useSharedLinks();
 
     const onChangePassword = () => {
         if (!oldPwd) {
