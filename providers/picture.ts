@@ -30,7 +30,6 @@ export class Picture {
             }
         })
     }
-
     getAllSharedPicture(pageSize?: number, current?: number): Promise<AxiosResponse<ShareList>> {
         return this.axios.get('/picture/share', {
             params: {

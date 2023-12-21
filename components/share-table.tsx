@@ -9,27 +9,11 @@ import {FiClipboard, FiEdit3, FiTrash2} from "react-icons/fi";
 import {Pagination} from "@nextui-org/pagination";
 
 export default function ShareTable({loading, list, page, current, setCurrent}: ReturnType<typeof useSharedLinks>) {
-    return (
+    return(
         <p className="text-left">
-            <Table aria-label="Example static collection table"
-                   classNames={{
-                       wrapper: 'max-h-[400px]'
-                   }} bottomContent={
-                page > 1 ?
-                    <div className="flex w-full justify-center">
-                        <Pagination
-                            isCompact
-                            showControls
-                            showShadow
-                            color="secondary"
-                            page={current}
-                            total={page}
-                            onChange={(page) => setCurrent(page)}
-                        />
-                    </div> : <></>
-            }>
+            <Table aria-label="Example static collection table">
                 <TableHeader>
-                    <TableColumn>文件名</TableColumn>
+                    <TableColumn>链接</TableColumn>
                     <TableColumn>密码</TableColumn>
                     <TableColumn>有效期</TableColumn>
                     <TableColumn>下载次数</TableColumn>
