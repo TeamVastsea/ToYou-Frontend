@@ -176,17 +176,23 @@ export default function Picture(props: PictureProps) {
                                 <p className="flex items-center justify-center">
                                     {link == "" ?
                                         <ButtonGroup>
-                                            <Button variant={"flat"} color={"secondary"} onClick={() =>{generateShareLink(1)}}>分享水印图片</Button>
+                                            <Button variant={"flat"} color={"secondary"} onClick={() => {
+                                                generateShareLink(1)
+                                            }}>分享水印图片</Button>
                                             <Button
                                                 variant={props.group?.disabled.includes("compressed") ? "solid" : "flat"}
                                                 color={props.group?.disabled.includes("compressed") ? "default" : "secondary"}
                                                 disabled={props.group?.disabled.includes("compressed")}
-                                                onClick={() =>{generateShareLink(2)}}>分享压缩图片</Button>
+                                                onClick={() => {
+                                                    generateShareLink(2)
+                                                }}>分享压缩图片</Button>
                                             <Button
                                                 variant={props.group?.disabled.includes("original") ? "solid" : "flat"}
                                                 color={props.group?.disabled.includes("original") ? "default" : "secondary"}
                                                 disabled={props.group?.disabled.includes("original")}
-                                                onClick={() =>{generateShareLink(3)}}>分享原图</Button>
+                                                onClick={() => {
+                                                    generateShareLink(3)
+                                                }}>分享原图</Button>
                                         </ButtonGroup>
                                         : <div className="flex space-x-3" style={{width: 450}}>
                                             <Input className={"font-mono"} variant={"underlined"} value={link}

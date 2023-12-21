@@ -1,14 +1,12 @@
 "use client";
 
-import * as React from "react";
-import { useEffect } from 'react';
+import React, {useEffect} from "react";
 import {NextUIProvider} from "@nextui-org/system";
 import {ThemeProvider as NextThemesProvider} from "next-themes";
 import {ThemeProviderProps} from "next-themes/dist/types";
-import { IsLoggedIn, UpdateSetLoggedInHook } from "@/interface/hooks";
-import { redirect, useRouter, usePathname } from "next/navigation";
-import toast from "react-hot-toast";
-import { useToasterStore } from "react-hot-toast";
+import {IsLoggedIn} from "@/interface/hooks";
+import {redirect, usePathname} from "next/navigation";
+import toast, {useToasterStore} from "react-hot-toast";
 
 export interface ProvidersProps {
     children: React.ReactNode;
@@ -27,14 +25,15 @@ export function Providers({children, themeProps}: ProvidersProps) {
         </NextUIProvider>
     );
 }
+
 export function AuthProvider({children, whiteList}: AuthProvider) {
     const pathName = usePathname();
-    useEffect(()=>{
-        if (!whiteList.includes(pathName) && !IsLoggedIn){
+    useEffect(() => {
+        if (!whiteList.includes(pathName) && !IsLoggedIn) {
             redirect('/authenticate')
         }
     }, [pathName, whiteList])
-    if (!IsLoggedIn && !whiteList.includes(pathName)){
+    if (!IsLoggedIn && !whiteList.includes(pathName)) {
         return <></>;
     }
     return (
@@ -43,20 +42,21 @@ export function AuthProvider({children, whiteList}: AuthProvider) {
         </>
     )
 }
-export const ToastProvider = ({children} : {children: React.ReactNode}) => {
-    const { toasts } = useToasterStore();
-    
+
+export const ToastProvider = ({children}: { children: React.ReactNode }) => {
+    const {toasts} = useToasterStore();
+
     const TOAST_LIMIT = 2
-    
+
     useEffect(() => {
-      toasts
-        .filter((t) => t.visible)
-        .filter((_, i) => i >= TOAST_LIMIT)
-        .forEach((t) => toast.remove(t.id));
+        toasts
+            .filter((t) => t.visible)
+            .filter((_, i) => i >= TOAST_LIMIT)
+            .forEach((t) => toast.remove(t.id));
     }, [toasts]);
     return (
-      <>
-        {children}
-      </>
+        <>
+            {children}
+        </>
     )
 }

@@ -1,6 +1,6 @@
-import { http } from './http';
-import { Picture } from './picture';
-import { User } from './user';
+import {http} from './http';
+import {Picture} from './picture';
+import {User} from './user';
 
 const IOC = {
     user: new User(http),

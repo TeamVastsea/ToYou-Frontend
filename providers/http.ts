@@ -1,5 +1,5 @@
-import { Message } from "@/components/message";
-import axios, { AxiosError } from "axios";
+import {Message} from "@/components/message";
+import axios, {AxiosError} from "axios";
 import cookie from 'react-cookies';
 
 export const http = axios.create({
@@ -10,22 +10,22 @@ export const http = axios.create({
 
 http.interceptors.request.use(
     (config) => {
-        if (typeof window !== 'undefined'){
+        if (typeof window !== 'undefined') {
             const token = cookie.load('token')
-            if (token){
+            if (token) {
                 config.headers.token = token;
             }
         }
         return config;
     },
-    (err)=>{
+    (err) => {
         console.log(err);
         throw new Error(err);
     }
 )
-http.interceptors.response.use((val)=>{
+http.interceptors.response.use((val) => {
     return val;
-}, (err: AxiosError)=>{
+}, (err: AxiosError) => {
     const msg = typeof err.response?.data === 'object' ? JSON.stringify(err.response?.data ?? {}) : err.response?.data
     Message.error(JSON.stringify(msg));
     return Promise.reject(err);

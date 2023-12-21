@@ -9,6 +9,7 @@ import {useRouter} from "next/navigation";
 
 export const Price = (price: PriceProps) => {
     const router = useRouter();
+
     function onStart() {
         if (IsLoggedIn) {
             if (price.price.price == 0) {
@@ -42,8 +43,9 @@ export const Price = (price: PriceProps) => {
                     <Spacer style={{width: 20}}/>
                     <p>{price.price.price * 10} 元/年</p>
                 </CardFooter>
-            </Card> <br />
-            <p style={{textAlign: "center"}}> <b>若会员权益过期，超出存储空间部分将于 180 天内被删除，在删除其前您无法存储新的内容。</b> </p>
+            </Card> <br/>
+            <p style={{textAlign: "center"}}><b>若会员权益过期，超出存储空间部分将于 180
+                天内被删除，在删除其前您无法存储新的内容。</b></p>
         </>
     )
 }

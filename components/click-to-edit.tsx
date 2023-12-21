@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {Button} from "@nextui-org/button";
 import {Input} from "@nextui-org/input";
 import {FaCheck, FaCheckDouble} from "react-icons/fa6";

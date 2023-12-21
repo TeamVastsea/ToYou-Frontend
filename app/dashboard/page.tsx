@@ -1,26 +1,26 @@
 'use client'
 
 import Uploader from "@/components/uploader";
-import { Card, CardBody, CardFooter, Divider } from "@nextui-org/react";
-import { Progress } from "@nextui-org/progress";
-import { Button } from "@nextui-org/button";
-import { redirect, useRouter } from "next/navigation";
-import { Chip } from "@nextui-org/chip";
-import { FiChevronsUp, FiUploadCloud } from "react-icons/fi";
+import {Card, CardBody, CardFooter, Divider} from "@nextui-org/react";
+import {Progress} from "@nextui-org/progress";
+import {Button} from "@nextui-org/button";
+import {redirect, useRouter} from "next/navigation";
+import {Chip} from "@nextui-org/chip";
+import {FiChevronsUp, FiUploadCloud} from "react-icons/fi";
 import Picture from "@/components/picture";
-import { PictureAPI } from "@/interface/pictureAPI";
-import { useEffect, useState } from "react";
-import { UserAPI } from "@/interface/userAPI";
-import { getGroupPrice } from "@/config/prices";
-import { PictureList } from "@/interface/model/picture";
-import { SERVER_URL } from "@/interface/api";
+import {PictureAPI} from "@/interface/pictureAPI";
+import {useEffect, useState} from "react";
+import {UserAPI} from "@/interface/userAPI";
+import {getGroupPrice} from "@/config/prices";
+import {PictureList} from "@/interface/model/picture";
+import {SERVER_URL} from "@/interface/api";
 import cookie from "react-cookies";
-import { PriceInfo } from "@/components/price";
-import { IsLoggedIn } from "@/interface/hooks";
-import { RedirectType } from "next/dist/client/components/redirect";
+import {PriceInfo} from "@/components/price";
+import {IsLoggedIn} from "@/interface/hooks";
+import {RedirectType} from "next/dist/client/components/redirect";
 
 const getPriceColor = (price: string) => {
-    switch (price.toLowerCase()){
+    switch (price.toLowerCase()) {
         case 'free':
             return {
                 base: 'bg-gradient-to-br default',
@@ -98,9 +98,9 @@ export default function Page() {
     }, [])
 
     const deletePicture = (pid: string) => {
-        const records = pictures?.records?.filter((record) => record.id !== Number(pid) );
+        const records = pictures?.records?.filter((record) => record.id !== Number(pid));
         console.log(records, pid);
-        if (pictures && records){
+        if (pictures && records) {
             setPictures({...pictures, records});
         }
     }
@@ -111,23 +111,23 @@ export default function Page() {
                 <CardBody className="space-y-5">
                     <div>
                         <Progress label={"空间已用"} value={used} className="max-w-md w-full"
-                            maxValue={total}
-                            showValueLabel={true} formatOptions={{ style: "percent" }} />
+                                  maxValue={total}
+                                  showValueLabel={true} formatOptions={{style: "percent"}}/>
                         {used} MB / {total} MB
                     </div>
 
                     <div>
                         <Progress label={"方案剩余时间"} value={timeLeft} className="max-w-md w-full"
-                            formatOptions={{ style: "percent" }} isStriped color="secondary" />
+                                  formatOptions={{style: "percent"}} isStriped color="secondary"/>
                         {timeDescription}
                     </div>
                 </CardBody>
-                <Divider />
+                <Divider/>
                 <CardFooter>
                     <a className="flex flex-wrap justify-center gap-5">
                         <Uploader label={
                             <a className="flex space-x-2 items-center">
-                                <FiUploadCloud />
+                                <FiUploadCloud/>
                                 <span>上传文件</span>
                             </a>
                         } onChange={(e) => {
@@ -142,16 +142,16 @@ export default function Page() {
                             router.push("/pricing")
                         }}>
                             <a className="flex space-x-1 items-center">
-                                <FiChevronsUp style={{ fontSize: 20 }} />
+                                <FiChevronsUp style={{fontSize: 20}}/>
                                 <span>升级方案</span>
                             </a>
                         </Button>
 
                         <a className="flex space-x-1 items-center">
                             <span>当前方案:</span>
-                            <Chip style={{ position: "relative", left: 5 }}
-                                variant="shadow"
-                                classNames={groupColor}
+                            <Chip style={{position: "relative", left: 5}}
+                                  variant="shadow"
+                                  classNames={groupColor}
                             >
                                 {group?.name}
                             </Chip>
@@ -161,8 +161,8 @@ export default function Page() {
             </Card>
             {/* eslint-disable-next-line react/jsx-key */}
             {pictures?.records == null ? <a>请上传</a> : pictures!.records.map(picture => <Picture
-                    url={SERVER_URL + "/picture/preview?shareMode=2&id=" + picture.id.toString() + "&token=" + cookie.load("token")}
-                    name={picture.fileName} pid={picture.id.toString()} group={group} onDelete={deletePicture} />)}
+                url={SERVER_URL + "/picture/preview?shareMode=2&id=" + picture.id.toString() + "&token=" + cookie.load("token")}
+                name={picture.fileName} pid={picture.id.toString()} group={group} onDelete={deletePicture}/>)}
             {/* <Picture url="https://t7.baidu.com/it/u=2961459243,2146986594&fm=193&f=GIF" name="雪景.png" pid="" onPress={onOpen} /> */}
         </div>
     )

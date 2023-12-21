@@ -5,6 +5,7 @@ export interface Extend {
     groupUpdateDate?: number;
     groupEndDate?: number;
 }
+
 export interface UserModel {
     uid: number;
     username: string;
@@ -13,10 +14,12 @@ export interface UserModel {
     updateTime: string;
     extend?: Extend;
 }
+
 export interface LoginData {
     username: string;
     password: string;
 }
+
 export interface CheckCodeData {
     /**
      * 最短间隔时间 (ms)
@@ -26,8 +29,8 @@ export interface CheckCodeData {
 
 export interface RegisterRequestData {
     /**
-        * 验证码
-    */
+     * 验证码
+     */
     code?: string;
     /**
      * 邮箱

@@ -1,6 +1,6 @@
 export default function BuyLayout({
-                                       children,
-                                   }: {
+                                      children,
+                                  }: {
     children: React.ReactNode;
 }) {
     return (
