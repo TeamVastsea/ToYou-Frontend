@@ -1,4 +1,4 @@
-import {Axios} from "axios";
+import {Axios, AxiosResponse} from "axios";
 import {ShareResponse} from "@/interface/model/picture";
 import {ShareList} from "@/interface/model/share";
 
@@ -30,8 +30,7 @@ export class Picture {
             }
         })
     }
-
-    getAllSharedPicture(pageSize?: number, current?: number): Promise<ShareList> {
+    getAllSharedPicture(pageSize?: number, current?: number): Promise<AxiosResponse<ShareList>> {
         return this.axios.get('/picture/share', {
             params: {
                 pageSize,

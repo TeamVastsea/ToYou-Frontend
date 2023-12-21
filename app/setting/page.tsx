@@ -257,7 +257,7 @@ export default function SettingPage() {
                         <span>分享链接管理</span>
                     </div>
                 }>
-                    <ShareTable/>
+                    <ShareTable {...data}/>
                 </Tab>
                 <Tab key="status" title={
                     <div className="flex items-center space-x-2">
