@@ -81,7 +81,7 @@ const renderItems = (item: Partial<SettingItem>) => {
     )
 }
 
-export function useSettingItems(
+function useSettingItems(
     items: Partial<SettingItem>[]
 ) {
     return (
