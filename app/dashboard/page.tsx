@@ -61,6 +61,7 @@ export default function Page() {
     let [pictures, setPictures] = useState<PictureList>();
     let [group, setGroup] = useState<PriceInfo>()
     const [groupColor, setGroupColor] = useState({});
+    const [drag, setDrag] = useState(false);
     const router = useRouter();
 
     function updateInfo() {
@@ -104,26 +105,63 @@ export default function Page() {
             setPictures({...pictures, records});
         }
     }
-
+    const onDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        const {files} = event.dataTransfer;
+        let totalSize = 0;
+        const stack = [];
+        for (let i=0;i<files.length;i++){
+            const file = files.item(i);
+            if (file){
+                totalSize += file.size;
+                stack.push(PictureAPI.uploadFile(file))
+            }
+        }
+        Promise.all(stack).finally(() => {updateInfo();setDrag(false)});
+    }
+    const onDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setDrag(true)
+    }
+    const onDragLeave = () => {
+        setDrag(false);
+    }
     return (
-        <div className="space-y-5 max-w-[450px] mx-auto">
-            <Card className="max-w-4xl">
-                <CardBody className="space-y-5">
-                    <div>
-                        <Progress label={"空间已用"} value={used} className="max-w-md w-full"
-                                  maxValue={total}
-                                  showValueLabel={true} formatOptions={{style: "percent"}}/>
-                        {used} MB / {total} MB
+        <div className="space-y-5 max-w-[450px] mx-auto"
+        >
+            <Card className='max-w-4xl relative'
+            >   
+                <CardBody className="static">
+                    <div draggable
+                    onDragEnter={(e) => onDragEnter(e)}
+                    onDragLeave={onDragLeave}
+                    onDrop={(ev)=>onDrop(ev)}
+                    onDragOver={e => e.preventDefault()}
+                    className={
+                        `absolute top-0 left-0 w-full h-full ${drag && 'bg-black bg-opacity-40'} ${drag && 'block z-20'}`
+                    }>
+                        {
+                            drag && <span className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white">松手上传</span>
+                        }
                     </div>
+                    <div className="space-y-5">
+                        <div>
+                            <Progress label={"空间已用"} value={used} className="max-w-md w-full pointer-events-none"
+                                    maxValue={total}
+                                    showValueLabel={true} formatOptions={{style: "percent"}}/>
+                            {used} MB / {total} MB
+                        </div>
 
-                    <div>
-                        <Progress label={"方案剩余时间"} value={timeLeft} className="max-w-md w-full"
-                                  formatOptions={{style: "percent"}} isStriped color="secondary"/>
-                        {timeDescription}
+                        <div>
+                            <Progress label={"方案剩余时间"} value={timeLeft} className="max-w-md w-full pointer-events-none z-20"
+                                    formatOptions={{style: "percent"}} isStriped color="secondary"/>
+                            {timeDescription}
+                        </div>
                     </div>
                 </CardBody>
                 <Divider/>
-                <CardFooter>
+                <CardFooter className={`${drag &&  'z-10'}`}>
                     <a className="flex flex-wrap justify-center gap-5">
                         <Uploader label={
                             <a className="flex space-x-2 items-center">
