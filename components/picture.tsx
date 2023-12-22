@@ -61,6 +61,9 @@ export default function Picture(props: PictureProps) {
     let [saveLoading, setSaveLoading] = useState(false);
     const [delLoading, setDelLoading] = useState(false);
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(['none']));
+    const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
+    const [top, setTop] = useState(0);
+    const [left, setLeft] = useState(0);
 
     const [textColor, setTextColor] = useState('text-black');
     let originName = props.name;
@@ -72,7 +75,7 @@ export default function Picture(props: PictureProps) {
         });
     }
 
-    const deletePicture = (onClose: () => void) => {
+    const deletePicture = (onClose?: () => void) => {
         setDelLoading(true);
         IOC.picture.deletePicture(props.pid)
             .then(() => {
@@ -83,13 +86,23 @@ export default function Picture(props: PictureProps) {
                 Message.error(reason)
             })
             .finally(() => {
-                onClose();
+                onClose?.();
                 setDelLoading(false)
             })
     }
 
-    const footerRef = useRef(null);
+    const deleteButton = useRef<HTMLButtonElement>(null);
 
+    useEffect(()=>{
+        const closeDeleteConfirm = ()=>{
+            console.log('click')
+            setDeleteConfirmVisible(false)
+        }
+        window.addEventListener('mousedown', closeDeleteConfirm)
+        return () => {
+            window.removeEventListener('mousedown', closeDeleteConfirm);
+        }
+    })
     useEffect(() => {
         getImgContrast({
             imgSrc: props.url,
@@ -98,6 +111,17 @@ export default function Picture(props: PictureProps) {
                 setTextColor(textState === 'white' ? 'text-white' : 'text-black')
             })
     }, [props.url, setTextColor])
+    useEffect(()=>{
+        if (deleteConfirmVisible){
+            const top = deleteButton.current?.parentElement?.offsetTop ?? 0;
+            const height = deleteButton.current?.parentElement?.offsetHeight ?? 0;
+            console.log(deleteButton.current)
+            const left = (deleteButton.current?.parentElement?.offsetLeft ?? 0) + (deleteButton.current?.offsetLeft ?? 0) - (deleteButton.current?.offsetWidth??0);
+            setTop(top - height - 8 - 16);
+            setLeft(Math.floor(left));
+            // setTop((deleteButton.current?.offsetTop ?? 0) + (deleteButton.current?.parentElement? ?? 0))
+        }
+    }, [deleteConfirmVisible])
 
 
     return (
@@ -107,7 +131,7 @@ export default function Picture(props: PictureProps) {
                 radius="lg"
                 className="border-none items-center relative"
                 isPressable
-                onPress={descriptionOpen.onOpen}
+                onPress={()=>{descriptionOpen.onOpen(); setDeleteConfirmVisible(false)}}
                 style={{maxWidth: 450, width: '100%'}}
             >
                 <Image
@@ -118,6 +142,19 @@ export default function Picture(props: PictureProps) {
                     src={props.url}
                     isZoomed
                 />
+                {
+                    deleteConfirmVisible && (
+                        <div className="absolute p-2 z-30 rounded-md dark:bg-default" style={{
+                            top: `${top}px`,
+                            left: `${left}px`
+                        }}>
+                            <h3 className="text-lg">确定要删除吗</h3>
+                            <Button color="danger" size="sm" fullWidth onClick={() => {deletePicture(); setDeleteConfirmVisible(false)}}>
+                                确认
+                            </Button>
+                        </div>
+                    )
+                }
                 <CardFooter
                     className={
                         `
@@ -132,27 +169,13 @@ export default function Picture(props: PictureProps) {
                     <SharedButton link={link} pid={props.pid} className={
                         `${textColor}`
                     }/>
-                    <Popover>
-                        <PopoverTrigger>
-                            <Button isIconOnly className="justify-center" variant="bordered" size="sm"
-                                    isLoading={delLoading}>
-                                {!delLoading && <DeleteIcon className={`${textColor}`}/>}
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent>
-                            {(titleStyle) => (
-                                <div className="px-2 py-1">
-                                    <h3 className="text-lg" {...titleStyle}>确定要删除吗</h3>
-                                    <div className="my-2">
-                                        <Button color="danger" size="sm" fullWidth
-                                                onClick={() => deletePicture(() => {
-                                                })}>确认</Button>
-                                    </div>
-                                </div>
-                            )}
-                        </PopoverContent>
-                    </Popover>
-                </CardFooter>
+                    <Button isIconOnly className="justify-center" variant="bordered" size="sm"
+                            isLoading={delLoading} onClick={() => setDeleteConfirmVisible(!deleteConfirmVisible)}
+                            ref={deleteButton}
+                        >
+                        {!delLoading && <DeleteIcon className={`${textColor}`}/>}
+                    </Button>
+                </CardFooter>                
             </Card>
 
             <Modal isOpen={descriptionOpen.isOpen} onOpenChange={descriptionOpen.onOpenChange}>
