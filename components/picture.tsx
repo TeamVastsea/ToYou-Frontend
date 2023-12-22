@@ -119,7 +119,6 @@ export default function Picture(props: PictureProps) {
             const left = (deleteButton.current?.parentElement?.offsetLeft ?? 0) + (deleteButton.current?.offsetLeft ?? 0) - (deleteButton.current?.offsetWidth??0);
             setTop(top - height - 8 - 16);
             setLeft(Math.floor(left));
-            // setTop((deleteButton.current?.offsetTop ?? 0) + (deleteButton.current?.parentElement? ?? 0))
         }
     }, [deleteConfirmVisible])
 
