@@ -1,7 +1,7 @@
-import {Input} from "@nextui-org/react";
-import {CloseFilledIcon, EyeFilledIcon, EyeSlashFilledIcon} from "@nextui-org/shared-icons";
-import React, {useEffect, useState} from "react";
-
+import { Input } from "@nextui-org/input";
+import { CloseFilledIcon, EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
+import dynamic from "next/dynamic";
+import React, { useEffect, useState } from "react";
 export interface PasswordProps {
     label: string;
     placeholder?: string;
