@@ -117,7 +117,7 @@ export default function Picture(props: PictureProps) {
             const height = deleteButton.current?.parentElement?.offsetHeight ?? 0;
             console.log(deleteButton.current)
             const left = (deleteButton.current?.parentElement?.offsetLeft ?? 0) + (deleteButton.current?.offsetLeft ?? 0) - (deleteButton.current?.offsetWidth??0);
-            setTop(top - height - 8 - 16);
+            setTop(top - height - 8 - 28);
             setLeft(Math.floor(left));
         }
     }, [deleteConfirmVisible])
@@ -143,11 +143,11 @@ export default function Picture(props: PictureProps) {
                 />
                 {
                     deleteConfirmVisible && (
-                        <div className="absolute p-2 z-30 rounded-md dark:bg-default" style={{
+                        <div className="absolute p-2 z-30 rounded-md bg-default-50" style={{
                             top: `${top}px`,
                             left: `${left}px`
                         }}>
-                            <h3 className="text-lg">确定要删除吗</h3>
+                            <h3 className="text-base mb-2">确定要删除吗</h3>
                             <Button color="danger" size="sm" fullWidth onClick={() => {deletePicture(); setDeleteConfirmVisible(false)}}>
                                 确认
                             </Button>
