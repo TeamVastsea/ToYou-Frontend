@@ -1,6 +1,6 @@
-import { Share } from "@/interface/model/share";
+import {Share} from "@/interface/model/share";
 import IOC from "@/providers"
-import { useEffect, useState } from "react"
+import {useEffect, useState} from "react"
 import {LoadingState} from "@react-types/shared";
 
 export const useSharedLinks = () => {
@@ -11,26 +11,26 @@ export const useSharedLinks = () => {
     const caches: Array<Share[]> = [];
     const getSharedPicture = (current: number) => {
         setLoading('loading')
-        if (caches[current]){
+        if (caches[current]) {
             setList(caches[current]);
             return;
         }
         IOC.picture.getAllSharedPicture(10, current)
-        .then(({data: {pages, records}}) => {
-            setPage(pages);
-            setList(records);
-            if (caches[current] === undefined){
-                caches.push([]);
-            }
-            caches[current].push(...records);
-        })
-        .catch(()=>{
-            setLoading('error');
-        })
+            .then(({data: {pages, records}}) => {
+                setPage(pages);
+                setList(records);
+                if (caches[current] === undefined) {
+                    caches.push([]);
+                }
+                caches[current].push(...records);
+            })
+            .catch(() => {
+                setLoading('error');
+            })
     }
-    useEffect(()=>{
+    useEffect(() => {
         getSharedPicture(current);
-    },[current]);
+    }, [current]);
     return {
         current,
         setCurrent,

@@ -10,13 +10,7 @@ import {useRouter} from "next/navigation";
 import {SetLoggedInState} from "@/interface/hooks";
 import {UserAPI} from "@/interface/userAPI";
 import IOC from "@/providers";
-import {
-    useType,
-    useIsPhone,
-    useIsEmail,
-    useDisabled,
-    useButton
-} from "./hooks";
+import {useButton, useIsEmail, useIsPhone, useType} from "./hooks";
 import Password from "@/components/password";
 import PasswordRobustnessList from "./components/password-robustness-list";
 import CheckCode from "./components/check-code";
@@ -145,7 +139,7 @@ export default function Page() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [valide, setValide] = useState(false);
     useEffect(() => {
-        setValide(/^[\w\d.\-_a-zA-Z\u4e00-\u9fa5]+$/gm.test(userName) && userName.length >= 2);
+        setValide(/^[\w.\-_a-zA-Z\u4e00-\u9fa5]+$/gm.test(userName) && userName.length >= 2);
     }, [userName]);
     const [passwordRobustness, setPasswordRobustness] = useState(new Array(6).fill(false));
     const isPhone = useIsPhone(userInput);
@@ -175,7 +169,7 @@ export default function Page() {
 
     const router = useRouter();
 
-    const [type, setType] = useType(isPhone, isEmail)
+    const [type] = useType(isPhone, isEmail)
     useEffect(() => {
         setPasswordRobustness(
             [...fns.map(fn => fn(password))]
@@ -290,8 +284,10 @@ export default function Page() {
                                         setUsername={setUsername}/>
                             )
                         }
-                        <Checkbox isSelected={policyState}
-                                  onValueChange={setPolicyState}>登录或注册即代表同意服务条款</Checkbox>
+                        <Checkbox
+                            isSelected={policyState}
+                            onValueChange={setPolicyState}>登录或注册即代表同意服务条款
+                        </Checkbox>
                     </div>
                 </CardBody>
                 <CardFooter className="px-5">
