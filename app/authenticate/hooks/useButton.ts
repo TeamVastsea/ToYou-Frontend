@@ -1,11 +1,12 @@
-import {useEffect, useState} from "react";
-import {PageType} from "../page";
+import {useEffect, useState} from 'react';
+import { Colors, PageType } from '../page';
+import IOC from '@/providers';
 
-export const useButtonMessage = (pageType: PageType, initMessage: string) => {
+const useButtonMessage = (type: PageType, initMessage:string) => {
     const [buttonMessage, setButtonMessage] = useState(initMessage);
     useEffect(() => {
         let msg = '下一步';
-        switch (pageType) {
+        switch (type) {
             case 'login':
                 msg = '登录'
                 break;
@@ -14,81 +15,56 @@ export const useButtonMessage = (pageType: PageType, initMessage: string) => {
                 break;
         }
         setButtonMessage(msg);
-    }, [pageType,]);
+    }, [type]);
     return {
         buttonMessage,
         setButtonMessage
     }
 }
-
-export const useDisabled = (
-    props: {
-        policyState: boolean,
-        userName: string,
-        password: string,
-        confirmPassword: string,
-        checkCode: string,
-        valide: boolean,
-        passwordRobustness: boolean[],
-        pageType: PageType,
-        isEmail: boolean,
-        isPhone: boolean,
-        account: string
-    },
+const useDisabled = (
+    valide: boolean
 ) => {
-    const {
-        policyState,
-        pageType,
-        userName,
-        password,
-        confirmPassword,
-        checkCode,
-        valide,
-        passwordRobustness,
-        isEmail,
-        isPhone,
-        account
-    } = props;
-    const [disabled, setDisabled] = useState(true);
-    useEffect(() => {
-        if (pageType === 'wait-check') {
-            setDisabled(
-                !policyState || account.length === 0
-            )
-        }
-        if (pageType === 'login') {
-            setDisabled(!policyState || password.length === 0 || account.length === 0);
-        }
-        if (pageType === 'register') {
-            setDisabled(
-                !(
-                    policyState && password === confirmPassword && valide && checkCode.length > 0 && passwordRobustness.every((v) => v) && isPhone
-                )
-            )
-        }
-    }, [checkCode, confirmPassword, isEmail, isPhone, pageType, password, passwordRobustness, policyState, valide, userName, account])
-    return {disabled, setDisabled};
+    const [disabled, setDisabled] = useState(!valide);
+    useEffect(()=>{
+        setDisabled(!valide);
+    }, [valide]);
+    return {disabled, setDisabled}
+}
+interface UseEventProps {
+    setLoading: (value: boolean)=>void;
+    account: string;
+    phone: string;
+    password: string;
+    email: string;
+    pageType: PageType;
+    setPageType: (pageType: PageType)=>void;
+    setShowErr: (value: boolean)=>void;
 }
 
+export const useButton = ({
+    pageType,
+    valide
+}:Partial<UseButtonProps>) => {
+    const {buttonMessage} = useButtonMessage(pageType!, '下一步');
+    const {disabled} = useDisabled(valide!)
+    const [loading, setLoading] = useState(false);
+    const [color, setColor] = useState<Colors>(disabled ? 'default' : 'primary');
+    useEffect(()=>{
+        setColor(disabled ? 'default' : 'primary');
+    }, [disabled, pageType]);
+    return {buttonMessage, disabled, color, loading, setLoading, setColor}
+}
 
-export const useButton = (props: {
-    policyState: boolean,
-    userName: string,
-    password: string,
-    confirmPassword: string,
-    checkCode: string,
-    valide: boolean,
-    passwordRobustness: boolean[],
-    pageType: PageType,
+export interface UseButtonProps {
+    policy: boolean;
+    account: string;
+    password: string;
+    confirmPassword: string;
+    checkCode: string;
+    passwordRobustness: boolean[];
     isEmail: boolean,
     isPhone: boolean,
-    account: string
-}) => {
-    const {disabled} = useDisabled(props);
-    const [color, setColor] = useState<"default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined>(disabled ? 'default' : 'primary');
-    const {buttonMessage} = useButtonMessage(props.pageType, '下一步')
-    useEffect(() => {
-        setColor(disabled ? 'default' : 'primary')
-    }, [disabled]);
-    return {color, disabled, buttonMessage};
+    pageType: PageType,
+    accountExists: boolean,
+    valide: boolean // from useValide
 }

@@ -9,7 +9,7 @@ export class User {
     }
 
     async checkEmail(email: string) {
-        return (await this.axios.get('/user/email', {params: {email}})).data === 'exists';
+        return (await this.axios.get(`/user/email/${email}`)).data;
     }
 
     async checkPhone(phone: string) {

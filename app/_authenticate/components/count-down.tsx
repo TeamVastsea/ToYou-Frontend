@@ -1,7 +1,7 @@
 'use client'
 
 import {useEffect, useState} from "react";
-import {useCountDown} from "../hooks/useCountDown"
+import {useCountDown} from "../hooks"
 
 const CountDown = (
     props: { countDown: number, onFinish: () => void }

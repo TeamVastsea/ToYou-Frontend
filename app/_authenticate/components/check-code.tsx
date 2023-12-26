@@ -5,7 +5,7 @@ import IOC from "@/providers";
 import {Button} from "@nextui-org/react";
 import CountDown from "./count-down";
 
-const CheckCode = (props: { type: 'email' | 'phone' | 'unknown', account: string }) => {
+const CheckCode = (props: { type: 'email' | 'phone' | 'unknown', userInput: string }) => {
     const {type} = props;
     const [cd, setCD] = useState(0)
     const onCountdownFinish = () => {
@@ -13,7 +13,7 @@ const CheckCode = (props: { type: 'email' | 'phone' | 'unknown', account: string
     }
     const getCode = () => {
         if (type === 'email') {
-            IOC.user.getCheckCodeByEmail(props.account)
+            IOC.user.getCheckCodeByEmail(props.userInput)
                 .then((val) => {
                     setCD(val.data.cd + 1);
                 })
@@ -23,7 +23,7 @@ const CheckCode = (props: { type: 'email' | 'phone' | 'unknown', account: string
                 })
         }
         if (type === 'phone') {
-            IOC.user.getCheckCodeByPhone(props.account)
+            IOC.user.getCheckCodeByPhone(props.userInput)
                 .then((val) => {
                     setCD(val.data.cd + 1);
                     console.log(val.data.cd)
