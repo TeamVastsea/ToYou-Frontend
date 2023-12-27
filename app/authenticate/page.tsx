@@ -11,6 +11,7 @@ import { Message } from '@/components/message';
 import { useRouter } from 'next/navigation';
 import { SetLoggedInState } from '@/interface/hooks';
 import { UserAPI } from '@/interface/userAPI';
+import { useThrottleFn } from 'ahooks';
 
 export type Colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
 export type PageType = 'wait-check' | 'login' | 'register'
@@ -72,18 +73,40 @@ export default function Page(){
             [...fns.map(fn => fn(password))]
         )
     }, [password, fns])
+    const checkAccountExistsByEmail = () => {
+        return IOC.user.checkEmail(account)
+            .then((exists:boolean) => exists)
+            .catch(() => false);
+    }
+    const checkAccountExistsByPhone = () => {
+        return IOC.user.checkPhone(account)
+            .then((exists:boolean) => exists)
+            .catch(() => false);
+    }
+    const checkAccountExists = useThrottleFn(()=>{
+        if (email){
+            checkAccountExistsByEmail()
+                .then((exists) => {
+                    setShowErr(!exists)
+                })
+                .finally(() => setLoading(false));
+        }
+    }, {wait: 1000})
+    useEffect(()=>{
+        checkAccountExists.run();
+    }, [account]);
     const invoke = () => {
         const checkAccount = () => {
             setLoading(true);
             if (email){
-                IOC.user.checkEmail(account)
+                checkAccountExistsByEmail()
                     .then((exists) => {
                         setShowErr(!exists)
                     })
                     .finally(() => setLoading(false));
             }
             if (phone){
-                IOC.user.checkPhone(account)
+                checkAccountExistsByPhone()
                 .then((exists) => {
                     if (!exists){
                         setPageType('register')
