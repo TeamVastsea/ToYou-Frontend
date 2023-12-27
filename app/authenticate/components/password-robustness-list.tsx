@@ -35,8 +35,8 @@ const PasswordRobustnessList = (props: { active: boolean[] }) => {
                             }
                         >
                             {
-                                props.active[idx] ? <IoCheckmark className="inline text-xl"/> :
-                                    <IoCloseSharp className="inline text-xl"/>
+                                props.active[idx] ? <IoCheckmark className="inline text-xl flex-shrink-0"/> :
+                                    <IoCloseSharp className="inline text-xl flex-shrink-0"/>
                             }
                             <span>{label}</span>
                         </li>

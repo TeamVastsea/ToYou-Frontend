@@ -5,7 +5,7 @@ import IOC from "@/providers";
 import {Button} from "@nextui-org/react";
 import CountDown from "./count-down";
 
-const CheckCode = (props: { type: 'email' | 'phone' | 'unknown', account: string }) => {
+const CheckCode = (props: { type: 'email' | 'phone' | 'unknown', account: string, className?: string}) => {
     const {type} = props;
     const [cd, setCD] = useState(0)
     const onCountdownFinish = () => {
@@ -35,7 +35,7 @@ const CheckCode = (props: { type: 'email' | 'phone' | 'unknown', account: string
     }
     return (
         <Button onClick={getCode} isDisabled={cd > 0} size="lg"
-                className="flex gap-2 flex-grow-0 flex-shrink-0 basis-auto px-2 w-32 break-words">
+                className={`flex gap-2 flex-grow-0 flex-shrink-0 basis-auto px-2 w-32 break-words ${props.className}`}>
             {
                 cd > 0 ? <CountDown countDown={cd} onFinish={onCountdownFinish}/> : '发送验证码'
             }

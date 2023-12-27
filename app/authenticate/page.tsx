@@ -148,7 +148,7 @@ export default function Page(){
     }
     return (
         <form>
-            <Card className='max-w-[300px] w-full' onKeyDown={onEnter}>
+            <Card className='max-w-md w-full' onKeyDown={onEnter}>
                 <CardBody>
                     <div className='space-y-5'>
                         <div className='space-y-2'>

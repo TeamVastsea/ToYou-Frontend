@@ -33,7 +33,7 @@ export default function Register({
     }, [passwordRobustness])
     return (
         <div className="space-y-5">
-            <div className="flex gap-2 items-center">
+            <div className="w-full flex max-[320px]:flex-wrap items-center gap-2">
                 <Input
                     value={code}
                     onValueChange={setCode}
@@ -41,8 +41,9 @@ export default function Register({
                     label="验证码"
                     placeholder="请输入验证码"
                     maxLength={6}
+                    className="w-36 flex-auto"
                 />
-                <CheckCode type="phone" account={account} />
+                <CheckCode type="phone" account={account} className="w-fit max-[320px]:w-full" />
             </div>
             <Input
                 isClearable
@@ -50,8 +51,8 @@ export default function Register({
                 label="用户名"
                 value={userName}
                 onValueChange={setUserName}
-                isInvalid={userNameInValide}
-                errorMessage={userNameInValide && '用户名只能包含字母、汉字、数字和连接号(-)、下划线(_)、句点(.)'}
+                isInvalid={(userNameInValide && userName.length !== 0)}
+                errorMessage={(userNameInValide && userName.length !== 0) && '用户名只能包含字母、汉字、数字和连接号(-)、下划线(_)、句点(.)'}
             />
             <div className="flex flex-col space-y-3 gap-2">
                 <Password
