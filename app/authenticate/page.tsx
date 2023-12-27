@@ -1,7 +1,7 @@
 'use client'
 
 import { Button, Card, CardBody, CardFooter, Checkbox, Input } from '@nextui-org/react';
-import {FormEvent, KeyboardEvent, useEffect, useMemo, useState} from 'react';
+import { KeyboardEvent, useEffect, useMemo, useState} from 'react';
 import { useAccountDiscriminator, useValide } from './hooks/useValide';
 import { useButton } from './hooks/useButton';
 import IOC from '@/providers';
@@ -11,7 +11,7 @@ import { Message } from '@/components/message';
 import { useRouter } from 'next/navigation';
 import { SetLoggedInState } from '@/interface/hooks';
 import { UserAPI } from '@/interface/userAPI';
-import { useThrottleFn } from 'ahooks';
+import { useDebounceFn } from 'ahooks';
 
 export type Colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
 export type PageType = 'wait-check' | 'login' | 'register'
@@ -83,7 +83,7 @@ export default function Page(){
             .then((exists:boolean) => exists)
             .catch(() => false);
     }
-    const checkAccountExists = useThrottleFn(()=>{
+    const checkAccountExists = useDebounceFn(()=>{
         if (email){
             checkAccountExistsByEmail()
                 .then((exists) => {
