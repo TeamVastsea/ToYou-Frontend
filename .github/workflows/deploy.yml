@@ -17,8 +17,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-          whoami
-          cd ${{ secrets.PROJ_PATH }}
-          bash deploy.sh
+            whoami
+            cd ${{ secrets.PROJ_PATH }}
+            bash deploy.sh
 
 
