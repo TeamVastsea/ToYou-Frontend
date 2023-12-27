@@ -16,7 +16,7 @@ export interface UserModel {
 }
 
 export interface LoginData {
-    username: string;
+    account: string;
     password: string;
 }
 
