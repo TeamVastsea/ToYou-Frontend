@@ -17,6 +17,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            sudo su
             cd ${{ secrets.PROJ_PATH }}
-            ./deploy.sh
+            sudo bash ./deploy.sh
