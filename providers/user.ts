@@ -25,7 +25,7 @@ export class User {
     }
 
     async login(data: LoginData) {
-        return this.axios.get('user', {params: {email: data.username, password: data.password}});
+        return this.axios.get('user', {params: {account: data.account, password: data.password}});
     }
 
     async getExtendedInformation() {
