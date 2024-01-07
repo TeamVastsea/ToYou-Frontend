@@ -13,6 +13,7 @@ export interface UserModel {
     createTime: string;
     updateTime: string;
     extend?: Extend;
+    cert?: boolean;
 }
 
 export interface LoginData {
