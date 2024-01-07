@@ -10,6 +10,7 @@ export default function Uploader(prop: UploaderProps) {
         <div>
             <input type={"file"} style={{display: "none"}} ref={inputRef} onChange={(e) => {
                 prop.onChange(e);
+                e.target.value = "";
             }}/>
             <Button onClick={() => {
                 if (inputRef == null) return;

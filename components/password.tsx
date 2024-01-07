@@ -1,22 +1,22 @@
-import { Input } from "@nextui-org/react";
+import { Input } from "@nextui-org/input";
 import { CloseFilledIcon, EyeFilledIcon, EyeSlashFilledIcon } from "@nextui-org/shared-icons";
 import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 export interface PasswordProps {
     label: string;
-    placeholder: string;
+    placeholder?: string;
     value?: string;
     isInValide?: boolean;
     errorMessage?: React.ReactNode;
-    isClearable?:boolean;
-    onValueChange?: (val:string)=>void;
+    isClearable?: boolean;
+    onValueChange?: (val: string) => void;
 }
 
 export default function Password(
     props: PasswordProps,
     key: string
-){
-    const {label, placeholder, value,isInValide, errorMessage,isClearable, onValueChange} = props
+) {
+    const {label, placeholder, value, isInValide, errorMessage, isClearable, onValueChange} = props
     const [visible, setVisible] = useState(false);
     const toggleVisible = () => setVisible(!visible);
     const [clearShow, setClearShow] = useState(Boolean(value?.length));
@@ -27,23 +27,23 @@ export default function Password(
         return (
             <div className="flex items-center gap-2">
                 {
-                clearShow && (
-                    <button onClick={clear}>
-                        <CloseFilledIcon className=" opacity-70" />
-                    </button>
-                )
+                    clearShow && (
+                        <button onClick={clear}>
+                            <CloseFilledIcon className=" opacity-70"/>
+                        </button>
+                    )
                 }
                 <button onClick={toggleVisible}>
                     {visible ? (
-                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none"/>
                     ) : (
-                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none"/>
                     )}
                 </button>
             </div>
         )
     }
-    useEffect(()=>{
+    useEffect(() => {
         setClearShow(Boolean(value?.length));
     }, [value])
     return (

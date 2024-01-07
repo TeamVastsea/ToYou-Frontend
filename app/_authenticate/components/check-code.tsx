@@ -5,7 +5,7 @@ import IOC from "@/providers";
 import {Button} from "@nextui-org/react";
 import CountDown from "./count-down";
 
-const CheckCode = (props: { type: 'email' | 'phone' | 'unknown', account: string, className?: string}) => {
+const CheckCode = (props: { type: 'email' | 'phone' | 'unknown', userInput: string }) => {
     const {type} = props;
     const [cd, setCD] = useState(0)
     const onCountdownFinish = () => {
@@ -13,7 +13,7 @@ const CheckCode = (props: { type: 'email' | 'phone' | 'unknown', account: string
     }
     const getCode = () => {
         if (type === 'email') {
-            IOC.user.getCheckCodeByEmail(props.account)
+            IOC.user.getCheckCodeByEmail(props.userInput)
                 .then((val) => {
                     setCD(val.data.cd + 1);
                 })
@@ -23,7 +23,7 @@ const CheckCode = (props: { type: 'email' | 'phone' | 'unknown', account: string
                 })
         }
         if (type === 'phone') {
-            IOC.user.getCheckCodeByPhone(props.account)
+            IOC.user.getCheckCodeByPhone(props.userInput)
                 .then((val) => {
                     setCD(val.data.cd + 1);
                     console.log(val.data.cd)
@@ -35,7 +35,7 @@ const CheckCode = (props: { type: 'email' | 'phone' | 'unknown', account: string
     }
     return (
         <Button onClick={getCode} isDisabled={cd > 0} size="lg"
-                className={`flex gap-2 flex-grow-0 flex-shrink-0 basis-auto px-2 w-32 break-words ${props.className}`}>
+                className="flex gap-2 flex-grow-0 flex-shrink-0 basis-auto px-2 w-32 break-words">
             {
                 cd > 0 ? <CountDown countDown={cd} onFinish={onCountdownFinish}/> : '发送验证码'
             }
