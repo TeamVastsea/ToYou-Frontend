@@ -43,6 +43,8 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
-    "@types/react-cookies": "^0.1.3"
+    "@types/react-cookies": "^0.1.3",
+    "jotai": "^2.6.0",
+    "qrcode.react": "^3.1.0"
   }
 }
