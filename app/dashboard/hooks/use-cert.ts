@@ -19,15 +19,23 @@ export const useCertInit = (
     const [certNo, setCertNo] = useState('');
     const [loading, setLoading] = useState(false);
     const onClick = () => {
+        if (!certName.length){
+            Message.error('姓名不能为空');
+            return;
+        }
+        if (!certNo.length){
+            Message.error('身份证号不能为空')
+            return;
+        }
         setLoading(true);
         IOC.certify.initialize({
             identity_param:{
-                cert_name: certName,
-                cert_no: certNo
+                certName: certName,
+                certNo: certNo
             }
         })
         .then(({data})=>{
-            setCertId(data.certify_id)
+            setCertId(data.certifyId)
             next()
         })
         .finally(()=>setLoading(false));
@@ -48,15 +56,18 @@ export const useCertVerify = (certId: string) => {
     const [loading, setLoading] = useState(false);
     useEffect(()=>{
         if (certId){
-            IOC.certify.start({certify_id: certId})
+            IOC.certify.start({certifyId: certId})
             .then(({data}) => {
-                setCertUrl(data.certify_url);
+                setCertUrl(data.certifyUrl);
             })
         }
     }, [certId])
     const onClick = () => {
         setLoading(true)
-        IOC.certify.queryCertifyResult(certId)
+        return IOC.certify.queryCertifyResult(certId)
+        .catch((reason) => {
+            Message.error(reason);
+        })
         .finally(()=>{
             setLoading(false);
         })
@@ -73,6 +84,7 @@ export const useCertVerify = (certId: string) => {
 const useCert = () => {
     const [step, setStep] = useState(0);
     const addStep = () => setStep(step+1);
+    const prev = () => setStep(step-1);
     const [certId, setCertId] = useState('');
     const certInitHook = useCertInit(certId, setCertId, addStep);
     const certVerifyHook = useCertVerify(certId);
@@ -82,6 +94,7 @@ const useCert = () => {
         step,
         setStep,
         addStep,
+        prev
     }
 }
 
