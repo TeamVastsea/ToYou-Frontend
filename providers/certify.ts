@@ -7,15 +7,15 @@ export class Certify{
         this.axios = axios;
     }
     initialize({identity_param}: CertifyInitializeRequest){
-        return this.axios.post<CertifyInitializeResponse>('/certify/initialize', identity_param);
+        return this.axios.post<CertifyInitializeResponse>('/verify/init', identity_param);
     }
     start(data: StartCertifyRequest){
-        return this.axios.post<StartCertifyResponse>('/certify/verify', data);
+        return this.axios.post<StartCertifyResponse>('/verify/start', data);
     }
     queryCertifyResult(certify_id: string){
-        return this.axios.get('/certify/query', {params: {certify_id}});
+        return this.axios.get('/verify/query', {params: {certify_id}});
     }
     getCertifyState(){
-        return this.axios.get('/certify');
+        return this.axios.get('/user/certify');
     }
 }
