@@ -20,6 +20,8 @@ import {IsLoggedIn} from "@/interface/hooks";
 import {RedirectType} from "next/dist/client/components/redirect";
 import Cert from "./component/cert";
 import IOC from "@/providers";
+import { useAtom } from "jotai";
+import { verify } from "../store";
 
 const getPriceColor = (price: string) => {
     switch (price.toLowerCase()) {
@@ -51,19 +53,18 @@ const getPriceColor = (price: string) => {
     }
 }
 
+
 export default function Page() {
     if (!IsLoggedIn) {
         redirect('/authenticate', RedirectType.replace);
     }
     let [used, setUsed] = useState(0);
     let [total, setTotal] = useState(1);
-
+    const [certify, setCertify] = useAtom(verify);
     let [timeLeft, setTimeLeft] = useState(100);
     let [timeDescription, setTimeDescription] = useState("无限时间");
     let [pictures, setPictures] = useState<PictureList>();
     let [group, setGroup] = useState<PriceInfo>()
-
-    const [certify, setCertify] = useState(true);
 
     const [groupColor, setGroupColor] = useState({});
     const [drag, setDrag] = useState(false);

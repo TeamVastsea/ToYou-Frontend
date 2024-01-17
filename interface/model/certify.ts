@@ -2,26 +2,26 @@ export interface CertifyInitializeRequest {
     identity_param: IdentityParam;
 }
 export interface StartCertifyRequest {
-    certify_id: string;
+    certifyId: string;
 }
 export interface QueryCertifyRequest {
     certify_id: string
 }
 
 export interface CertifyInitializeResponse {
-    certify_id: string;
+    certifyId: string;
 }
 export interface StartCertifyResponse {
-    certify_url: string
+    certifyUrl: string
 }
 
 export interface IdentityParam {
     /**
      * 真实姓名
      */
-    cert_name: string;
+    certName: string;
     /**
      * 身份证号
      */
-    cert_no: string;
+    certNo: string;
 }
