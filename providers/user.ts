@@ -51,8 +51,4 @@ export class User {
     changeUserName(userName: string) {
         return this.axios.patch('/user/username', {}, {params: {userName}});
     }
-
-    getVerivy(){
-        return this.axios.get('/user/certify');
-    }
 }

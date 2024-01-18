@@ -20,6 +20,6 @@ export class Certify{
         return this.axios.get('/verify/query', {params: {certify_id}});
     }
     getCertifyState(){
-        return this.axios.get('/user/verify');
+        return this.axios.get('/user/name/verify');
     }
 }
