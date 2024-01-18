@@ -20,8 +20,8 @@ import {IsLoggedIn} from "@/interface/hooks";
 import {RedirectType} from "next/dist/client/components/redirect";
 import Cert from "./component/cert";
 import IOC from "@/providers";
-import { useAtom } from "jotai";
-import { verify } from "../store";
+import {useAtom} from "jotai";
+import {verify} from "../store";
 
 const getPriceColor = (price: string) => {
     switch (price.toLowerCase()) {
@@ -98,16 +98,22 @@ export default function Page() {
             setPictures(r);
         });
     }
-    useEffect(()=>{
+
+    useEffect(() => {
         IOC.certify.getCertifyState()
-        .catch(()=>{
-            setCertify(false)
-        })
+            .then((e) => {
+                if (e.data == "false") {
+                    setCertify(false)
+                }
+            })
+            .catch(() => {
+                setCertify(false)
+            })
         if (used == 0 && total == 1) {
             updateInfo();
         }
     }, [])
-    
+
 
     const deletePicture = (pid: string) => {
         const records = pictures?.records?.filter((record) => record.id !== Number(pid));
@@ -216,7 +222,7 @@ export default function Page() {
                 url={SERVER_URL + "/picture/preview?shareMode=2&id=" + picture.id.toString() + "&token=" + cookie.load("token")}
                 name={picture.fileName} pid={picture.id.toString()} group={group} onDelete={deletePicture}/>)}
             {/* <Picture url="https://t7.baidu.com/it/u=2961459243,2146986594&fm=193&f=GIF" name="雪景.png" pid="" onPress={onOpen} /> */}
-            {!certify && <Cert />}
+            {!certify && <Cert/>}
         </div>
     )
 }
