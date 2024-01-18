@@ -102,7 +102,7 @@ export default function Page() {
     useEffect(() => {
         IOC.certify.getCertifyState()
             .then((e) => {
-                if (e.data == "false") {
+                if (e.data == false) {
                     setCertify(false)
                 }
             })
