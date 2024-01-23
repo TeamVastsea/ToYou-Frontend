@@ -17,7 +17,7 @@ export class Certify{
         });
     }
     queryCertifyResult(certify_id: string){
-        return this.axios.get('/verify/query', {params: {certify_id}});
+        return this.axios.post('/verify/query', {params: {certify_id}});
     }
     getCertifyState(){
         return this.axios.get('/user/name/verify');
