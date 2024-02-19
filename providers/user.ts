@@ -17,11 +17,7 @@ export class User {
     }
 
     async createUser(data: RegisterRequestData) {
-        const formData = new FormData();
-        for (const [key, value] of Object.entries(data)) {
-            formData.append(key, value);
-        }
-        return this.axios.postForm<[Boolean, string]>('/user', formData);
+        return this.axios.post<[Boolean, string]>('/user', data);
     }
 
     async login(data: LoginData) {

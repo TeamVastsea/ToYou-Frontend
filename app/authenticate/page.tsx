@@ -143,16 +143,11 @@ export default function Page(){
                     username: userName,
                     code
                 })
-                    .then((
-                        {data: [status, message]}
-                    ) => {
-                        if (status) {
+                    .then(() => {
                             Message.success('注册成功, 请登录');
                             setPageType('login');
                             setPassword('');
                             return;
-                        }
-                        Message.error(message)
                     })
                     .finally(() => setLoading(false));
             }
