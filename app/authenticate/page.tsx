@@ -19,7 +19,7 @@ export type PageType = 'wait-check' | 'login' | 'register'
 export default function Page(){
     const [account, setAccount] = useState('')
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');    
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [accountExists, setAccountExists] = useState(false);
     const [code, setCode] = useState('');
     const [passwordRobustness, setPasswordRobustness] = useState(new Array(6).fill(false));
@@ -38,7 +38,7 @@ export default function Page(){
         userName,
         passwordRobustness,
         isPhone: phone,
-        isEmail: email,        
+        isEmail: email,
     });
     const {color, disabled, loading, setLoading, buttonMessage} = useButton({pageType, valide });
     const router = useRouter();
@@ -130,6 +130,7 @@ export default function Page(){
                     router.push("/dashboard");
                 } else {
                     Message.error(text);
+                    setLoading(false)
                 }
             })
         }
@@ -169,6 +170,11 @@ export default function Page(){
             invoke()();
         }
     }
+
+    const onChangeAccount = (account: string) => {
+        setAccount(account);
+        setPageType("wait-check");
+    }
     return (
         <form>
             <Card className='max-w-md w-full' onKeyDown={onEnter}>
@@ -180,11 +186,11 @@ export default function Page(){
                                 placeholder={pageType !== 'register' ? '请输入邮箱或手机号' : '请输入手机号'}
                                 isClearable
                                 value={account}
-                                onValueChange={setAccount}
+                                onValueChange={onChangeAccount}
                                 className='w-full'
                             />
                             {
-                                (showErr && email) && 
+                                (showErr && email) &&
                                 <div className='px-3'>
                                     <span className='text-red-500 text-sm'>账号不存在, 请使用手机注册</span>
                                 </div>
@@ -194,14 +200,14 @@ export default function Page(){
                             pageType !== 'wait-check' ? pageType === 'login' ?
                                 <Login password={password} setPassword={setPassword} /> :
                                 pageType ===  'register' ?
-                                <Register 
+                                <Register
                                     account={account}
                                     code={code}
                                     password={password}
                                     confirmPassword={confirmPassword}
                                     passwordRobustness={passwordRobustness}
                                     valide={false}
-                                    userName={userName} 
+                                    userName={userName}
                                     setCode={setCode}
                                     setPassword={setPassword}
                                     setAccount={setAccount}
