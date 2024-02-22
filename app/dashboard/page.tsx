@@ -65,25 +65,23 @@ export default function Page() {
 
     function updateInfo() {
         UserAPI.getExtendedInformation().then((r) => {
-            if (r == undefined) {
+            if (!r) {
                 router.push("/authenticate");
+                return;
             }
-            let user = r!;
-            let price = getGroupPrice(r!.extend!.userGroup);
-            setUsed(Number((user.extend!.storageUsed / 1024 / 1024).toFixed(2)));
+            let user = r;
+            let price = getGroupPrice(r!.level!.level);
+            setUsed(Number((user.used_space / 1024 / 1024).toFixed(2)));
             setTotal(Number(price.allSpace.substring(0, price.allSpace.length - 3)) * 1024);
             setGroup(price);
-            setGroupColor(getPriceColor(r!.extend!.userGroup as "free" | "started" | "advanced" | "professional"))
-            if (user.extend!.groupStartDate != undefined || user.extend!.groupEndDate != undefined) {
-                if (user.extend!.groupStartDate != 0 && user.extend!.groupEndDate != 0) {
-                    let startDate = user.extend!.groupStartDate!;
-                    let endDate = user.extend!.groupEndDate!;
-                    let now = new Date().getTime() / 1000;
-                    let validDate = new Date(endDate * 1000);
-
-                    setTimeLeft(100 - (now - startDate) / (endDate - startDate) * 100);
-                    setTimeDescription(validDate.toLocaleDateString() + " 过期");
-                }
+            setGroupColor(getPriceColor(r!.level.level as "free" | "started" | "advanced" | "professional"))
+            const {start, end} = user.level;
+            const [startDate, endDate] = [new Date(start).getTime(), new Date(end).getTime()]
+            if (start || end){
+                const now = new Date().getTime() / 1000;
+                const valideDate = new Date(endDate * 1000);
+                setTimeLeft(100 - (now - startDate) / (endDate - startDate) * 100);
+                setTimeDescription(valideDate.toLocaleDateString() + "过期");
             }
         })
         PictureAPI.getPicturesList().then((r) => {
