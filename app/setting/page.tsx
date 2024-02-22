@@ -21,7 +21,7 @@ import {Message} from "@/components/message";
 import ShareTable from "@/components/share-table";
 import IOC from "@/providers";
 import Password from "@/components/password";
-import { setRawCookie } from "react-cookies";
+import {useSharedLinks} from "@/app/setting/hooks/use-shared-links";
 
 interface SettingItem {
     label: string;
@@ -32,22 +32,23 @@ interface SettingItem {
     };
     ClickToEdit: {
         default: string;
-        onComplete: (value: string)=>void
+        onComplete: (value: string) => void
         verify?: boolean;
-        onVerify?: (value: string)=>boolean;
+        onVerify?: (value: string) => boolean;
     };
     text: {
         children: ReactNode
     }
 }
-const useForceUpdate = ()=>{
+
+const useForceUpdate = () => {
     let [value, setState] = useState(true);
     return () => setState(!value);
 }
 const renderItems = (item: Partial<SettingItem>) => {
     const label = () => <p className="text-right">{item.label}</p>
     const button = () => {
-        if (item.button){
+        if (item.button) {
             return (
                 <Button className="capitalize w-fit" variant={item.button.variant} onClick={item.button.onClick}>
                     {item.button.children}
@@ -56,14 +57,14 @@ const renderItems = (item: Partial<SettingItem>) => {
         }
     }
     const edit = () => {
-        if (item.ClickToEdit){
+        if (item.ClickToEdit) {
             return (
                 <ClickToEdit {...item.ClickToEdit} />
             )
         }
     }
     const text = () => {
-        if (item.text){
+        if (item.text) {
             return (
                 <div className="px-unit-4 cursor-pointer">
                     <span className="text-blue-500 dark:text-blue-600">{item.text.children}</span>
@@ -80,13 +81,14 @@ const renderItems = (item: Partial<SettingItem>) => {
         </>
     )
 }
-export const useSettingItems = (
+
+function useSettingItems(
     items: Partial<SettingItem>[]
-) => {
+) {
     return (
         <a className="space-y-1">
             {
-                items.map((item,idx) => {
+                items.map((item, idx) => {
                     return (
                         <div className="grid grid-cols-[100px_1fr] justify-start items-center gap-2" key={idx}>
                             {renderItems(item)}
@@ -107,13 +109,14 @@ export default function SettingPage() {
     const [userName, setUserName] = useState('SnowBall_233');
     const [loading, setLoading] = useState(false);
     const [updated, setUpdated] = useState(false);
+    const data = useSharedLinks();
 
     const onChangePassword = () => {
-        if (!oldPwd){
+        if (!oldPwd) {
             Message.error('老密码不能为空')
             return;
         }
-        if (!newPwd){
+        if (!newPwd) {
             Message.error('新密码不能为空')
             return;
         }
@@ -124,10 +127,10 @@ export default function SettingPage() {
         }
         setLoading(true)
         IOC.user.changePassword(newPwd, oldPwd)
-        .catch()
-        .finally(()=>{
-            setLoading(false);
-        })
+            .catch()
+            .finally(() => {
+                setLoading(false);
+            })
     }
     const onCancel = () => {
         setNewPwd('');
@@ -137,9 +140,9 @@ export default function SettingPage() {
     const items: Partial<SettingItem>[] = [
         {
             label: '当前实名:',
-            button:{
+            button: {
                 children: '姓名',
-                onClick: ()=>{
+                onClick: () => {
                     Message.success("更改实名");
                 },
                 variant: 'light'
@@ -149,11 +152,11 @@ export default function SettingPage() {
             label: '当前邮箱:',
             ClickToEdit: {
                 default: 'aaa@bbb.com',
-                onComplete: ()=>{
+                onComplete: () => {
                     Message.success("已发送验证码");
                 },
                 verify: true,
-                onVerify:(e) => {
+                onVerify: (e) => {
                     if (e == "") {
                         Message.error("请输入验证码");
                         return false;
@@ -165,13 +168,13 @@ export default function SettingPage() {
         },
         {
             label: '当前手机号:',
-            ClickToEdit:{
+            ClickToEdit: {
                 default: '18511111111',
-                onComplete: ()=>{
+                onComplete: () => {
                     Message.success("已发送验证码");
                 },
                 verify: true,
-                onVerify: (e)=>{
+                onVerify: (e) => {
                     if (e) {
                         Message.error("请输入验证码");
                         return false;
@@ -183,19 +186,19 @@ export default function SettingPage() {
         },
         {
             label: '用户名',
-            ClickToEdit:{
+            ClickToEdit: {
                 default: userName,
-                onComplete: async (value)=>{
+                onComplete: async (value) => {
                     return IOC.user.changeUserName(value)
-                    .then(()=>{
-                        setUserName(value);
-                        rawUsername = value;
-                        return true;
-                    })
-                    .catch(()=>{
-                        setUserName(rawUsername)
-                        return true;
-                    })
+                        .then(() => {
+                            setUserName(value);
+                            rawUsername = value;
+                            return true;
+                        })
+                        .catch(() => {
+                            setUserName(rawUsername)
+                            return true;
+                        })
                 },
             }
         },
@@ -217,27 +220,32 @@ export default function SettingPage() {
                                 <div className="grid grid-cols-[100px_1fr] justify-start items-center gap-2 h-10">
                                     <span className="text-right">密码:</span>
                                     <div className="px-unit-4 cursor-pointer">
-                                        <span className="text-blue-500 dark:text-blue-600" onClick={onOpen}>修改密码</span>
+                                        <span className="text-blue-500 dark:text-blue-600"
+                                              onClick={onOpen}>修改密码</span>
                                     </div>
                                     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                                         <ModalContent>
-                                        {(onClose) => (
-                                            <>
-                                            <ModalHeader className="flex flex-col gap-1">密码修改</ModalHeader>
-                                            <ModalBody>
-                                                <Password label="旧密码" value={oldPwd} onValueChange={setOldPwd} />
-                                                <Password label="新密码" value={newPwd} onValueChange={setNewPwd} />
-                                            </ModalBody>
-                                            <ModalFooter>
-                                                <Button color="primary" onPress={onChangePassword} isLoading={loading} disabled={loading}>
-                                                    确认
-                                                </Button>
-                                                <Button color="danger" variant="light" onPress={onCancel} disabled={loading}>
-                                                    取消
-                                                </Button>
-                                            </ModalFooter>
-                                            </>
-                                        )}
+                                            {(onClose) => (
+                                                <>
+                                                    <ModalHeader className="flex flex-col gap-1">密码修改</ModalHeader>
+                                                    <ModalBody>
+                                                        <Password label="旧密码" value={oldPwd}
+                                                                  onValueChange={setOldPwd}/>
+                                                        <Password label="新密码" value={newPwd}
+                                                                  onValueChange={setNewPwd}/>
+                                                    </ModalBody>
+                                                    <ModalFooter>
+                                                        <Button color="primary" onPress={onChangePassword}
+                                                                isLoading={loading} disabled={loading}>
+                                                            确认
+                                                        </Button>
+                                                        <Button color="danger" variant="light" onPress={onCancel}
+                                                                disabled={loading}>
+                                                            取消
+                                                        </Button>
+                                                    </ModalFooter>
+                                                </>
+                                            )}
                                         </ModalContent>
                                     </Modal>
                                 </div>
@@ -251,7 +259,7 @@ export default function SettingPage() {
                         <span>分享链接管理</span>
                     </div>
                 }>
-                    <ShareTable/>
+                    <ShareTable {...data}/>
                 </Tab>
                 <Tab key="status" title={
                     <div className="flex items-center space-x-2">

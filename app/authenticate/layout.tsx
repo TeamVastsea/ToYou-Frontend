@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function PricingLayout({children}: {
+export default function AuthenticateLayout({children}: {
     children: React.ReactNode;
 }) {
     return (

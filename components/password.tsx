@@ -8,42 +8,25 @@ export interface PasswordProps {
     value?: string;
     isInValide?: boolean;
     errorMessage?: React.ReactNode;
-    isClearable?:boolean;
-    onValueChange?: (val:string)=>void;
+    isClearable?: boolean;
+    onValueChange?: (val: string) => void;
 }
+
 
 export default function Password(
     props: PasswordProps,
     key: string
-){
-    const {label, placeholder, value,isInValide, errorMessage,isClearable, onValueChange} = props
+) {
+    const {label, placeholder, value, isInValide, errorMessage, isClearable, onValueChange} = props
     const [visible, setVisible] = useState(false);
-    const toggleVisible = () => setVisible(!visible);
+    const toggleVisible = () => {
+        setVisible(!visible)
+    };
     const [clearShow, setClearShow] = useState(Boolean(value?.length));
     const clear = () => {
         onValueChange && onValueChange('');
     };
-    const endContent = () => {
-        return (
-            <div className="flex items-center gap-2">
-                {
-                clearShow && (
-                    <button onClick={clear}>
-                        <CloseFilledIcon className=" opacity-70" />
-                    </button>
-                )
-                }
-                <button onClick={toggleVisible}>
-                    {visible ? (
-                        <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                    ) : (
-                        <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
-                    )}
-                </button>
-            </div>
-        )
-    }
-    useEffect(()=>{
+    useEffect(() => {
         setClearShow(Boolean(value?.length));
     }, [value])
     return (
@@ -56,7 +39,24 @@ export default function Password(
             isInvalid={isInValide}
             errorMessage={errorMessage}
             onValueChange={onValueChange}
-            endContent={endContent()}
+            endContent={
+                <div className="flex items-center gap-2">
+                    {
+                        clearShow && (
+                            <button onClick={clear} type="button">
+                                <CloseFilledIcon className=" opacity-70"/>
+                            </button>
+                        )
+                    }
+                    <button onClick={toggleVisible} type="button">
+                        {visible ? (
+                            <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none"/>
+                        ) : (
+                            <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none"/>
+                        )}
+                    </button>
+                </div>
+            }
         />
     )
 }

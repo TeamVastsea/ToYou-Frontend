@@ -41,4 +41,10 @@ export const members = [
         jobs: ["前端", "设计", "运维"],
         githubLink: "https://github.com/GaoNeng-wWw",
     },
+    {
+        name: "zzzsh",
+        avatarSrc: "https://avatars.githubusercontent.com/u/61687266?v=4",
+        jobs: ["前端", "后端"],
+        githubLink: "https://github.com/meteorOSS",
+    }
 ];

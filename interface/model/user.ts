@@ -24,10 +24,12 @@ export interface UserModel {
   create_time: string
   update_time: string
 }
+
 export interface LoginData {
-    username: string;
+    account: string;
     password: string;
 }
+
 export interface CheckCodeData {
     /**
      * 最短间隔时间 (ms)
@@ -37,8 +39,8 @@ export interface CheckCodeData {
 
 export interface RegisterRequestData {
     /**
-        * 验证码
-    */
+     * 验证码
+     */
     code?: string;
     /**
      * 邮箱

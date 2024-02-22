@@ -6,7 +6,7 @@ import {Link} from "@nextui-org/link";
 import {Button, ButtonGroup} from "@nextui-org/button";
 import {FaLock, FaLockOpen} from "react-icons/fa6";
 import {FiClipboard, FiEdit3, FiTrash2} from "react-icons/fi";
-import {Pagination} from "@nextui-org/pagination";
+
 export default function ShareTable({loading, list, page, current, setCurrent}: ReturnType<typeof useSharedLinks>) {
     return (
         <p className="text-left">
@@ -34,7 +34,8 @@ export default function ShareTable({loading, list, page, current, setCurrent}: R
                     <TableColumn>下载次数</TableColumn>
                     <TableColumn>操作</TableColumn>
                 </TableHeader>
-                <TableBody loadingContent={<Spinner/>} emptyContent={"这里没有数据哦"} loadingState={loading} items={list}>
+                <TableBody loadingContent={<Spinner/>} emptyContent={"这里没有数据哦"} loadingState={loading}
+                           items={list}>
                     {(item) => (
                         <TableRow>
                             <TableCell><Link>{item.fileName}</Link></TableCell>

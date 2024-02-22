@@ -84,7 +84,7 @@ export default function BuyPage() {
                 </CardFooter>
             </Card></>
     ]
-    useEffect(()=>{
+    useEffect(() => {
         if (!IsLoggedIn) {
             router.push("/authenticate");
         }

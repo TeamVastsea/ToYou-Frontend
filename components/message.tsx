@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import {Card, CardBody, Spinner} from "@nextui-org/react";
+import {Card, CardBody} from "@nextui-org/react";
 import React, {ReactNode} from "react";
 import {FiAlertCircle} from "react-icons/fi";
 import {VscError} from "react-icons/vsc";
@@ -45,7 +45,7 @@ export class Message {
             toast.dismiss(id)
         }}><CardBody>
             <div className="flex items-center justify-center space-x-1">
-                <div>{icon? <FiAlertCircle/> : <></>}</div>
+                <div>{icon ? <FiAlertCircle/> : <></>}</div>
                 <div>{message}</div>
             </div>
         </CardBody></Card>);
