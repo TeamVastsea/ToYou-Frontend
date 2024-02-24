@@ -6,14 +6,23 @@ export interface Extend {
     groupEndDate?: number;
 }
 
+export interface Level {
+    level: string
+    start: string
+    end: string
+}
+  
 export interface UserModel {
-    uid: number;
-    username: string;
-    email: string;
-    createTime: string;
-    updateTime: string;
-    extend?: Extend;
-    cert?: boolean;
+    id: number
+    username: string
+    phone: string
+    email: any
+    available: boolean
+    level: Level
+    root: number
+    used_space: number
+    create_time: string
+    update_time: string
 }
 
 export interface LoginData {
