@@ -1,5 +1,5 @@
 import {Axios, AxiosResponse} from "axios";
-import {ShareResponse} from "@/interface/model/picture";
+import {PictureList, ShareResponse} from "@/interface/model/picture";
 import {ShareList} from "@/interface/model/share";
 
 export class Picture {
@@ -17,7 +17,7 @@ export class Picture {
         return this.axios.postForm(`/picture?name=${file.name}`, data);
     }
 
-    getList() {
+    getList():Promise<AxiosResponse<PictureList>> {
         return this.axios.get('/picture')
     }
 
