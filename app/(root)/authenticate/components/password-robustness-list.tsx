@@ -4,12 +4,27 @@ const PasswordRobustnessList = (props: { active: boolean[] }) => {
     const labels = [
         {
             key: 'min',
-            label: '至少8位',
+            label: '至少5位',
             defaultShow: true
         },
         {
-            key: 'fuck',
-            label: '大写字母、小写字母、数字、特殊符号中至少包含两种',
+            key: 'uppercase',
+            label: '大写字母',
+            defaultShow: true
+        },
+        {
+            key: 'lowercase',
+            label: '小写字母',
+            defaultShow: true,
+        },
+        {
+            key: 'number',
+            label: '数字',
+            defaultShow: true
+        },
+        {
+            key: 'special',
+            label: '特殊符号',
             defaultShow: true
         },
         {
