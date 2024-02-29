@@ -1,4 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
+import { IoMdMore } from "react-icons/io";
 import {
     Card,
     CardFooter,
@@ -124,131 +125,141 @@ export default function Picture(props: PictureProps) {
 
 
     return (
-        <>
-            <Card
-                isFooterBlurred
-                radius="lg"
-                className="border-none items-center relative"
-                isPressable
-                onPress={()=>{descriptionOpen.onOpen(); setDeleteConfirmVisible(false)}}
-                style={{maxWidth: 450, width: '100%'}}
-            >
-                <Image
-                    alt={props.name}
-                    className="object-cover"
-                    width={450}
-                    height={200}
-                    src={props.url}
-                    isZoomed
-                />
-                {
-                    deleteConfirmVisible && (
-                        <div className="absolute p-2 z-30 rounded-md bg-default-50" style={{
-                            top: `${top}px`,
-                            left: `${left}px`
-                        }}>
-                            <h3 className="text-base mb-2">确定要删除吗</h3>
-                            <Button color="danger" size="sm" fullWidth onClick={() => {deletePicture(); setDeleteConfirmVisible(false)}}>
-                                确认
-                            </Button>
-                        </div>
-                    )
-                }
-                <CardFooter
-                    className={
-                        `
-                        w-auto max-w-[75%] justify-between
-                        before:bg-white/10 before:rounded-xl
-                        border-white/20 overflow-hidden py-2 absolute rounded-large bottom-1 shadow-small ml-1 z-10 space-x-2
-                        ${textColor}
-                        `
-                    }
-                >
-                    <p className={`text-tiny font-mono truncate ${textColor}`} title={name}>{name}</p>&nbsp;
-                    <SharedButton link={link} pid={props.pid} className={
-                        `${textColor}`
-                    }/>
-                    <Button isIconOnly className="justify-center" variant="bordered" size="sm"
-                            isLoading={delLoading} onClick={() => setDeleteConfirmVisible(!deleteConfirmVisible)}
-                            ref={deleteButton}
-                        >
-                        {!delLoading && <DeleteIcon className={`${textColor}`}/>}
-                    </Button>
-                </CardFooter>                
-            </Card>
-
-            <Modal isOpen={descriptionOpen.isOpen} onOpenChange={descriptionOpen.onOpenChange}>
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader className="flex flex-col gap-1">图片详情</ModalHeader>
-                            <ModalBody>
-                                <div className="w-fit mx-auto">
-                                    <Image
-                                        alt={props.name}
-                                        className="object-cover mx-auto"
-                                        width={200}
-                                        height={200}
-                                        src={props.url}
-                                    />
-                                </div>
-                                <p>
-                                    <Input placeholder={"图片名称"} value={name} onValueChange={setName}/>
-                                </p>
-                                <p className="flex items-center justify-center">
-                                    {link == "" ?
-                                        <ButtonGroup>
-                                            <Button variant={"flat"} color={"secondary"} onClick={() => {
-                                                generateShareLink(1)
-                                            }}>分享水印图片</Button>
-                                            <Button
-                                                variant={props.group?.disabled.includes("compressed") ? "solid" : "flat"}
-                                                color={props.group?.disabled.includes("compressed") ? "default" : "secondary"}
-                                                disabled={props.group?.disabled.includes("compressed")}
-                                                onClick={() => {
-                                                    generateShareLink(2)
-                                                }}>分享压缩图片</Button>
-                                            <Button
-                                                variant={props.group?.disabled.includes("original") ? "solid" : "flat"}
-                                                color={props.group?.disabled.includes("original") ? "default" : "secondary"}
-                                                disabled={props.group?.disabled.includes("original")}
-                                                onClick={() => {
-                                                    generateShareLink(3)
-                                                }}>分享原图</Button>
-                                        </ButtonGroup>
-                                        : <div className="flex space-x-3" style={{width: 450}}>
-                                            <Input className={"font-mono"} variant={"underlined"} value={link}
-                                                   endContent={
-                                                       <SharedButton link={link}/>
-                                                   }></Input>
-                                        </div>}
-                                </p>
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button isLoading={saveLoading} color="primary" onPress={() => {
-                                    setSaveLoading(true);
-                                    PictureAPI.changePictureName(name, props.pid).then(() => {
-                                        Message.success("已保存");
-                                        originName = name;
-                                        setSaveLoading(false);
-                                        onClose();
-                                    });
-                                }}>
-                                    保存
-                                </Button>
-                                <Button disabled={saveLoading} color="danger" variant={"light"} onPress={() => {
-                                    setName(originName);
-                                    onClose();
-                                }}>
-                                    取消
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
-        </>
+        <div className="flex flex-col mx-auto gap-2 basis-auto items-center cursor-pointer hover:bg-default-500/10 p-2 rounded w-fit group">
+            <div className="w-32 max-h-32 relative">
+                <div className="p-1 rounded-md absolute top-0 right-0 hidden group-hover:block z-10 bg-default">
+                    <IoMdMore className="w-5 h-5 dark:text-white" />
+                </div>
+                <Image src={props.url} alt={props.name} removeWrapper className="w-full h-full object-contain z-0" />
+            </div>
+            <p className="text-sm break-all w-full block px-4 text-center">{props.name}</p>
+        </div>
     )
+    // return (
+    //     <>
+    //         <Card
+    //             isFooterBlurred
+    //             radius="lg"
+    //             className={`border-none items-center relative ${props.className}`}
+    //             isPressable
+    //             onPress={()=>{descriptionOpen.onOpen(); setDeleteConfirmVisible(false)}}
+    //         >
+    //             <Image
+    //                 alt={props.name}
+    //                 className="object-cover"
+    //                 width={450}
+    //                 height={200}
+    //                 src={props.url}
+    //                 isZoomed
+    //             />
+    //             {
+    //                 deleteConfirmVisible && (
+    //                     <div className="absolute p-2 z-30 rounded-md bg-default-50" style={{
+    //                         top: `${top}px`,
+    //                         left: `${left}px`
+    //                     }}>
+    //                         <h3 className="text-base mb-2">确定要删除吗</h3>
+    //                         <Button color="danger" size="sm" fullWidth onClick={() => {deletePicture(); setDeleteConfirmVisible(false)}}>
+    //                             确认
+    //                         </Button>
+    //                     </div>
+    //                 )
+    //             }
+    //             <CardFooter
+    //                 className={
+    //                     `
+    //                     w-auto max-w-[75%] justify-between
+    //                     before:bg-white/10 before:rounded-xl
+    //                     border-white/20 overflow-hidden py-2 absolute rounded-large bottom-1 shadow-small ml-1 z-10 space-x-2
+    //                     ${textColor}
+    //                     `
+    //                 }
+    //             >
+    //                 <p className={`text-tiny font-mono truncate ${textColor}`} title={name}>{name}</p>&nbsp;
+    //                 <SharedButton link={link} pid={props.pid} className={
+    //                     `${textColor}`
+    //                 }/>
+    //                 <Button isIconOnly className="justify-center" variant="bordered" size="sm"
+    //                         isLoading={delLoading} onClick={() => setDeleteConfirmVisible(!deleteConfirmVisible)}
+    //                         ref={deleteButton}
+    //                     >
+    //                     {!delLoading && <DeleteIcon className={`${textColor}`}/>}
+    //                 </Button>
+    //             </CardFooter>                
+    //         </Card>
+
+    //         <Modal isOpen={descriptionOpen.isOpen} onOpenChange={descriptionOpen.onOpenChange}>
+    //             <ModalContent>
+    //                 {(onClose) => (
+    //                     <>
+    //                         <ModalHeader className="flex flex-col gap-1">图片详情</ModalHeader>
+    //                         <ModalBody>
+    //                             <div className="w-fit mx-auto">
+    //                                 <Image
+    //                                     alt={props.name}
+    //                                     className="object-cover mx-auto"
+    //                                     width={200}
+    //                                     height={200}
+    //                                     src={props.url}
+    //                                 />
+    //                             </div>
+    //                             <p>
+    //                                 <Input placeholder={"图片名称"} value={name} onValueChange={setName}/>
+    //                             </p>
+    //                             <p className="flex items-center justify-center">
+    //                                 {link == "" ?
+    //                                     <ButtonGroup>
+    //                                         <Button variant={"flat"} color={"secondary"} onClick={() => {
+    //                                             generateShareLink(1)
+    //                                         }}>分享水印图片</Button>
+    //                                         <Button
+    //                                             variant={props.group?.disabled.includes("compressed") ? "solid" : "flat"}
+    //                                             color={props.group?.disabled.includes("compressed") ? "default" : "secondary"}
+    //                                             disabled={props.group?.disabled.includes("compressed")}
+    //                                             onClick={() => {
+    //                                                 generateShareLink(2)
+    //                                             }}>分享压缩图片</Button>
+    //                                         <Button
+    //                                             variant={props.group?.disabled.includes("original") ? "solid" : "flat"}
+    //                                             color={props.group?.disabled.includes("original") ? "default" : "secondary"}
+    //                                             disabled={props.group?.disabled.includes("original")}
+    //                                             onClick={() => {
+    //                                                 generateShareLink(3)
+    //                                             }}>分享原图</Button>
+    //                                     </ButtonGroup>
+    //                                     : <div className="flex space-x-3" style={{width: 450}}>
+    //                                         <Input className={"font-mono"} variant={"underlined"} value={link}
+    //                                                endContent={
+    //                                                    <SharedButton link={link}/>
+    //                                                }></Input>
+    //                                     </div>}
+    //                             </p>
+    //                         </ModalBody>
+    //                         <ModalFooter>
+    //                             <Button isLoading={saveLoading} color="primary" onPress={() => {
+    //                                 setSaveLoading(true);
+    //                                 PictureAPI.changePictureName(name, props.pid).then(() => {
+    //                                     Message.success("已保存");
+    //                                     originName = name;
+    //                                     setSaveLoading(false);
+    //                                     onClose();
+    //                                 });
+    //                             }}>
+    //                                 保存
+    //                             </Button>
+    //                             <Button disabled={saveLoading} color="danger" variant={"light"} onPress={() => {
+    //                                 setName(originName);
+    //                                 onClose();
+    //                             }}>
+    //                                 取消
+    //                             </Button>
+    //                         </ModalFooter>
+    //                     </>
+    //                 )}
+    //             </ModalContent>
+    //         </Modal>
+    //     </>
+    // )
 }
 
 export type PictureProps = {
@@ -259,4 +270,5 @@ export type PictureProps = {
     group?: PriceInfo,
     onPress?: () => void,
     onDelete?: (pid: string) => void,
+    className?: string
 }
