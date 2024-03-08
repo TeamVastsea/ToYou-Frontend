@@ -44,9 +44,12 @@ export default function Page(){
     const router = useRouter();
     const fns = useMemo(() => {
         return [
-            (val: string) => val.length >= 8,
-            (val: string) => /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_]+$)(?![a-z0-9]+$)(?![a-z\W_]+$)(?![0-9\W_]+$)[a-zA-Z0-9\W_]/.test(val),
-            (val: string) => val.length <= 30
+            (val: string) => val.length > 5,
+            (val: string) => /[A-Z]/.test(val),
+            (val: string) => /[a-z]/.test(val),
+            (val: string) => /[0-9]/.test(val),
+            (val: string) => /\W/.test(val),
+            (val: string) => val.length < 20
         ]
     }, [])
     useEffect(()=>{
