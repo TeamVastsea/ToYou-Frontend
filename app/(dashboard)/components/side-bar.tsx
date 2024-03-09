@@ -28,9 +28,10 @@ const sideBar:SideBarItem[] = [
 
 
 export function SideBar(){
+    const pathName = usePathname();
     const items = sideBar?.map((item, idx) => {
         return (
-            <Link key={idx} href={item.href} className={`rounded-md ${usePathname() === item.href && 'bg-default-50'}`}>
+            <Link key={idx} href={item.href} className={`rounded-md ${pathName === item.href && 'bg-default-50'}`}>
                 <div className="flex gap-2 mx-auto w-fit py-2">
                     {item.icon({size:24, className: 'w-6 h-6 text-default-900 flex-shrink-0'})}
                     <span className="text-base">{item.label}</span>

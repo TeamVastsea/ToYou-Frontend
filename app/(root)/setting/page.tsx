@@ -21,7 +21,7 @@ import {Message} from "@/components/message";
 import ShareTable from "@/components/share-table";
 import IOC from "@/providers";
 import Password from "@/components/password";
-import {useSharedLinks} from "@/app/setting/hooks/use-shared-links";
+import {useSharedLinks} from "./hooks/use-shared-links";
 
 interface SettingItem {
     label: string;
