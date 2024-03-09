@@ -1,7 +1,7 @@
 import React from "react";
 import {Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@nextui-org/table";
 import {Spinner} from "@nextui-org/react";
-import {useSharedLinks} from "@/app/setting/hooks/use-shared-links";
+import {useSharedLinks} from '../app/(root)/setting/hooks/use-shared-links';
 import {Link} from "@nextui-org/link";
 import {Button, ButtonGroup} from "@nextui-org/button";
 import {FaLock, FaLockOpen} from "react-icons/fa6";
