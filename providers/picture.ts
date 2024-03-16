@@ -20,7 +20,6 @@ export class Picture {
     }
 
     getPicture(pid: string, token: string, mode: number=2){
-        console.log(pid)
         return this.axios.get('/picture/preview', {
             headers: {
                 Authorization: token
@@ -43,7 +42,7 @@ export class Picture {
         }})
     }
 
-    sharePicture(pid: string, mode?: number, password?: string): Promise<ShareResponse> {
+    sharePicture(pid: string, mode?: number, password?: string): Promise<AxiosResponse<ShareResponse>> {
         return this.axios.post('/picture/share/', null, {
             params: {
                 pid,

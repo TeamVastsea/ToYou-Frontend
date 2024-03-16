@@ -93,7 +93,7 @@ export function ContextMenu(props: ContextMenuProps) {
     const [visible, setVisible] = useState(false);
     const onContextMenu = (e: React.MouseEvent) => {
         e.preventDefault();
-        setVisible(true);
+        setVisible(!visible);
     }
     const menuItemsOnClick = (loading: (string|number)[]) => {
         if (!loading.length){
@@ -102,8 +102,8 @@ export function ContextMenu(props: ContextMenuProps) {
     }
     const trigger = useRef(null);
     return (
-        <Popover isOpen={visible} onOpenChange={(isOpen: boolean) => setVisible(isOpen)} triggerType='menu' triggerRef={trigger}>
-            <div onContextMenu={onContextMenu} ref={trigger} className='cursor-pointer'>
+        <Popover placement='bottom' isOpen={visible} onOpenChange={(isOpen: boolean) => setVisible(isOpen)} triggerType='menu' triggerRef={trigger}>
+            <div onClick={onContextMenu} ref={trigger} className='cursor-pointer'>
                 {props.children}
             </div>
             <PopoverContent onClick={()=>setVisible(false)}>

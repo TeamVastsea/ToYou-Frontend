@@ -51,6 +51,10 @@ export const Price = (price: PriceProps) => {
 }
 
 export type PriceInfo = {
+    /**
+     * @internal
+     */
+    id: string;
     name: ReactNode,
     singleFile: string,
     allSpace: string,

@@ -2,6 +2,7 @@ import {PriceInfo} from '@/components/price';
 import {PiFireDuotone} from "react-icons/pi";
 
 export const priceFree: PriceInfo = {
+    id: 'FREE',
     name: "免费",
     plainName: "免费",
     singleFile: "50 MB",
@@ -11,6 +12,7 @@ export const priceFree: PriceInfo = {
 }
 
 export const priceStarted: PriceInfo = {
+    id: 'STARTED',
     name: "入门",
     plainName: "入门",
     singleFile: "50 MB",
@@ -20,6 +22,7 @@ export const priceStarted: PriceInfo = {
 }
 
 export const priceAdvanced: PriceInfo = {
+    id: 'ADVANCED',
     name: <div className="flex space-x-2 items-center">
         <span>进阶</span>
         <PiFireDuotone style={{color: "red"}}/>
@@ -32,12 +35,21 @@ export const priceAdvanced: PriceInfo = {
 }
 
 export const priceProfessional: PriceInfo = {
+    id: 'PROFESSIONAL',
     name: "专业",
     plainName: "专业",
     singleFile: "不限",
     allSpace: "200 GB",
     price: 150, // 0.7 1250
     disabled: ["none"]
+}
+
+const prices = [priceFree,priceStarted,priceAdvanced,priceProfessional] as const;
+
+export function getDisabledById(id: string){
+    const item = prices.filter((price) => price.id === id.toUpperCase())[0];
+    const disabled = item.disabled ?? ['all'];
+    return disabled.map((disabledFeature) => disabledFeature.toUpperCase()).filter((feature)=>feature.toLowerCase()!=='none');
 }
 
 export function getGroupPrice(name: string): PriceInfo {
