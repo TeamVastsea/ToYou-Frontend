@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import { IoMdMore } from "react-icons/io";
 import {
     Card,
@@ -22,6 +22,7 @@ import {SERVER_URL} from "@/interface/api";
 import {PriceInfo} from "@/components/price";
 import IOC from "@/providers";
 import {Button, ButtonGroup} from "@nextui-org/button";
+import { ContextMenu } from "./context-menu";
 
 const SharedButton = (props: { link: string, pid?: string, className?: string }) => {
     const {link, pid} = props;
@@ -56,73 +57,64 @@ const SharedButton = (props: { link: string, pid?: string, className?: string })
 }
 
 export default function Picture(props: PictureProps) {
-    const descriptionOpen = useDisclosure();
-    let [name, setName] = useState(props.name);
-    let [link, setShareLink] = useState("");
-    let [saveLoading, setSaveLoading] = useState(false);
-    const [delLoading, setDelLoading] = useState(false);
-    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(['none']));
-    const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
-    const [top, setTop] = useState(0);
-    const [left, setLeft] = useState(0);
+    const [url, setUrl] = useState<string>('');
 
-    const [textColor, setTextColor] = useState('text-black');
-    let originName = props.name;
+    // function generateShareLink(shareMode?: number, password?: string) {
+    //     PictureAPI.sharePicture(props.pid, shareMode, password).then((r) => {
+    //         setShareLink(SERVER_URL + "/picture/share/" + r.sid);
+    //         Message.success("成功分享'" + props.name + "'");
+    //     });
+    // }
 
-    function generateShareLink(shareMode?: number, password?: string) {
-        PictureAPI.sharePicture(props.pid, shareMode, password).then((r) => {
-            setShareLink(SERVER_URL + "/picture/share/" + r.sid);
-            Message.success("成功分享'" + props.name + "'");
-        });
-    }
+    // const deletePicture = (onClose?: () => void) => {
+    //     setDelLoading(true);
+    //     IOC.picture.deletePicture(props.pid)
+    //         .then(() => {
+    //             Message.success('删除成功')
+    //             props.onDelete?.(props.pid);
+    //         })
+    //         .catch((reason) => {
+    //             Message.error(reason)
+    //         })
+    //         .finally(() => {
+    //             onClose?.();
+    //             setDelLoading(false)
+    //         })
+    // }
 
-    const deletePicture = (onClose?: () => void) => {
-        setDelLoading(true);
-        IOC.picture.deletePicture(props.pid)
-            .then(() => {
-                Message.success('删除成功')
-                props.onDelete?.(props.pid);
-            })
-            .catch((reason) => {
-                Message.error(reason)
-            })
-            .finally(() => {
-                onClose?.();
-                setDelLoading(false)
-            })
-    }
+    // const deleteButton = useRef<HTMLButtonElement>(null);
 
-    const deleteButton = useRef<HTMLButtonElement>(null);
-
-    useEffect(()=>{
-        const closeDeleteConfirm = ()=>{
-            console.log('click')
-            setDeleteConfirmVisible(false)
-        }
-        window.addEventListener('mousedown', closeDeleteConfirm)
-        return () => {
-            window.removeEventListener('mousedown', closeDeleteConfirm);
-        }
-    })
-    useEffect(() => {
-        getImgContrast({
-            imgSrc: props.url,
-        })
-            .then((textState) => {
-                setTextColor(textState === 'white' ? 'text-white' : 'text-black')
-            })
-    }, [props.url, setTextColor])
-    useEffect(()=>{
-        if (deleteConfirmVisible){
-            const top = deleteButton.current?.parentElement?.offsetTop ?? 0;
-            const height = deleteButton.current?.parentElement?.offsetHeight ?? 0;
-            console.log(deleteButton.current)
-            const left = (deleteButton.current?.parentElement?.offsetLeft ?? 0) + (deleteButton.current?.offsetLeft ?? 0) - (deleteButton.current?.offsetWidth??0);
-            setTop(top - height - 8 - 28);
-            setLeft(Math.floor(left));
-        }
-    }, [deleteConfirmVisible])
-
+    // useEffect(()=>{
+    //     const closeDeleteConfirm = ()=>{
+    //         setDeleteConfirmVisible(false)
+    //     }
+    //     window.addEventListener('mousedown', closeDeleteConfirm)
+    //     return () => {
+    //         window.removeEventListener('mousedown', closeDeleteConfirm);
+    //     }
+    // })
+    // useEffect(() => {
+    //     getImgContrast({
+    //         imgSrc: props.url,
+    //     })
+    //         .then((textState) => {
+    //             setTextColor(textState === 'white' ? 'text-white' : 'text-black')
+    //         })
+    // }, [props.url, setTextColor])
+    // useEffect(()=>{
+    //     if (deleteConfirmVisible){
+    //         const top = deleteButton.current?.parentElement?.offsetTop ?? 0;
+    //         const height = deleteButton.current?.parentElement?.offsetHeight ?? 0;
+    //         console.log(deleteButton.current)
+    //         const left = (deleteButton.current?.parentElement?.offsetLeft ?? 0) + (deleteButton.current?.offsetLeft ?? 0) - (deleteButton.current?.offsetWidth??0);
+    //         setTop(top - height - 8 - 28);
+    //         setLeft(Math.floor(left));
+    //     }
+    // }, [deleteConfirmVisible])
+    useMemo(()=>{
+        IOC.picture.getPicture(props.id, props.token)
+        .then(url => setUrl(url))
+    }, [props.id, props.token])
 
     return (
         <div className="flex flex-col mx-auto gap-2 basis-auto items-center cursor-pointer hover:bg-default-500/10 p-2 rounded w-fit group">
@@ -130,7 +122,7 @@ export default function Picture(props: PictureProps) {
                 <div className="p-1 rounded-md absolute top-0 right-0 hidden group-hover:block z-10 bg-default">
                     <IoMdMore className="w-5 h-5 dark:text-white" />
                 </div>
-                <Image src={props.url} alt={props.name} removeWrapper className="w-full h-full object-contain z-0" />
+                <Image src={url} alt={props.name} removeWrapper className="w-full h-full object-cover z-0 min-h-unit-24" />
             </div>
             <p className="text-sm break-all w-full block px-4 text-center">{props.name}</p>
         </div>
@@ -138,12 +130,12 @@ export default function Picture(props: PictureProps) {
 }
 
 export type PictureProps = {
-    url: string,
-    pid: string,
+    id: string,
     name: string,
     pubicMode?: string,
     group?: PriceInfo,
     onPress?: () => void,
     onDelete?: (pid: string) => void,
-    className?: string
+    className?: string;
+    token: string;
 }

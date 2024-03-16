@@ -1,10 +1,15 @@
 'use client'
 
+import { uploadStack } from "@/app/store";
 import { ThemeSwitch } from "@/components/theme-switch";
+import { useAtom } from "jotai";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { Popover, PopoverTrigger, PopoverContent, Listbox, ListboxItem} from '@nextui-org/react'
 import { IconType } from "react-icons";
 import { FaImage, FaFolder } from "react-icons/fa";
+import { HiOutlineArrowsUpDown } from "react-icons/hi2";
+import { UploadProgress } from "./upload-progress";
 
 export interface SideBarItem {
     href: string;
@@ -39,12 +44,33 @@ export function SideBar(){
             </Link>
         )
     })
+    const [tasks] = useAtom(uploadStack);
+
     return (
         <aside className="flex flex-col justify-between w-[120px] h-full bg-default-100 px-2 py-5 shrink-0">
             <div className="flex flex-col gap-5">
                 {items}
             </div>
-            <div className="flex w-full justify-center">
+            <div className="flex flex-col gap-8 items-center w-full justify-center relative">
+                {
+                    tasks.length ? <Popover placement="right-end" title="上传进度">
+                        <PopoverTrigger>
+                            <div>
+                                <HiOutlineArrowsUpDown size={22} />
+                            </div>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                            {(titleProps) => (
+                                <div className="px-1 py-2">
+                                    <h3 className="text-small font-bold" {...titleProps}>
+                                        上传进度
+                                    </h3>
+                                    <UploadProgress />
+                                </div>
+                            )}
+                        </PopoverContent>
+                    </Popover> : null
+                }
                 <ThemeSwitch />
             </div>
         </aside>

@@ -1,4 +1,4 @@
-import {Axios, AxiosResponse} from "axios";
+import {Axios, AxiosProgressEvent, AxiosResponse} from "axios";
 import {PictureList, ShareResponse} from "@/interface/model/picture";
 import {ShareList} from "@/interface/model/share";
 
@@ -9,16 +9,38 @@ export class Picture {
         this.axios = axios;
     }
 
-    upload(file: File) {
+    upload(file: File, onUpload?: (event: AxiosProgressEvent)=>void) {
         const data = new FormData();
         data.append('file', file);
         data.append('fileName', file.name);
 
-        return this.axios.postForm(`/picture?name=${file.name}`, data);
+        return this.axios.postForm(`/picture?name=${file.name}`, data, {
+            onUploadProgress: onUpload
+        });
     }
 
-    getList():Promise<AxiosResponse<PictureList>> {
-        return this.axios.get('/picture')
+    getPicture(pid: string, token: string, mode: number=2){
+        console.log(pid)
+        return this.axios.get('/picture/preview', {
+            headers: {
+                Authorization: token
+            },
+            params: {
+                mode,
+                id: pid
+            },
+            responseType: 'blob'
+        })
+        .then((response) => response.data)
+        .then((blob: Blob) => URL.createObjectURL(blob))
+    }
+
+    getList(dir:number=1, current:number=0, size:number=20):Promise<AxiosResponse<PictureList>> {
+        return this.axios.get('/picture', {params: {
+            dir,
+            current,
+            size
+        }})
     }
 
     sharePicture(pid: string, mode?: number, password?: string): Promise<ShareResponse> {
