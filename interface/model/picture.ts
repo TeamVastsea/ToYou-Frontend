@@ -2,7 +2,7 @@ export interface Picture {
     id: number;
     uid: number;
     pid: string;
-    fileName: string;
+    file_name: string;
     size: number;
     downloads: number;
     createTime: string;

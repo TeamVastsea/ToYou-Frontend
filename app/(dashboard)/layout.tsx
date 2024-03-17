@@ -14,7 +14,7 @@ export default function DashboardLayout({
         ">
             <section className="w-full flex bg-default-50 overflow-hidden xl:rounded-3xl">
                 <SideBar />
-                <section className="flex-auto h-full">
+                <section className="flex-auto h-full overflow-auto">
                     {children}
                 </section>
             </section>
