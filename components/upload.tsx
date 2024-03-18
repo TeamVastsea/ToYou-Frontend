@@ -43,10 +43,7 @@ export function Upload(props: Partial<UploadProps>){
             }
         }
     }
-    // const on
-    const onDragEnter = (e) => {
-        // e.preventDefault();
-        // e.stopPropagation();
+    const onDragEnter = () => {
         setShow(true)
     }
     const onDragOver = (e: React.DragEvent) => {
@@ -65,7 +62,6 @@ export function Upload(props: Partial<UploadProps>){
         }
     }, [])
     return (
-        // onDragLeave={()=>setShow(false)} 
         <div className={
             `w-full h-full absolute top-0 left-0 ${maskShow ? '[&_*]:pointer-events-none' : '[&_*]:pointer-events-auto'}`
         } onDrop={onDrop} onDragLeave={onDragLeave}>
