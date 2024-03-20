@@ -1,4 +1,5 @@
 import { Certify } from './certify';
+import { Folder } from './folder';
 import {http} from './http';
 import {Picture} from './picture';
 import {User} from './user';
@@ -6,7 +7,8 @@ import {User} from './user';
 const IOC = {
     user: new User(http),
     picture: new Picture(http),
-    certify: new Certify(http)
+    certify: new Certify(http),
+    fold: new Folder(http)
 }
 
 export default IOC;
