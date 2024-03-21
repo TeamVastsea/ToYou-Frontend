@@ -70,6 +70,10 @@ export class Picture {
     }
 
     deletePicture(pid: string) {
-        return this.axios.delete('/picture/' + pid)
+        return this.axios.delete('/picture',{
+            params: {
+                image_id:pid
+            }
+        })
     }
 }

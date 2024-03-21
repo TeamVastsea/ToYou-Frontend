@@ -102,6 +102,7 @@ export default function Picture(props: PictureProps) {
             fn(){
                 return new Promise((resolve)=>{
                     IOC.picture.deletePicture(props.id)
+                    .then(()=>props.onDelete && props.onDelete(props.id))
                     .finally(() => resolve(true))
                 })
             }
