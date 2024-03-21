@@ -2,7 +2,7 @@ import { UploadProgressItem, uploadStack } from "@/app/store";
 import IOC from "@/providers";
 import { AxiosProgressEvent } from "axios";
 import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RiUploadCloud2Line } from "react-icons/ri";
 
 export interface UploadProps {
@@ -43,8 +43,7 @@ export function Upload(props: Partial<UploadProps>){
             }
         }
     }
-    // const on
-    const onDragEnter = (e: React.DragEvent) => {
+    const onDragEnter = () => {
         setShow(true)
     }
     const onDragOver = (e: React.DragEvent) => {
@@ -55,13 +54,17 @@ export function Upload(props: Partial<UploadProps>){
         e.preventDefault();
         e.stopPropagation();
         setShow(false);
-        debugger;
     }
+    useEffect(()=>{
+        window.addEventListener('dragenter', onDragEnter);
+        return ()=>{
+            window.removeEventListener('dragenter', onDragEnter);
+        }
+    }, [])
     return (
-        // onDragLeave={()=>setShow(false)}
         <div className={
             `w-full h-full absolute top-0 left-0 ${maskShow ? '[&_*]:pointer-events-none' : '[&_*]:pointer-events-auto'}`
-        } onDragEnter={onDragEnter} onDragOver={onDragOver} onDrop={onDrop} onDragLeave={onDragLeave}>
+        } onDrop={onDrop} onDragLeave={onDragLeave}>
             {
                 maskShow ? 
                     <div className="z-10 w-full h-full absolute top-0 left-0 flex justify-center items-center bg-black/30 pointer-events-auto!">
