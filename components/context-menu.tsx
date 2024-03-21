@@ -30,12 +30,6 @@ export function ContextMenuItems(props: {data: ContextMenuItemData[], onClick: (
             )
         }
         if (p instanceof Promise){
-            // 假设有一个函数是长任务, 那么如果此时用户点击了context-menu-items之外的元素, 将context-menu关闭了.
-            // 假设又一次点开了context-menu, 那么在这个函数执行完毕后, context-menu会关闭
-            // 但是又不能阻止context-menu关闭, 因为用户可能的确想要关掉这个窗口
-            if (!loading.length){
-                return;
-            }
             p
             .then((state)=>{
                 if (state){
@@ -96,9 +90,7 @@ export function ContextMenu(props: ContextMenuProps) {
         setVisible(!visible);
     }
     const menuItemsOnClick = (loading: (string|number)[]) => {
-        if (!loading.length){
-            setVisible(false);
-        }
+        setVisible(false);
     }
     const trigger = useRef(null);
     return (

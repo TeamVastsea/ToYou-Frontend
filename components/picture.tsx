@@ -100,7 +100,10 @@ export default function Picture(props: PictureProps) {
             name: '删除',
             type: 'danger',
             fn(){
-                return IOC.picture.deletePicture(props.id)
+                return new Promise((resolve)=>{
+                    IOC.picture.deletePicture(props.id)
+                    .finally(() => resolve(true))
+                })
             }
         },
         {
