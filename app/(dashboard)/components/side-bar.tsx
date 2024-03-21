@@ -22,12 +22,12 @@ const sideBar:SideBarItem[] = [
     {
         label: '图片',
         icon: FaImage,
-        href: '/dashboard'
+        href: '/dashboard/images'
     },
     {
         label: '项目',
         icon: FaFolder,
-        href: '/dashboard/project'
+        href: '/dashboard'
     }
 ]
 
