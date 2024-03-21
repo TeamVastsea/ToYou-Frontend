@@ -24,7 +24,7 @@ import {Message} from "@/components/message";
 import {FiCopy} from "react-icons/fi";
 import {Input} from "@nextui-org/input";
 import {PictureAPI} from "@/interface/pictureAPI";
-import {SERVER_URL} from "@/interface/api";
+import {SERVER_URL, SITE_URL} from "@/interface/api";
 import {PriceInfo} from "@/components/price";
 import IOC from "@/providers";
 import {Button, ButtonGroup} from "@nextui-org/button";
@@ -82,16 +82,28 @@ export default function Picture(props: PictureProps) {
         const sharedMode = Number(Array.from((key as Set<Key>).values())[0])
         setLoading(true);
         setSharedMode(sharedMode);
-        IOC.picture.sharePicture(props.id, sharedMode, password)
+        IOC.share.share(password, [`p${props.id}`], sharedMode)
         .then(({data})=>{
-            setSharedUrl(`${SERVER_URL}/picture/share/${data.sid}`)
+            const sid = data;
+            setSharedUrl(`${SITE_URL}/s/${sid}`)
             setShowSharedUrlModalVisibility(true)
         })
         .finally(()=>{
             onClose();
-            setLoading(false);
+            setLoading(false)
         })
     }
+
+    const copy = () => {
+        const clipboard = navigator.clipboard;
+        const data = [
+            `链接: ${sharedUrl}`,
+            password.length ? `密码: ${password}` : ''
+        ].join('\n')
+        clipboard.writeText(data)
+        Message.success('复制成功')
+    }
+
     const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
     const contextMenu:ContextMenuItemData[] = [
@@ -176,12 +188,17 @@ export default function Picture(props: PictureProps) {
                 )}
                 </ModalContent>
             </Modal>
-            <Modal isOpen={showSharedUrlVisibility}>
+            <Modal isOpen={showSharedUrlVisibility} onOpenChange={setShowSharedUrlModalVisibility}>
                 <ModalContent>
-                    <Input isReadOnly={true} value={sharedUrl} />
-                    <Button onPress={()=>setShowSharedUrlModalVisibility(false)}>
-                        复制分享链接
-                    </Button>
+                    <ModalBody>
+                        <Input isReadOnly={true} value={sharedUrl} label="分享链接" labelPlacement="outside" />
+                        {
+                            password && <Input isReadOnly={true} value={password} label="访问密码" labelPlacement="outside" />
+                        }
+                        <Button onPress={copy}>
+                            复制分享链接
+                        </Button>
+                    </ModalBody>
                 </ModalContent>
             </Modal>
         </div>
@@ -211,3 +228,4 @@ export type PictureProps = {
     className?: string;
     token: string;
 }
+
