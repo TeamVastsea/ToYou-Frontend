@@ -35,6 +35,9 @@ export function PictureList(props: PictureListProps){
         }
         props.inBottom && props.inBottom(_page);
     }, {wait: 500})
+    const onDelete = (id: number) => {
+
+    }
     useInViewport(obEle,{
         callback: loadMoreFn,
         threshold: 1,
@@ -50,6 +53,7 @@ export function PictureList(props: PictureListProps){
                             id={id.toString()}
                             name={file_name}
                             token={cookie.load('token')}
+                            onDelete={(id) => external.filter((e) => e.id !== Number(id))}
                         />)
                     })
                 }
@@ -61,6 +65,9 @@ export function PictureList(props: PictureListProps){
                             id={id.toString()}
                             name={file_name}
                             token={cookie.load('token')}
+                            onDelete={
+                                (id) => pictures.filter((p)=>p.id !== Number(id))
+                            }
                         />)
                     })
                 }
