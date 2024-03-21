@@ -22,6 +22,9 @@ export default function Dashboard(){
     const onUploadSuccess = (name: string, id: number)=>{
         setPictures([{file_name: name, id} as IPicture, ...pictures])
     }
+    const onDel = (id: string) => {
+        setPictures((p)=>p.filter((_) => _.id !== Number(id)))
+    }
     return (
         <div className='relative'>
             <div className="w-full h-full flex flex-col relative">
@@ -44,6 +47,7 @@ export default function Dashboard(){
                                         id={`${p.id}`}
                                         name={p.file_name}
                                         token={cookie.load('token')}
+                                        onDelete={onDel}
                                     />
                                 )
                             })

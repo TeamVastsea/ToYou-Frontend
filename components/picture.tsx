@@ -1,9 +1,15 @@
-import React, {useEffect, useMemo, useRef, useState} from "react";
+import React, {Key, useEffect, useMemo, useRef, useState} from "react";
 import { IoMdMore } from "react-icons/io";
 import {
     Card,
     CardFooter,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownTrigger,
     Image,
+    Listbox,
+    ListboxItem,
     Popover,
     PopoverContent,
     PopoverTrigger,
@@ -18,11 +24,15 @@ import {Message} from "@/components/message";
 import {FiCopy} from "react-icons/fi";
 import {Input} from "@nextui-org/input";
 import {PictureAPI} from "@/interface/pictureAPI";
-import {SERVER_URL} from "@/interface/api";
+import {SERVER_URL, SITE_URL} from "@/interface/api";
 import {PriceInfo} from "@/components/price";
 import IOC from "@/providers";
 import {Button, ButtonGroup} from "@nextui-org/button";
-import { ContextMenu } from "./context-menu";
+import { ContextMenu, ContextMenuItemData } from "./context-menu";
+import { useAtomValue } from "jotai";
+import { profile } from "@/app/store";
+import { getDisabledById } from "@/config/prices";
+import { string } from "zod";
 
 const SharedButton = (props: { link: string, pid?: string, className?: string }) => {
     const {link, pid} = props;
@@ -56,61 +66,68 @@ const SharedButton = (props: { link: string, pid?: string, className?: string })
     )
 }
 
+
+
 export default function Picture(props: PictureProps) {
     const [url, setUrl] = useState<string>('');
+    const [sharedMode, setSharedMode] = useState(ShareMode.WATERMARK);
+    const [password, setPassword] = useState('');
+    const userInfo = useAtomValue(profile)
+    const {level:{level}} = userInfo ?? {level: {level: 'Free'}}
+    const [disabledKeys, setDisabledKeys] = useState(getDisabledById(level).map((id) => ShareMode[id as any] as unknown as number));
+    const [loading, setLoading] = useState(false);
+    const [sharedUrl, setSharedUrl] = useState('');
+    const [showSharedUrlVisibility, setShowSharedUrlModalVisibility] = useState(false)
+    const share = (key: Selection, onClose: ()=>void) => {
+        const sharedMode = Number(Array.from((key as Set<Key>).values())[0])
+        setLoading(true);
+        setSharedMode(sharedMode);
+        IOC.share.share(password, [`p${props.id}`], sharedMode)
+        .then(({data})=>{
+            const sid = data;
+            setSharedUrl(`${SITE_URL}/s/${sid}`)
+            setShowSharedUrlModalVisibility(true)
+        })
+        .finally(()=>{
+            onClose();
+            setLoading(false)
+        })
+    }
 
-    // function generateShareLink(shareMode?: number, password?: string) {
-    //     PictureAPI.sharePicture(props.pid, shareMode, password).then((r) => {
-    //         setShareLink(SERVER_URL + "/picture/share/" + r.sid);
-    //         Message.success("成功分享'" + props.name + "'");
-    //     });
-    // }
+    const copy = () => {
+        const clipboard = navigator.clipboard;
+        const data = [
+            `链接: ${sharedUrl}`,
+            password.length ? `密码: ${password}` : ''
+        ].join('\n')
+        clipboard.writeText(data)
+        Message.success('复制成功')
+    }
 
-    // const deletePicture = (onClose?: () => void) => {
-    //     setDelLoading(true);
-    //     IOC.picture.deletePicture(props.pid)
-    //         .then(() => {
-    //             Message.success('删除成功')
-    //             props.onDelete?.(props.pid);
-    //         })
-    //         .catch((reason) => {
-    //             Message.error(reason)
-    //         })
-    //         .finally(() => {
-    //             onClose?.();
-    //             setDelLoading(false)
-    //         })
-    // }
+    const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
-    // const deleteButton = useRef<HTMLButtonElement>(null);
-
-    // useEffect(()=>{
-    //     const closeDeleteConfirm = ()=>{
-    //         setDeleteConfirmVisible(false)
-    //     }
-    //     window.addEventListener('mousedown', closeDeleteConfirm)
-    //     return () => {
-    //         window.removeEventListener('mousedown', closeDeleteConfirm);
-    //     }
-    // })
-    // useEffect(() => {
-    //     getImgContrast({
-    //         imgSrc: props.url,
-    //     })
-    //         .then((textState) => {
-    //             setTextColor(textState === 'white' ? 'text-white' : 'text-black')
-    //         })
-    // }, [props.url, setTextColor])
-    // useEffect(()=>{
-    //     if (deleteConfirmVisible){
-    //         const top = deleteButton.current?.parentElement?.offsetTop ?? 0;
-    //         const height = deleteButton.current?.parentElement?.offsetHeight ?? 0;
-    //         console.log(deleteButton.current)
-    //         const left = (deleteButton.current?.parentElement?.offsetLeft ?? 0) + (deleteButton.current?.offsetLeft ?? 0) - (deleteButton.current?.offsetWidth??0);
-    //         setTop(top - height - 8 - 28);
-    //         setLeft(Math.floor(left));
-    //     }
-    // }, [deleteConfirmVisible])
+    const contextMenu:ContextMenuItemData[] = [
+        {
+            id: 'delete',
+            name: '删除',
+            type: 'danger',
+            fn(){
+                return new Promise((resolve)=>{
+                    IOC.picture.deletePicture(props.id)
+                    .then(()=>props.onDelete && props.onDelete(props.id))
+                    .finally(() => resolve(true))
+                })
+            }
+        },
+        {
+            id: 'share',
+            name: '分享',
+            type: 'default',
+            fn() {
+                onOpen();
+            },
+        }
+    ]
     useMemo(()=>{
         IOC.picture.getPicture(props.id, props.token)
         .then(url => setUrl(url))
@@ -120,15 +137,87 @@ export default function Picture(props: PictureProps) {
         <div className="flex flex-col mx-auto gap-2 basis-auto items-center cursor-pointer hover:bg-default-500/10 p-2 rounded w-fit group">
             <div className="w-32 max-h-32 relative">
                 <div className="p-1 rounded-md absolute top-0 right-0 hidden group-hover:block z-10 bg-default">
-                    <IoMdMore className="w-5 h-5 dark:text-white" />
+                    <ContextMenu data={contextMenu}>
+                        <IoMdMore className="w-5 h-5 dark:text-white" />
+                    </ContextMenu>
                 </div>
                 <Image src={url} alt={props.name} removeWrapper className="w-full h-full object-cover z-0 min-h-unit-24" />
             </div>
             <p className="text-sm break-all w-full block px-4 text-center">{props.name}</p>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                <ModalContent>
+                {(onClose) => (
+                    <>
+                        <ModalHeader className="flex flex-col gap-1">图片分享</ModalHeader>
+                        <ModalBody>
+                            <Image src={url} alt={props.name} removeWrapper className="w-full h-unit-24 object-contain z-0" />
+                            <Input 
+                                required
+                                value={password}
+                                onValueChange={setPassword}
+                                placeholder="访问密码"
+                                isRequired
+                                errorMessage={!password.length ? '密码不能为空' : ''}
+                                isInvalid={!password.length}
+                            />
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="danger" variant="light" onPress={onClose}>
+                                Close
+                            </Button>
+                            <Dropdown>
+                                <DropdownTrigger>
+                                    <Button color="primary" isLoading={loading}>
+                                        Action
+                                    </Button>
+                                </DropdownTrigger>
+                                <DropdownMenu 
+                                    disallowEmptySelection
+                                    selectionMode="single"
+                                    selectedKeys={sharedMode as any}
+                                    onSelectionChange={(key)=>share(key, onClose)}
+                                    disabledKeys={disabledKeys.map((v) => v.toString())}
+                                >
+                                    <DropdownItem key={ShareMode.WATERMARK}>水印</DropdownItem>
+                                    <DropdownItem key={ShareMode.COMPRESSED}>压缩</DropdownItem>
+                                    <DropdownItem key={ShareMode.ORIGINAL}>原图</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </ModalFooter>
+                    </>
+                )}
+                </ModalContent>
+            </Modal>
+            <Modal isOpen={showSharedUrlVisibility} onOpenChange={setShowSharedUrlModalVisibility}>
+                <ModalContent>
+                    <ModalBody>
+                        <Input isReadOnly={true} value={sharedUrl} label="分享链接" labelPlacement="outside" />
+                        {
+                            password && <Input isReadOnly={true} value={password} label="访问密码" labelPlacement="outside" />
+                        }
+                        <Button onPress={copy}>
+                            复制分享链接
+                        </Button>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
         </div>
     )
 }
-
+export enum ShareMode {
+    /**
+     * 水印
+     */
+    WATERMARK,
+    /**
+     * 压缩
+     */
+    COMPRESSED,
+    /**
+     * 原图
+     */
+    ORIGINAL
+};
 export type PictureProps = {
     id: string,
     name: string,
@@ -139,3 +228,4 @@ export type PictureProps = {
     className?: string;
     token: string;
 }
+
