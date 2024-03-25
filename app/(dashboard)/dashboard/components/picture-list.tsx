@@ -14,17 +14,31 @@ export function PictureList(props: PictureListProps){
     const obEle = useRef(null);
     useMemo(()=>{
         setCanLoad(false);
-        IOC.picture.getList(id, _page, size)
+        IOC.picture.getList(id)
         .then(({data})=>{
-            if (data.pages === _page){
-                setFinish(true);
+            if (!data.records.length){
+                setPictues([]);
+                setCanLoad(false);
+                return;
             }
             setPictues((old)=>[...old, ...data.records]);
+            setCanLoad(true)
         })
-        .finally(()=>{
-            setCanLoad(true);
-        })
-    }, [id, _page, size]);
+    },[id])
+    useMemo(()=>{
+        if (_page !== 0){
+            IOC.picture.getList(id, _page, size)
+            .then(({data})=>{
+                if (data.pages === _page){
+                    setFinish(true);
+                }
+                setPictues((old)=>[...old, ...data.records]);
+            })
+            .finally(()=>{
+                setCanLoad(true);
+            })
+        }
+    }, [_page,size])
     const loadMoreFn = useDebounce(()=>{
         if (finish){
             return;

@@ -63,8 +63,8 @@ export function Upload(props: Partial<UploadProps>){
     }, [])
     return (
         <div className={
-            `w-full h-full absolute top-0 left-0 ${maskShow ? '[&_*]:pointer-events-none' : '[&_*]:pointer-events-auto'}`
-        } onDrop={onDrop} onDragLeave={onDragLeave}>
+            `w-full h-screen absolute top-0 left-0 ${maskShow ? '[&_*]:pointer-events-none' : '[&_*]:pointer-events-auto'}`
+        } onDrop={onDrop} onDragOver={onDragOver} onDragLeave={onDragLeave}>
             {
                 maskShow ? 
                     <div className="z-10 w-full h-full absolute top-0 left-0 flex justify-center items-center bg-black/30 pointer-events-auto!">
