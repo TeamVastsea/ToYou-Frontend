@@ -11,6 +11,7 @@ import {HiOutlineNewspaper} from "react-icons/hi";
 import {FaLocationArrow} from "react-icons/fa6";
 import {BsLightbulb} from "react-icons/bs";
 import {IsLoggedIn} from "@/interface/hooks";
+import ClientOnly from "@/components/ClientOnly";
 
 export default function Home() {
     return (
@@ -28,24 +29,26 @@ export default function Home() {
             </div>
 
             <div className="flex gap-3">
-                <Link
-                    as={NextLink}
-                    href={IsLoggedIn ? "/dashboard" : "/authenticate"}
-                    className={buttonStyles({color: "primary", variant: "shadow"})}
-                    prefetch
-                >
-                    <FaLocationArrow size={20}/>
-                    开始使用
-                </Link>
-                <Link
-                    as={NextLink}
-                    className={buttonStyles({variant: "bordered"})}
-                    href={siteConfig.navItems[2].href}
-                    prefetch
-                >
-                    <HiOutlineNewspaper size={20}/>
-                    日志
-                </Link>
+                <ClientOnly>
+                    <Link
+                        as={NextLink}
+                        href={IsLoggedIn ? "/dashboard" : "/authenticate"}
+                        className={buttonStyles({color: "primary", variant: "shadow"})}
+                        prefetch
+                    >
+                        <FaLocationArrow size={20}/>
+                        开始使用
+                    </Link>
+                    <Link
+                        as={NextLink}
+                        className={buttonStyles({variant: "bordered"})}
+                        href={siteConfig.navItems[2].href}
+                        prefetch
+                    >
+                        <HiOutlineNewspaper size={20}/>
+                        日志
+                    </Link>
+                </ClientOnly>
             </div>
 
             <div className="max-w-[900px] gap-2 grid grid-cols-12 grid-rows-2 px-8 md:py-10">
