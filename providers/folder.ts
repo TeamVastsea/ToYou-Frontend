@@ -14,12 +14,7 @@ export class Folder {
         })
     }
     create(parent: number, name: string){
-        return this.axios.post('/folder', undefined, {
-            params: {
-                parent,
-                name
-            }
-        })
+        return this.axios.post('/folder', {parent,name})
     }
     rename(id: string, name: string){
         return this.axios.patch('/folder', undefined, {
@@ -32,7 +27,7 @@ export class Folder {
 }
 
 export interface Fold {
-    child: null;
+    child: number[] | null;
     create_time: string;
     depth: number;
     id: number;
