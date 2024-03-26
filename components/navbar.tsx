@@ -26,6 +26,7 @@ import cookie from "react-cookies";
 import {UpdateSetLoggedInHook} from "@/interface/hooks";
 import {Message} from "@/components/message";
 import {FiSettings} from "react-icons/fi";
+import ClientOnly from "./ClientOnly";
 
 export const Navbar = () => {
     let router = useRouter();
@@ -72,16 +73,18 @@ export const Navbar = () => {
                     </Link>
                 </NavbarItem>
                 <NavbarItem className="hidden md:flex">
-                    {loggedIn ? <Button color="danger" onClick={() => {
-                            cookie.remove("token");
-                            Message.success("成功退出登录");
-                            setLoggedIn(false);
-                            router.push("/authenticate")
-                        }}>退出登录</Button>
-                        :
-                        <Button color="primary" onClick={() => {
-                            router.push("/authenticate")
-                        }}>注册/登录</Button>}
+                    <ClientOnly>
+                        {loggedIn ? <Button color="danger" onClick={() => {
+                                cookie.remove("token");
+                                Message.success("成功退出登录");
+                                setLoggedIn(false);
+                                router.push("/authenticate")
+                            }}>退出登录</Button>
+                            :
+                            <Button color="primary" onClick={() => {
+                                router.push("/authenticate")
+                            }}>注册/登录</Button>}
+                    </ClientOnly>
                 </NavbarItem>
             </NavbarContent>
 
