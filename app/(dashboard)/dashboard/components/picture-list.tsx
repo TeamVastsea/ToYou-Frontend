@@ -60,6 +60,19 @@ export function PictureList(props: PictureListProps){
         <>
             <div className='w-full h-fit grid justify-center grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-4'>
                 {
+                    external.map(({file_name, id},idx)=>{
+                        return (
+                            <Picture 
+                                name={file_name}
+                                id={id.toString()}
+                                token={cookie.load('token')}
+                                onDelete={(id) => external.filter((e) => e.id !== Number(id))}
+                                key={idx}
+                            />
+                        )
+                    })
+                }
+                {
                     pictures.map((p ,idx)=>{
                         return (
                             <Picture 
@@ -72,32 +85,6 @@ export function PictureList(props: PictureListProps){
                         )
                     })
                 }
-                {/* {
-                    external.map(({file_name,id},idx)=>{
-                        return (
-                        <Picture 
-                            key={idx}
-                            id={id.toString()}
-                            name={file_name}
-                            token={cookie.load('token')}
-                            onDelete={(id) => external.filter((e) => e.id !== Number(id))}
-                        />)
-                    })
-                }
-                {
-                    pictures.map(({id,file_name},idx) => {
-                        return (
-                        <Picture 
-                            key={idx}
-                            id={id.toString()}
-                            name={file_name}
-                            token={cookie.load('token')}
-                            onDelete={
-                                (id) => pictures.filter((p)=>p.id !== Number(id))
-                            }
-                        />)
-                    })
-                } */}
             </div>
             <div className='w-full h-2 py-4' ref={obEle}></div>
         </>
