@@ -58,8 +58,21 @@ export function PictureList(props: PictureListProps){
     })
     return (
         <>
-            <div className='w-full h-fit grid justify-center grid-cols-[repeat(auto-fill,_minmax(130px,_1fr))] gap-4'>
+            <div className='w-full h-fit grid justify-center grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-4'>
                 {
+                    pictures.map((p ,idx)=>{
+                        return (
+                            <Picture 
+                                id={p.id.toString()}
+                                token={cookie.load('token')}
+                                name={p.file_name}
+                                key={idx}
+                                onDelete={(id) => setPictues(pictures.filter(p => p.id !== Number(id)))}
+                            />
+                        )
+                    })
+                }
+                {/* {
                     external.map(({file_name,id},idx)=>{
                         return (
                         <Picture 
@@ -84,7 +97,7 @@ export function PictureList(props: PictureListProps){
                             }
                         />)
                     })
-                }
+                } */}
             </div>
             <div className='w-full h-2 py-4' ref={obEle}></div>
         </>
