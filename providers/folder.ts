@@ -7,7 +7,7 @@ export class Folder {
         this.axios = axios;
     }
     getFolderInfo(id:string='1'): Promise<AxiosResponse<Fold>>{
-        return this.axios.get('/folder/', {
+        return this.axios.get('/folder', {
             params: {
                 id
             }
