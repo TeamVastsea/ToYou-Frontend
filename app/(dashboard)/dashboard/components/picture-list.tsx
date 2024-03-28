@@ -1,7 +1,7 @@
 import Picture from '@/components/picture';
 import {Picture as IPicture} from '@/interface/model/picture';
 import IOC from '@/providers';
-import { useDebounce, useInViewport } from 'ahooks';
+import { useDebounce, useInViewport, useMount } from 'ahooks';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import cookie from 'react-cookies'
 export function PictureList(props: PictureListProps){
@@ -12,7 +12,11 @@ export function PictureList(props: PictureListProps){
     const [canLoad,setCanLoad] = useState(false);
     const [finish,setFinish] = useState(false);
     const obEle = useRef(null);
+    useMount(()=>{
+        console.log('mount')
+    })
     useMemo(()=>{
+        console.log('id change')
         setCanLoad(false);
         IOC.picture.getList(id)
         .then(({data})=>{
@@ -21,9 +25,17 @@ export function PictureList(props: PictureListProps){
                 setCanLoad(false);
                 return;
             }
-            setPictues((old)=>[...old, ...data.records]);
+            setPictues((old)=>{
+                if (!old.length){
+                    return [...data.records];
+                }
+                const oldIds = old.map((oldP) => oldP.id);
+                console.log([...old, ...data.records.filter((p)=>!oldIds.includes(p.id))]);
+                return [...old, ...data.records.filter((p)=>!oldIds.includes(p.id))];
+            });
             setCanLoad(true)
         })
+        .catch(()=>{})
     },[id])
     useMemo(()=>{
         if (_page !== 0){
@@ -32,8 +44,15 @@ export function PictureList(props: PictureListProps){
                 if (data.pages === _page){
                     setFinish(true);
                 }
-                setPictues((old)=>[...old, ...data.records]);
+                setPictues((old)=>{
+                    if (!old.length){
+                        return data.records;
+                    }
+                    const oldIds = old.map((oldP) => oldP.id);
+                    return [...old, ...data.records.filter((p)=>!oldIds.includes(p.id))];
+                });
             })
+            .catch(()=>{})
             .finally(()=>{
                 setCanLoad(true);
             })
@@ -49,40 +68,37 @@ export function PictureList(props: PictureListProps){
         }
         props.inBottom && props.inBottom(_page);
     }, {wait: 500})
-    const onDelete = (id: number) => {
-
-    }
     useInViewport(obEle,{
         callback: loadMoreFn,
         threshold: 1,
     })
     return (
         <>
-            <div className='w-full h-fit grid justify-center grid-cols-[repeat(auto-fill,_minmax(130px,_1fr))] gap-4'>
+            <div className='w-full h-fit grid justify-center grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-4'>
                 {
-                    external.map(({file_name,id},idx)=>{
+                    external.map(({file_name, id},idx)=>{
                         return (
-                        <Picture 
-                            key={idx}
-                            id={id.toString()}
-                            name={file_name}
-                            token={cookie.load('token')}
-                            onDelete={(id) => external.filter((e) => e.id !== Number(id))}
-                        />)
+                            <Picture 
+                                name={file_name}
+                                id={id.toString()}
+                                token={cookie.load('token')}
+                                onDelete={(id) => external.filter((e) => e.id !== Number(id))}
+                                key={idx}
+                            />
+                        )
                     })
                 }
                 {
-                    pictures.map(({id,file_name},idx) => {
+                    pictures.map((p ,idx)=>{
                         return (
-                        <Picture 
-                            key={idx}
-                            id={id.toString()}
-                            name={file_name}
-                            token={cookie.load('token')}
-                            onDelete={
-                                (id) => pictures.filter((p)=>p.id !== Number(id))
-                            }
-                        />)
+                            <Picture 
+                                id={p.id.toString()}
+                                token={cookie.load('token')}
+                                name={p.file_name}
+                                key={idx}
+                                onDelete={(id) => setPictues(pictures.filter(p => p.id !== Number(id)))}
+                            />
+                        )
                     })
                 }
             </div>

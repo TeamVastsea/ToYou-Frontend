@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import {Metadata} from "next";
 import {siteConfig} from "@/config/site";
 import React from "react";
-import {AuthProvider, Providers} from "./providers";
+import {AuthProvider, Providers, ToastProvider} from "./providers";
 import clsx from "clsx";
 import { fontSans } from "@/config/fonts";
 export const metadata: Metadata = {
@@ -36,13 +36,15 @@ export default function Root(
                 fontSans.variable
             )}
         >
-            <Providers themeProps={{attribute: "class", defaultTheme: "dark"}}>
-                <div className="relative min-h-screen">
-                    <AuthProvider whiteList={['/', '/authenticate']}>
-                        {children}
-                    </AuthProvider>
-                </div>
-            </Providers>
+            <ToastProvider>
+                <Providers themeProps={{attribute: "class", defaultTheme: "dark"}}>
+                    <div className="relative min-h-screen">
+                        <AuthProvider whiteList={['/', '/authenticate']}>
+                            {children}
+                        </AuthProvider>
+                    </div>
+                </Providers>
+            </ToastProvider>
         </body>
         </html>
     )
