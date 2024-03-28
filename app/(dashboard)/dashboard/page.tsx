@@ -10,6 +10,7 @@ import { currentFolderId, folderId } from "@/app/store";
 import { Fold as IFold } from "@/providers/folder";
 import { AxiosResponse } from "axios";
 import { Upload } from "@/components/upload";
+import { Message } from "@/components/message";
 
 const foldCache = new Map<string, IFold>();
 const cache = new Map<string, string[]>();
@@ -20,6 +21,7 @@ export default function Files(){
     const [folderInfo, setFolderInfo] = useState<IFold[]>([])
     const [children, setChildren] = useState<string[]>([])
     useEffect(()=>{
+        Message.success('test')
         if (cache.has(id)){
             setChildren(cache.get(id)!);
             return;
@@ -54,6 +56,7 @@ export default function Files(){
         .then((res)=>{
             setFolderInfo(res);
         })
+        .catch(()=>{})
     }, [children])
     const onClickFold = (id?: string, name?: string) => {
         if(!id||!name){return;}

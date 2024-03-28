@@ -24,6 +24,7 @@ export function PictureList(props: PictureListProps){
             setPictues((old)=>[...old, ...data.records]);
             setCanLoad(true)
         })
+        .catch(()=>{})
     },[id])
     useMemo(()=>{
         if (_page !== 0){
@@ -34,6 +35,7 @@ export function PictureList(props: PictureListProps){
                 }
                 setPictues((old)=>[...old, ...data.records]);
             })
+            .catch(()=>{})
             .finally(()=>{
                 setCanLoad(true);
             })
@@ -49,9 +51,6 @@ export function PictureList(props: PictureListProps){
         }
         props.inBottom && props.inBottom(_page);
     }, {wait: 500})
-    const onDelete = (id: number) => {
-
-    }
     useInViewport(obEle,{
         callback: loadMoreFn,
         threshold: 1,

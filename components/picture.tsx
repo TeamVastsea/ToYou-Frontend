@@ -28,9 +28,9 @@ const SharedButton = (props: { link: string, pid?: string, className?: string })
                 variant="bordered" size="sm"
                 onClick={() => {
                     if (!link && pid) {
-                        IOC.share.sharePicture([`p${pid}`])
+                        IOC.share.sharePicture([`${pid}`])
                         .then(({data})=>{
-                            copy(SERVER_URL + "/picture/share/" + data.sid);
+                            copy(SERVER_URL + "/picture/share/" + data);
                             Message.success("已经复制到剪贴板");
                         })  
                     }
@@ -99,7 +99,6 @@ export default function Picture(props: PictureProps) {
 
     useEffect(()=>{
         const closeDeleteConfirm = ()=>{
-            console.log('click')
             setDeleteConfirmVisible(false)
         }
         window.addEventListener('mousedown', closeDeleteConfirm)
