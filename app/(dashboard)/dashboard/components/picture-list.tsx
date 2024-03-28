@@ -1,7 +1,7 @@
 import Picture from '@/components/picture';
 import {Picture as IPicture} from '@/interface/model/picture';
 import IOC from '@/providers';
-import { useDebounce, useInViewport } from 'ahooks';
+import { useDebounce, useInViewport, useMount } from 'ahooks';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import cookie from 'react-cookies'
 export function PictureList(props: PictureListProps){
@@ -12,7 +12,11 @@ export function PictureList(props: PictureListProps){
     const [canLoad,setCanLoad] = useState(false);
     const [finish,setFinish] = useState(false);
     const obEle = useRef(null);
+    useMount(()=>{
+        console.log('mount')
+    })
     useMemo(()=>{
+        console.log('id change')
         setCanLoad(false);
         IOC.picture.getList(id)
         .then(({data})=>{
@@ -21,7 +25,14 @@ export function PictureList(props: PictureListProps){
                 setCanLoad(false);
                 return;
             }
-            setPictues((old)=>[...old, ...data.records]);
+            setPictues((old)=>{
+                if (!old.length){
+                    return [...data.records];
+                }
+                const oldIds = old.map((oldP) => oldP.id);
+                console.log([...old, ...data.records.filter((p)=>!oldIds.includes(p.id))]);
+                return [...old, ...data.records.filter((p)=>!oldIds.includes(p.id))];
+            });
             setCanLoad(true)
         })
         .catch(()=>{})
@@ -33,7 +44,13 @@ export function PictureList(props: PictureListProps){
                 if (data.pages === _page){
                     setFinish(true);
                 }
-                setPictues((old)=>[...old, ...data.records]);
+                setPictues((old)=>{
+                    if (!old.length){
+                        return data.records;
+                    }
+                    const oldIds = old.map((oldP) => oldP.id);
+                    return [...old, ...data.records.filter((p)=>!oldIds.includes(p.id))];
+                });
             })
             .catch(()=>{})
             .finally(()=>{
