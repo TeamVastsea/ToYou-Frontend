@@ -1,4 +1,3 @@
-import { ShareMode } from "@/components/picture";
 import { Axios } from "axios";
 
 
@@ -9,7 +8,10 @@ export class Share {
         this.axios = axios;
     }
 
-    share(password: string, content: string[]=[], mode: ShareMode=ShareMode.WATERMARK){
+    share(content: string[]=[], mode: number=0, password?: string){
         return this.axios.post('/share', {password,content,mode})
+    }
+    sharePicture(content: string[], mode: number=0, password?:string){
+        return this.share(content.map((c)=>`p${c}`), mode, password)
     }
 }
