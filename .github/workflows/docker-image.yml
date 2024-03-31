@@ -45,4 +45,5 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd ${{ secrets.PROJ_PATH }}
+            sudo docker compose down
             sudo bash ./deploy.sh
