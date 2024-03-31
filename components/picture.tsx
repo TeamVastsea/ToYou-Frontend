@@ -18,6 +18,7 @@ import {SERVER_URL} from "@/interface/api";
 import {PriceInfo} from "@/components/price";
 import IOC from "@/providers";
 import {Button, ButtonGroup} from "@nextui-org/button";
+import { PictureInfo } from "./picture-info";
 
 const SharedButton = (props: { link: string, pid?: string, className?: string }) => {
     const {link, pid} = props;
@@ -141,7 +142,7 @@ export default function Picture(props: PictureProps) {
             <Card
                 isFooterBlurred
                 radius="lg"
-                className="border-none items-center relative w-full h-full min-h-[200px]"
+                className="border-none items-center relative w-full h-full min-h-[200px] max-h-80"
                 isPressable
                 onPress={()=>{descriptionOpen.onOpen(); setDeleteConfirmVisible(false)}}
             >
@@ -187,75 +188,11 @@ export default function Picture(props: PictureProps) {
                     </Button>
                 </CardFooter>                
             </Card>
-
-            <Modal isOpen={descriptionOpen.isOpen} onOpenChange={descriptionOpen.onOpenChange}>
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader className="flex flex-col gap-1">图片详情</ModalHeader>
-                            <ModalBody>
-                                <div className="w-fit mx-auto">
-                                    <Image
-                                        alt={props.name}
-                                        className="object-cover mx-auto"
-                                        width={200}
-                                        height={200}
-                                        src={url}
-                                    />
-                                </div>
-                                <p>
-                                    <Input placeholder={"图片名称"} value={name} onValueChange={setName}/>
-                                </p>
-                                <p className="flex items-center justify-center">
-                                    {link == "" ?
-                                        <ButtonGroup>
-                                            <Button variant={"flat"} color={"secondary"} onClick={() => {
-                                                generateShareLink(1)
-                                            }}>分享水印图片</Button>
-                                            <Button
-                                                variant={props.group?.disabled.includes("compressed") ? "solid" : "flat"}
-                                                color={props.group?.disabled.includes("compressed") ? "default" : "secondary"}
-                                                disabled={props.group?.disabled.includes("compressed")}
-                                                onClick={() => {
-                                                    generateShareLink(2)
-                                                }}>分享压缩图片</Button>
-                                            <Button
-                                                variant={props.group?.disabled.includes("original") ? "solid" : "flat"}
-                                                color={props.group?.disabled.includes("original") ? "default" : "secondary"}
-                                                disabled={props.group?.disabled.includes("original")}
-                                                onClick={() => {
-                                                    generateShareLink(3)
-                                                }}>分享原图</Button>
-                                        </ButtonGroup>
-                                        : <div className="flex space-x-3" style={{width: 450}}>
-                                            <Input className={"font-mono"} variant={"underlined"} value={link}
-                                                   endContent={
-                                                       <SharedButton link={link}/>
-                                                   }></Input>
-                                        </div>}
-                                </p>
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button isLoading={saveLoading} color="primary" onPress={() => {
-                                    setSaveLoading(true);
-                                    PictureAPI.changePictureName(name, props.id).then(() => {
-                                        Message.success("已保存");
-                                        originName = name;
-                                        setSaveLoading(false);
-                                        onClose();
-                                    });
-                                }}>
-                                    保存
-                                </Button>
-                                <Button disabled={saveLoading} color="danger" variant={"light"} onPress={() => {
-                                    setName(originName);
-                                    onClose();
-                                }}>
-                                    取消
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
+            <Modal isOpen={descriptionOpen.isOpen} onOpenChange={descriptionOpen.onOpenChange} className="max-w-lg w-full max-h-80 h-full">
+                <ModalContent className="w-full">
+                        {(onClose) => (
+                            <PictureInfo id={props.id} url={url} fileName={props.name} onClose={onClose} />
+                        )}
                 </ModalContent>
             </Modal>
         </>

@@ -1,11 +1,7 @@
-import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import IOC from "@/providers";
-import { Button, ButtonGroup, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Input, ModalBody, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, Select, SelectItem } from "@nextui-org/react";
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Input, ModalBody, ModalFooter, ModalHeader, Popover, PopoverContent, PopoverTrigger, Select, SelectItem } from "@nextui-org/react";
 import { useEffect, useRef, useState } from "react";
 import { Message } from "./message";
-import { IoIosCheckmark } from "react-icons/io";
-import { Price } from "./price";
-import { prices } from "@/config/prices";
 import type {ButtonProps} from '@nextui-org/button';
 
 const shareModeLabel = ['水印', '压缩', '原图']
@@ -30,7 +26,7 @@ export const PictureInfo = (props: PictureInfoProps) => {
             return;
         }
         setLoading(true)
-        IOC.share.share(password, [`p${props.id}`], Array.from(shareMode)[0])
+        IOC.share.share([`p${props.id}`], Number(Array.from(shareMode)[0]), password)
         .then(()=>{
             setShareBtnState('success')
         })
