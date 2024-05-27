@@ -10,6 +10,7 @@ import { IconType } from "react-icons";
 import { FaImage, FaFolder } from "react-icons/fa";
 import { HiOutlineArrowsUpDown } from "react-icons/hi2";
 import { UploadProgress } from "./upload-progress";
+import UserGroup from "./user-group";
 
 export interface SideBarItem {
     href: string;
@@ -72,6 +73,7 @@ export function SideBar(){
                     </Popover> : null
                 }
                 <ThemeSwitch />
+                <UserGroup />
             </div>
         </aside>
     )

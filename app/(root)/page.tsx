@@ -5,13 +5,15 @@ import {Link} from "@nextui-org/link";
 import {button as buttonStyles} from "@nextui-org/theme";
 import {siteConfig} from "@/config/site";
 import {subtitle, title} from "@/components/primitives";
-import {Card, CardFooter, CardHeader, Image} from "@nextui-org/react";
+import {Card, CardFooter, CardHeader, Image, useDisclosure, useModal} from "@nextui-org/react";
 import {Button} from "@nextui-org/button";
 import {HiOutlineNewspaper} from "react-icons/hi";
 import {FaLocationArrow} from "react-icons/fa6";
-import {BsLightbulb} from "react-icons/bs";
+import {BsLightbulb, BsOpencollective} from "react-icons/bs";
 import {IsLoggedIn} from "@/interface/hooks";
 import ClientOnly from "@/components/ClientOnly";
+import { PayModal } from "@/components/pay-modal";
+import React, { useEffect } from "react";
 
 export default function Home() {
     return (

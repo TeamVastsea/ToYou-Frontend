@@ -66,7 +66,6 @@ export class UserAPI {
 
         let requestOptions: RequestInit = {
             method: 'GET',
-            credentials: 'include',
             redirect: 'follow',
             headers: headers
         };
