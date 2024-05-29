@@ -5,15 +5,16 @@ import { Button } from "@nextui-org/button";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/modal";
 import {Dropdown,DropdownTrigger,DropdownItem, DropdownMenu} from '@nextui-org/dropdown';
 import { useAtom, useAtomValue } from "jotai";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react"
 import { PriceInfo } from "./price";
 import { getNumberId, idTable, maxId, priceAdvanced, priceFree, priceProfessional, priceStarted } from "@/config/prices";
 import { title } from "./primitives";
 import { Message } from "./message";
 import IOC from "@/providers";
+import { camelCase } from "@/hooks/useCamelCase";
 interface PriceListProps {
   onSelect?: (
-    level: string,
+    price: PriceInfo
   )=>void,
   pricesList: PriceInfo[]
 }
@@ -35,11 +36,11 @@ const PriceList = (props: PriceListProps) => {
     const {id} = price;
     const priceId = idTable[id];
     const profileId = idTable[profile?.level.level.toUpperCase() ?? 'FREE'];
-    onSelect?.(price.id)
     if (profileId >= priceId){
       Message.error('您不能降级购买用户组');
       return;
     }
+    onSelect?.(price)
     setId(priceId);
   }
   useEffect(()=>{
@@ -47,6 +48,10 @@ const PriceList = (props: PriceListProps) => {
       Math.min(idTable[profile?.level.level.toUpperCase() ?? 'FREE'] + 1, maxId)
     )
   }, [profile]);
+  useEffect(()=>{
+    const price = pricesList[Math.min(selectedId, maxId)]
+    selectLevel(price);
+  }, []);
   return (
     <div className="w-full flex gap-4 whitespace-nowrap py-1 overflow-x-auto no-scrollbar" onWheel={onWheel}>
       {
@@ -79,36 +84,44 @@ type PayQrProps = {
 
 const PayQr = (props:PayQrProps) => {
   const {period:rawPeriod, level} = props;
-  const period = Number.isNaN(parseInt(rawPeriod)) ? 1 : parseInt(rawPeriod);
-  const date = new Date().toString();
+  const period = useMemo(() => Number.isNaN(parseInt(rawPeriod)) ? 1 : parseInt(rawPeriod), [rawPeriod]);
+  // const period = 
+  const date = new Date();
   const [qrUrl, setQRUrl] = useState('');
   useEffect(()=>{
-    IOC.pay.wechat({
-      level,
-      period,
-      start_date: date.toString()
-    })
-    .then((res) => {console.log(res)})
-  },[])
+    // IOC.pay.wechat({
+    //   level,
+    //   period,
+    //   start_date: date.toISOString()
+    // })
+    // .then((res) => {console.log(res)})
+  },[level, period])
   return (<></>)
 }
 
 export function PayModal(){
   const [isOpen, setOpen] = useAtom(showPayModal);
   const profile = useAtomValue(ProfileAtom);
-  const [level, setLevel] = useState(profile?.level.level ?? 'FREE');
+  const [level, setLevel] = useState(profile?.level.level ?? 'Free');
   const [qrVisibility, setQRVisibility] = useState(false);
   const [periods, setPeriods] = React.useState(new Set(["1"]));
-  const period = useMemo(() => Array.from(periods)[0], [periods]);
+  const period = useMemo(() => Array.from(periods).join(''), [periods]);
+  useEffect(()=>{
+    console.log(period);
+  },[period])
   useEffect(()=>{
     setQRVisibility(
-      getNumberId(profile?.level.level ?? 'FREE') < getNumberId(level)
+      getNumberId(profile?.level.level ?? 'Free') < getNumberId(level)
     )
   }, [level, profile?.level.level]);
   const close = () => {
     setOpen(false)
   }
-  const onSelectLevel = (id: string) => setLevel(id);
+  const onSelectLevel = (price: PriceInfo) => {
+    setLevel(
+      camelCase(price.id, true)
+    )
+  };
   const prices = [priceFree, priceStarted, priceAdvanced, priceProfessional]
   return (
     <Modal isOpen={isOpen} onOpenChange={setOpen}>
@@ -134,7 +147,12 @@ export function PayModal(){
             </DropdownTrigger>
             <DropdownMenu 
               aria-label="时长"
-              onAction={setPeriods as any}
+              disallowEmptySelection
+              onSelectionChange={(val) => {
+                setPeriods(
+                  new Set(Array.from(val as Set<string>)) 
+                )
+              }}
               selectedKeys={periods}
               selectionMode="single"
             >
