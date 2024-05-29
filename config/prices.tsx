@@ -51,7 +51,7 @@ export const priceProfessional: PriceInfo = {
     disabled: ["none"]
 }
 
-const prices = [priceFree,priceStarted,priceAdvanced,priceProfessional] as const;
+export const prices = [priceFree,priceStarted,priceAdvanced,priceProfessional] as const;
 
 export function getDisabledById(id: string){
     const item = prices.filter((price) => price.id === id.toUpperCase())[0];

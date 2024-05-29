@@ -1,4 +1,4 @@
-import {CheckCodeData, LoginData, RegisterRequestData} from "@/interface/model/user";
+import {CheckCodeData, LoginData, RegisterRequestData, UserModel} from "@/interface/model/user";
 import {Axios} from "axios";
 
 export class User {
@@ -25,7 +25,7 @@ export class User {
     }
 
     async getExtendedInformation() {
-        return this.axios.get('/user?extended=true');
+        return this.axios.get<UserModel>('/user?extended=true');
     }
 
     async loginSession() {
