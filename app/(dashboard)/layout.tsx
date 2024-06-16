@@ -139,6 +139,6 @@ export default function DashboardLayout({
                 </Modal>
                 <PayModal />
             </section>
-    </ToastProvider>
+        </ToastProvider>
     )
 }

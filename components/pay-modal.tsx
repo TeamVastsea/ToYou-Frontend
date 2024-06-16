@@ -1,14 +1,14 @@
 'use client';
 
 import { profile, profile as ProfileAtom, showPayModal } from "@/app/store";
-import { Button } from "@nextui-org/button";
+import { Button, ButtonGroup } from "@nextui-org/button";
 import { Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/modal";
 import {Dropdown,DropdownTrigger,DropdownItem, DropdownMenu} from '@nextui-org/dropdown';
 import { useAtom, useAtomValue } from "jotai";
 import React, { useEffect, useMemo, useState } from "react"
 import { PriceInfo } from "./price";
 import { getNumberId, idTable, maxId, priceAdvanced, priceFree, priceProfessional, prices, priceStarted } from "@/config/prices";
-import { title } from "./primitives";
+import { bg, title } from "./primitives";
 import { Message } from "./message";
 import IOC from "@/providers";
 import { camelCase } from "@/hooks/useCamelCase";
@@ -19,7 +19,6 @@ import {QRCodeCanvas} from 'qrcode.react';
 interface PriceListProps {
   onSelect?: (
     price: PriceInfo | null,
-    period: string
   )=>void,
   pricesList: PriceInfo[]
 }
@@ -58,7 +57,7 @@ const PriceList = (props: PriceListProps) => {
     )
   }, [profile]);
   useEffect(()=>{
-    onSelect?.(activePrice, period)
+    onSelect?.(activePrice)
   }, [activePrice, period]);
   useEffect(()=>{
     const price = pricesList[Math.min(selectedId, maxId)]
@@ -66,57 +65,23 @@ const PriceList = (props: PriceListProps) => {
     setActivePrice(price)
   }, []);
   return (
-    <div className="w-full flex gap-4 whitespace-nowrap py-1 overflow-x-auto no-scrollbar" onWheel={onWheel}>
+    <div className="w-full flex justify-evenly gap-4 whitespace-nowrap py-1 overflow-x-auto no-scrollbar" onWheel={onWheel}>
       {
         pricesList.map((price) => (
           <div key={price.id}
             aria-disabled={idTable[price.id] <= idTable[profile?.level.level.toUpperCase() ?? 'FREE']}
             aria-selected={selectedId === idTable[price.id]}
             onClick={()=>selectLevel(price)}
-            className="
-              p-4 rounded-md flex flex-col items-center gap-2 bg-default/80 aria-disabled:bg-default/50
-              aria-selected:bg-primary aria-[disabled=false]:cursor-pointer
-              group h-fit
-            "
+            className={
+              `
+              border p-4 rounded-md flex flex-col items-center gap-2 border-default bg-default-100 aria-disabled:border-default/50
+              aria-[disabled=false]:cursor-pointer aria-selected:bg-primary aria-selected:border-primary-100
+              group h-fit aria-selected:text-white
+              `
+            }
           >
-            <h2 className={`${title({size: 'xs'})} group-aria-disabled:text-default-foreground/50`}>{price.plainName}</h2>
-            {
-              selectedId === idTable[price.id] ? (
-                <div>
-                    <Dropdown>
-                    <DropdownTrigger>
-                      <Button onPress={close} size="sm" color="primary" >
-                        {period}月 <FaAngleDown className="w-5 h-5" />
-                      </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu 
-                      aria-label="时长"
-                      disallowEmptySelection
-                      onSelectionChange={(val) => {
-                        setPeriods(
-                          new Set(Array.from(val as Set<string>)) 
-                        )
-                      }}
-                      selectedKeys={periods}
-                      selectionMode="single"
-                    >
-                      <DropdownItem key="1">
-                        1月
-                      </DropdownItem>
-                      <DropdownItem key="3">
-                        3月
-                      </DropdownItem>
-                      <DropdownItem key="6">
-                        6月
-                      </DropdownItem>
-                      <DropdownItem key="12">
-                        12月
-                      </DropdownItem>
-                    </DropdownMenu>
-                    </Dropdown>
-                </div>
-                ) : null
-              }
+            <h3 className={`group-aria-disabled:text-default-foreground/50`}>{price.plainName}</h3>
+            <h2 className="text-lg group-aria-disabled:text-default-foreground/50">￥{price.price}元/月</h2>
           </div>
         ))
       }
@@ -125,19 +90,27 @@ const PriceList = (props: PriceListProps) => {
 }
 
 type PayQrProps = {
-  period: string;
   level: string;
+  onClickPayDone?: () => void
 }
 
 const PayQr = (props:PayQrProps) => {
-  const {period:rawPeriod, level} = props;
-  const period = useMemo(() => Number.isNaN(parseInt(rawPeriod)) ? 1 : parseInt(rawPeriod), [rawPeriod]);
+  const {level} = props;
+  const [period, setPeriods] = useState<1|4|12>(1);
+  const periodString = {
+    [1]: '月',
+    [4]: '季',
+    [12]: '年'
+  }
   const [qrUrl, setQRUrl] = useState('');
   const date = useDate();
-  const [money, setMoney] = useState(
-    prices.filter((p) => p.id.toLowerCase() === level.toLowerCase())[0].price * period
-  )
-  const [,setProfile] = useAtom(profile)
+  const money = useMemo(()=>{
+    return prices.filter((p) => p.id.toLowerCase() === level.toLowerCase())[0].price * period;
+  }, [period, level]);
+  const moneyPerMonth = useMemo(()=>{
+    return prices.filter((p) => p.id.toLowerCase() === level.toLowerCase())[0].price;
+  }, [level]);
+  const [profileData,setProfile] = useAtom(profile)
   const updateUserInfo = () => {
     IOC.user.getExtendedInformation()
     .then((res) => res.data)
@@ -145,12 +118,15 @@ const PayQr = (props:PayQrProps) => {
       console.log(res);
       return res;
     })
-    .then((data) => setProfile(data))
+    .then((data) => {
+      if (data.level.level.toLowerCase() === profileData?.level.level.toLowerCase()){
+        Message.error('支付失败')
+      }
+      setProfile(data)
+      props.onClickPayDone?.();
+    })
   }
   useEffect(()=>{
-    setMoney(
-      prices.filter((p) => p.id.toLowerCase() === level.toLowerCase())[0].price * period
-    )
     const {year, month, day} = date.getDateObject()
     IOC.pay.wechat({
       level,
@@ -163,23 +139,29 @@ const PayQr = (props:PayQrProps) => {
   },[level, period])
   return (
     <div className="w-full">
-      <div className="w-fit flex flex-col gap-2 justify-center items-center mx-auto">
-        <QRCodeCanvas value={qrUrl} size={128} className="rounded-md" />
-        <div className="text-base">
-          <span>总计: {money}元</span>
-        </div>
-        <Button onClick={updateUserInfo}>
-          我已支付
-        </Button>
-        <div className="text-tiny">
+      <div className="w-fit grid grid-flow-col gap-2 items-center mx-auto pb-4 h-fit">
+        <div className="flex flex-col h-full justify-evenly gap-4">
+          <div className={`text-base ${title({color: 'blue'})}`}>
+            <span className='text-4xl'>￥{moneyPerMonth}</span><span>/月</span>
+          </div>
+          <ButtonGroup>
+            <Button color={period === 1 ? 'primary' : 'default'} onClick={()=>setPeriods(1)}>
+              月付
+            </Button>
+            <Button color={period === 4 ? 'primary' : 'default'} onClick={()=>setPeriods(4)}>
+              季付
+            </Button>
+            <Button color={period === 12 ? 'primary' : 'default'} onClick={()=>setPeriods(12)}>
+              年付
+            </Button>
+          </ButtonGroup>
           <div>
-            <span className="text-center">
-              支付后则表示您知晓且同意
-            </span>
+            <span>合计￥{money}/{periodString[period]}</span>
           </div>
-          <div className="w-fit mx-auto">
-            <a href="#" className="text-primary">ToYou 虚拟产品购买协议</a>
-          </div>
+        </div>
+        <div className="flex flex-col gap-4 items-center justify-center p-4 rounded-md">
+          <QRCodeCanvas value={qrUrl} size={128} className="rounded-md w-fit" />
+          <span className="text-sm text-success">请示用微信扫码支付</span>
         </div>
       </div>
     </div>
@@ -193,14 +175,11 @@ export function PayModal(){
   const [qrVisibility, setQRVisibility] = useState(false);
   const [period, setPeriods] = useState('1');
   useEffect(()=>{
-    console.log(period);
-  },[period])
-  useEffect(()=>{
     setQRVisibility(
       getNumberId(profile?.level.level ?? 'Free') < getNumberId(level)
     )
   }, [level, profile?.level.level]);
-  const onSelectLevel = (price: PriceInfo | null, period: string) => {
+  const onSelectLevel = (price: PriceInfo | null) => {
     if (!price){
       return;
     }
@@ -219,7 +198,7 @@ export function PayModal(){
         <ModalBody>
           <PriceList pricesList={prices} onSelect={onSelectLevel} />
           {
-            qrVisibility ? <PayQr period={period} level={level} /> : null
+            qrVisibility ? <PayQr level={level} onClickPayDone={()=>setOpen(false)} /> : null
           }
         </ModalBody>
       </ModalContent>
