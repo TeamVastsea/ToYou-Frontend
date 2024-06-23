@@ -6,11 +6,12 @@ import { useEffect, useMemo, useState } from "react"
 import { PictureList } from "./components/picture-list";
 import { Folder } from "./components/folder";
 import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { currentFolderId, folderId } from "@/app/store";
+import { currentFolderId, folderId, profile } from "@/app/store";
 import { Fold as IFold } from "@/providers/folder";
 import { AxiosResponse } from "axios";
 import { Upload } from "@/components/upload";
 import { Message } from "@/components/message";
+import { UserAPI } from "@/interface/userAPI";
 
 const foldCache = new Map<string, IFold>();
 const cache = new Map<string, string[]>();
@@ -20,8 +21,8 @@ export default function Files(){
     const setFoldIdStack = useSetAtom(folderId);
     const [folderInfo, setFolderInfo] = useState<IFold[]>([])
     const [children, setChildren] = useState<string[]>([])
+    const [,setProfile] = useAtom(profile);
     useEffect(()=>{
-        Message.success('test')
         if (cache.has(id)){
             setChildren(cache.get(id)!);
             return;
@@ -38,6 +39,10 @@ export default function Files(){
             })
         }
     }, [id])
+    useEffect(()=>{
+        UserAPI.getExtendedInformation()
+        .then((val) => val ? setProfile(val) : null)
+    }, [])
     useEffect(()=>{
         const folderInfo = [];
         const promiseStack = [];

@@ -1,6 +1,13 @@
 import {PriceInfo} from '@/components/price';
 import {PiFireDuotone} from "react-icons/pi";
 
+export const idTable:{[x:string]: number} = {
+  FREE: 0,
+  STARTED: 1,
+  ADVANCED: 2,
+  PROFESSIONAL: 3
+}
+
 export const priceFree: PriceInfo = {
     id: 'FREE',
     name: "免费",
@@ -44,13 +51,16 @@ export const priceProfessional: PriceInfo = {
     disabled: ["none"]
 }
 
-const prices = [priceFree,priceStarted,priceAdvanced,priceProfessional] as const;
+export const prices = [priceFree,priceStarted,priceAdvanced,priceProfessional] as const;
 
 export function getDisabledById(id: string){
     const item = prices.filter((price) => price.id === id.toUpperCase())[0];
     const disabled = item.disabled ?? ['all'];
     return disabled.map((disabledFeature) => disabledFeature.toUpperCase()).filter((feature)=>feature.toLowerCase()!=='none');
 }
+export const getNameById = (id: string) => prices.filter((p) => p.id === id.toUpperCase())[0].plainName;
+export const getNumberId = (id: string) => idTable[id.toUpperCase() ?? 'FREE']
+export const maxId = Object.entries(idTable).sort((a,b) => b[1] - a[1])[0][1]
 
 export function getGroupPrice(name: string): PriceInfo {
     let lower = name.toLowerCase();

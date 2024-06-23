@@ -1,4 +1,5 @@
 'use client'
+import "@/styles/globals.css";
 import { 
     BreadcrumbItem,
     Breadcrumbs,
@@ -21,6 +22,9 @@ import IOC from "@/providers";
 import { Message } from "@/components/message";
 import { usePathname } from "next/navigation";
 import { ToastProvider } from "../providers";
+import { PayModal } from "@/components/pay-modal";
+import { Toaster } from "react-hot-toast";
+import { rgba } from "color2k";
 export default function DashboardLayout({
     children,
   }: {
@@ -59,10 +63,22 @@ export default function DashboardLayout({
         })
     }
     return (
-        <section className="
-        flex min-w-0 h-full w-full max-w-full
-        absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-        xl:max-w-6xl xl:h-[calc(100vh_-_40px)]
+        <ToastProvider>
+            <Toaster toastOptions={{
+                className: '',
+                duration: 5000,
+                style: {
+                    background: rgba(0, 0, 0, 0),
+                    color: rgba(0, 0, 0, 0),
+                    borderStyle: 'none',
+                    boxShadow: 'none'
+                }
+            }
+            } gutter={-15}/>
+            <section className="
+            flex min-w-0 h-full w-full max-w-full
+            absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+            xl:max-w-6xl xl:h-[calc(100vh_-_40px)]
             ">
                 <section className="w-full flex bg-default-50 overflow-hidden xl:rounded-3xl">
                     <SideBar />
@@ -79,7 +95,7 @@ export default function DashboardLayout({
                                         }
                                     </Breadcrumbs>
                                 </div>
-                                {children}
+                                {/* {children} */}
                             </div>
                         </div>
                     </section>
@@ -121,6 +137,8 @@ export default function DashboardLayout({
                         </ModalFooter>
                     </ModalContent>
                 </Modal>
+                <PayModal />
             </section>
+        </ToastProvider>
     )
 }

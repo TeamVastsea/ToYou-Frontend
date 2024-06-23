@@ -12,6 +12,8 @@ import { useRouter } from 'next/navigation';
 import { SetLoggedInState } from '@/interface/hooks';
 import { UserAPI } from '@/interface/userAPI';
 import { useDebounceFn } from 'ahooks';
+import { useAtom } from 'jotai';
+import { profile } from '@/app/store';
 
 export type Colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
 export type PageType = 'wait-check' | 'login' | 'register'
@@ -20,6 +22,7 @@ export default function Page(){
     const [account, setAccount] = useState('')
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [,setProfile] = useAtom(profile);
     const [accountExists, setAccountExists] = useState(false);
     const [code, setCode] = useState('');
     const [passwordRobustness, setPasswordRobustness] = useState(new Array(6).fill(false));
@@ -127,13 +130,19 @@ export default function Page(){
             UserAPI.login(account, password)
             .then((r) => {
                 const [state, text] = r;
-                if (state) {
-                    Message.success("登录成功");
-                    SetLoggedInState(true);
-                    router.push("/dashboard");
-                } else {
+                if (!state) {
                     Message.error(text);
                     setLoading(false)
+                }
+                return state
+            })
+            .then((val) => val ? UserAPI.getExtendedInformation() : null)
+            .then((val) => {
+                if (val){
+                    Message.success("登录成功");
+                    SetLoggedInState(true);
+                    setProfile(val);
+                    router.push("/dashboard");
                 }
             })
         }
