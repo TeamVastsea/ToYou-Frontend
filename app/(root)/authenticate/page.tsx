@@ -1,17 +1,12 @@
 'use client'
 
 import { Button, Card, CardBody, CardFooter, Checkbox, Input } from '@nextui-org/react';
-import { KeyboardEvent, useEffect, useMemo, useState} from 'react';
+import { KeyboardEvent, useEffect, useState} from 'react';
 import { useAccountDiscriminator, useValide } from './hooks/useValide';
 import { useButton } from './hooks/useButton';
 import IOC from '@/providers';
-import { Login } from './components/login';
-import Register from './components/register';
-import { Message } from '@/components/message';
 import { useRouter } from 'next/navigation';
-import { SetLoggedInState } from '@/interface/hooks';
-import { UserAPI } from '@/interface/userAPI';
-import { useDebounceFn, useMount, useUpdateEffect } from 'ahooks';
+import { useUpdateEffect } from 'ahooks';
 import { accountAtom } from '@/app/store';
 import { useAtom } from 'jotai';
 
@@ -20,64 +15,16 @@ export type PageType = 'wait-check' | 'login' | 'register'
 
 export default function Page(){
     const [account, setAccount] = useAtom(accountAtom)
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [accountExists, setAccountExists] = useState(false);
-    const [code, setCode] = useState('');
-    const [passwordRobustness, setPasswordRobustness] = useState(new Array(6).fill(false));
-    const [userName, setUserName] = useState('');
-
     const [pageType, setPageType] = useState<PageType>('wait-check');
     const [policy, setPolicy] = useState(false);
     const [showErr, setShowErr] = useState(false);
     const {phone, email} = useAccountDiscriminator(account)
-    const {valide, errors, valideData} = useValide(pageType, {
-        account,
-        policyState: policy,
-        password,
-        confirmPassword,
-        checkCode: code,
-        userName,
-        passwordRobustness,
-        isPhone: phone,
-        isEmail: email,
-    });
+    const {valide, valideData} = useValide(pageType, { account, policyState: policy, isPhone: phone, isEmail: email });
     const {color, disabled, loading, setLoading, buttonMessage} = useButton({pageType, valide });
     const router = useRouter();
-    const fns = useMemo(() => {
-        return [
-            (val: string) => val.length > 5,
-            (val: string) => /[A-Z]/.test(val),
-            (val: string) => /[a-z]/.test(val),
-            (val: string) => /[0-9]/.test(val),
-            (val: string) => /\W/.test(val),
-            (val: string) => val.length < 20
-        ]
-    }, [])
-    useEffect(()=>{
-        if (pageType !== 'wait-check' && account.length === 0){
-            setPageType('wait-check');
-        }
-    }, [pageType, account])
     useEffect(()=>{
         valideData()
-    }, [
-        account,
-        policy,
-        password,
-        confirmPassword,
-        code,
-        userName,
-        passwordRobustness,
-        phone,
-        email,
-        pageType
-    ]);
-    useEffect(()=>{
-        setPasswordRobustness(
-            [...fns.map(fn => fn(password))]
-        )
-    }, [password, fns])
+    }, [ account, policy, phone, email, pageType ]);
     const checkAccountExistsByEmail = () => {
         return IOC.user.checkEmail(account)
             .then((exists:boolean) => exists)
@@ -88,8 +35,6 @@ export default function Page(){
             .then((exists:boolean) => exists)
             .catch(() => false);
     }
-
-
     const onChangeAccount = (account: string) => {
         setAccount(account);
         setPageType("wait-check");
@@ -136,8 +81,8 @@ export default function Page(){
                     <div className='space-y-5'>
                         <div className='space-y-2'>
                             <Input
-                                label={pageType !== 'register' ? '请输入邮箱或手机号' : '请输入手机号'}
-                                placeholder={pageType !== 'register' ? '请输入邮箱或手机号' : '请输入手机号'}
+                                label={'请输入邮箱或手机号'}
+                                placeholder={'请输入邮箱或手机号'}
                                 isClearable
                                 value={account}
                                 onValueChange={onChangeAccount}
@@ -150,7 +95,7 @@ export default function Page(){
                                 </div>
                             }
                         </div>
-                        <Checkbox isSelected={policy} onValueChange={setPolicy} onKeyDown={onEnter}>
+                        <Checkbox isSelected={policy} onValueChange={setPolicy}>
                             登录或注册即代表同意服务条款
                         </Checkbox>
                     </div>
