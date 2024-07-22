@@ -11,7 +11,7 @@ import { Message } from '@/components/message';
 import { useRouter } from 'next/navigation';
 import { SetLoggedInState } from '@/interface/hooks';
 import { UserAPI } from '@/interface/userAPI';
-import { useDebounceFn } from 'ahooks';
+import { useDebounceFn, useUpdateEffect } from 'ahooks';
 
 export type Colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
 export type PageType = 'wait-check' | 'login' | 'register'
@@ -86,7 +86,15 @@ export default function Page(){
             .then((exists:boolean) => exists)
             .catch(() => false);
     }
-    const checkAccountExists = useDebounceFn(()=>{
+
+
+    const onChangeAccount = (account: string) => {
+        setAccount(account);
+        setPageType("wait-check");
+    }
+
+    const accountCheck = () => {
+        setLoading(true);
         if (email){
             checkAccountExistsByEmail()
                 .then((exists) => {
@@ -94,85 +102,37 @@ export default function Page(){
                 })
                 .finally(() => setLoading(false));
         }
-    }, {wait: 1000})
-    useEffect(()=>{
-        checkAccountExists.run();
-    }, [account]);
-    const invoke = () => {
-        const checkAccount = () => {
-            setLoading(true);
-            if (email){
-                checkAccountExistsByEmail()
-                    .then((exists) => {
-                        setShowErr(!exists)
-                    })
-                    .finally(() => setLoading(false));
-            }
-            if (phone){
-                checkAccountExistsByPhone()
-                .then((exists) => {
-                    if (!exists){
-                        setPageType('register')
-                        return;
-                    }
-                    setPageType('login')
-                })
-                .finally(()=>{
-                    setLoading(false);
-                })
-            }
-        }
-        const login = () => {
-            setLoading(true)
-            UserAPI.login(account, password)
-            .then((r) => {
-                const [state, text] = r;
-                if (state) {
-                    Message.success("登录成功");
-                    SetLoggedInState(true);
-                    router.push("/dashboard");
-                } else {
-                    Message.error(text);
-                    setLoading(false)
+        if (phone){
+            checkAccountExistsByPhone()
+            .then((exists) => {
+                if (!exists){
+                    setPageType('register')
+                    return;
                 }
+                setPageType('login')
+            })
+            .finally(()=>{
+                setLoading(false);
             })
         }
-        const reg = () => {
-            setLoading(true)
-            if (phone){
-                IOC.user.createUser({
-                    phone: account,
-                    password,
-                    username: userName,
-                    code
-                })
-                    .then(() => {
-                            Message.success('注册成功, 请登录');
-                            setPageType('login');
-                            setPassword('');
-                            return;
-                    })
-                    .finally(() => setLoading(false));
-            }
-        }
-        const obj:Record<PageType, ()=>void> = {
-            'login': login,
-            'register': reg,
-            'wait-check': checkAccount
-        }
-        return obj[pageType]
     }
     const onEnter = (e:KeyboardEvent) => {
         if (!disabled && e.code.toLowerCase().includes('enter')){
             e.preventDefault();
-            invoke()();
+            accountCheck()
         }
     }
-
-    const onChangeAccount = (account: string) => {
-        setAccount(account);
-        setPageType("wait-check");
-    }
+    useEffect(()=>{
+        return ()=>{
+            router.prefetch('/authenticate/login')
+            router.prefetch('/authenticate/register')
+        }
+    },[]);
+    useUpdateEffect(()=>{
+        if (pageType !== 'wait-check'){
+            router.push(`/authenticate/${pageType}`);
+        }
+    }, [pageType]);
     return (
         <form>
             <Card className='max-w-md w-full' onKeyDown={onEnter}>
@@ -194,31 +154,13 @@ export default function Page(){
                                 </div>
                             }
                         </div>
-                        {
-                            pageType !== 'wait-check' ? pageType === 'login' ?
-                                <Login password={password} setPassword={setPassword} /> :
-                                pageType ===  'register' ?
-                                <Register
-                                    account={account}
-                                    code={code}
-                                    password={password}
-                                    confirmPassword={confirmPassword}
-                                    passwordRobustness={passwordRobustness}
-                                    valide={false}
-                                    userName={userName}
-                                    setCode={setCode}
-                                    setPassword={setPassword}
-                                    setAccount={setAccount}
-                                    setConfirmPassword={setConfirmPassword}
-                                    setUserName={setUserName} /> : null : null
-                        }
                         <Checkbox isSelected={policy} onValueChange={setPolicy} onKeyDown={onEnter}>
                             登录或注册即代表同意服务条款
                         </Checkbox>
                     </div>
                 </CardBody>
                 <CardFooter className='px-5'>
-                    <Button color={color} isDisabled={disabled} onClick={invoke()} isLoading={loading} type='submit'>
+                    <Button color={color} isDisabled={disabled} onClick={accountCheck} isLoading={loading} type='submit'>
                         {buttonMessage}
                     </Button>
                 </CardFooter>

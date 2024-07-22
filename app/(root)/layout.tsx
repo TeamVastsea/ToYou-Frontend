@@ -46,7 +46,7 @@ export default function RootLayout({children,}: {
                         }
                     }
                     } gutter={-15}/>
-                    <AuthProvider whiteList={['/', '/authenticate', '/pricing']}>
+                    <AuthProvider whiteList={['/', '/authenticate', '/pricing', '/authenticate/login', '/authenticate/register']}>
                         {children}
                     </AuthProvider>
                 </ToastProvider>

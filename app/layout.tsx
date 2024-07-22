@@ -39,7 +39,7 @@ export default function Root(
             <ToastProvider>
                 <Providers themeProps={{attribute: "class", defaultTheme: "dark"}}>
                     <div className="relative min-h-screen">
-                        <AuthProvider whiteList={['/', '/authenticate']}>
+                        <AuthProvider whiteList={['/', '/authenticate', '/authenticate/login', '/authenticate/register']}>
                             {children}
                         </AuthProvider>
                     </div>
