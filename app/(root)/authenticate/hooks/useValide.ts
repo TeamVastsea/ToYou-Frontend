@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { PageType } from "../page";
-import { z,ZodError } from 'zod';
+import { z,ZodError, ZodIssue } from 'zod';
+import { useUpdate, useUpdateEffect } from "ahooks";
 
 const validateEmail = (val: string) => val.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,10}$/i);
 const validatePhone = (val: string) => val.match(/^1[3-9]\d{9}$/i);
@@ -42,26 +43,25 @@ export const useValide = (
     props: Partial<ValidePrpos>,
 ) => {
     const [valide, setValide] = useState(false);
-    const [errors, setErrors] = useState<ZodError>();
+    const [errors, setErrors] = useState<ZodIssue[]>();
     const valideData = ()=>{
         if (pageType !== 'register'){
             const schemaValideRes = schema[pageType].safeParse(props);
             if (!schemaValideRes.success){
-                setErrors(schemaValideRes.error)
+                setErrors(schemaValideRes.error.errors)
             }
             setValide(schemaValideRes.success);
             return;
         }
         if (pageType === 'register'){
-            console.log(props.password, props.confirmPassword)
             const schemaRes = schema['register'].safeParse(props)
             setValide(schemaRes.success && (props.password === props.confirmPassword));
             if (!schemaRes.success){
-                setErrors(schemaRes.error)
+                setErrors(schemaRes.error.errors)
             }
             return;
         }
-    }
+    };
     return {
         valide,errors,
         setValide,setErrors,

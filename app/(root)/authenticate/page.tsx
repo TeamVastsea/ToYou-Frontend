@@ -11,13 +11,15 @@ import { Message } from '@/components/message';
 import { useRouter } from 'next/navigation';
 import { SetLoggedInState } from '@/interface/hooks';
 import { UserAPI } from '@/interface/userAPI';
-import { useDebounceFn, useUpdateEffect } from 'ahooks';
+import { useDebounceFn, useMount, useUpdateEffect } from 'ahooks';
+import { accountAtom } from '@/app/store';
+import { useAtom } from 'jotai';
 
 export type Colors = "default" | "primary" | "secondary" | "success" | "warning" | "danger" | undefined;
 export type PageType = 'wait-check' | 'login' | 'register'
 
 export default function Page(){
-    const [account, setAccount] = useState('')
+    const [account, setAccount] = useAtom(accountAtom)
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [accountExists, setAccountExists] = useState(false);
@@ -122,12 +124,6 @@ export default function Page(){
             accountCheck()
         }
     }
-    useEffect(()=>{
-        return ()=>{
-            router.prefetch('/authenticate/login')
-            router.prefetch('/authenticate/register')
-        }
-    },[]);
     useUpdateEffect(()=>{
         if (pageType !== 'wait-check'){
             router.push(`/authenticate/${pageType}`);
@@ -135,7 +131,7 @@ export default function Page(){
     }, [pageType]);
     return (
         <form>
-            <Card className='max-w-md w-full' onKeyDown={onEnter}>
+            <Card className='w-full' onKeyDown={onEnter}>
                 <CardBody>
                     <div className='space-y-5'>
                         <div className='space-y-2'>

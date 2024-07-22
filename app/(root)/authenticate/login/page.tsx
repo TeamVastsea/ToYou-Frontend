@@ -36,7 +36,7 @@ export default function LoginPage(){
     }
     return (
         <form>
-            <Card className='max-w-md w-full'>
+            <Card className='w-full'>
                 <CardBody>
                     <div className='space-y-5'>
                         <div className='space-y-5'>

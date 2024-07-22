@@ -15,7 +15,6 @@ export default function Register({
     userName,
     setCode,
     setPassword,
-    setAccount,
     setConfirmPassword,
     setUserName
 }: RegisterProps){
@@ -86,11 +85,9 @@ export interface RegisterProps {
     password: string;
     confirmPassword: string;
     passwordRobustness: boolean[];
-    valide: boolean;
     userName: string;
     setCode: (val: string) => void;
     setPassword: (val: string) => void,
-    setAccount: (val: string) => void,
     setConfirmPassword: (val: string) => void,
     setUserName: (val:string) => void;
 }
