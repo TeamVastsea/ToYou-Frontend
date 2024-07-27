@@ -41,8 +41,8 @@ export default function LoginPage(){
                     <div className='space-y-5'>
                         <div className='space-y-5'>
                             <Input
-                                label={'请输入手机号'}
-                                placeholder={'请输入手机号'}
+                                label={'账号'}
+                                placeholder={'请输入手机号, 用户名或邮箱'}
                                 isClearable
                                 value={account}
                                 onValueChange={setAccount}

@@ -25,16 +25,6 @@ export default function Page(){
     useEffect(()=>{
         valideData()
     }, [ account, policy, phone, email, pageType ]);
-    const checkAccountExistsByEmail = () => {
-        return IOC.user.checkEmail(account)
-            .then((exists:boolean) => exists)
-            .catch(() => false);
-    }
-    const checkAccountExistsByPhone = () => {
-        return IOC.user.checkPhone(account)
-            .then((exists:boolean) => exists)
-            .catch(() => false);
-    }
     const onChangeAccount = (account: string) => {
         setAccount(account);
         setPageType("wait-check");
@@ -42,26 +32,7 @@ export default function Page(){
 
     const accountCheck = () => {
         setLoading(true);
-        if (email){
-            checkAccountExistsByEmail()
-                .then((exists) => {
-                    setShowErr(!exists)
-                })
-                .finally(() => setLoading(false));
-        }
-        if (phone){
-            checkAccountExistsByPhone()
-            .then((exists) => {
-                if (!exists){
-                    setPageType('register')
-                    return;
-                }
-                setPageType('login')
-            })
-            .finally(()=>{
-                setLoading(false);
-            })
-        }
+        setPageType('login')
     }
     const onEnter = (e:KeyboardEvent) => {
         if (!disabled && e.code.toLowerCase().includes('enter')){
